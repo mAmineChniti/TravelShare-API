@@ -1,0 +1,23 @@
+name: TravelShare-build-test
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup Maven Action
+        uses: s4u/setup-maven-action@v1.16.0
+        with:
+          java-version: '17'
+          maven-version: '3.9.6'
+
+      - name: Build with Maven
+        run: mvn clean package
