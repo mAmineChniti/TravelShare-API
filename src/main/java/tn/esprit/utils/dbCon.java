@@ -9,7 +9,7 @@ public class dbCon {
     private static final String URL = "jdbc:mysql://localhost:3306/TravelShare";
     private static final String USER = System.getenv("DB_USER");
     private static final String PASS = System.getenv("DB_PASS");
-    private Connection con;
+    private final Connection con;
 
     private dbCon() {
         try {
