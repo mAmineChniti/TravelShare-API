@@ -40,7 +40,7 @@ Ensure you have the following installed:
 3. Build and run the application:
    ```sh
    mvn clean package
-   java -jar target/travelshare-api-0.0.1-SNAPSHOT.jar
+   java -jar target/TravelShare-API-1.0-SNAPSHOT.jar
    ```
 4. Access the API at `http://localhost:8080`
 
@@ -49,7 +49,7 @@ API endpoints are under development and will be documented in future updates.
 
 ## Contributing
 1. Fork the repository
-2. Create a new branch (`feature/your-feature`)
+2. Create a new branch (`your-feature`)
 3. Commit your changes
 4. Push to your branch
 5. Open a Pull Request
