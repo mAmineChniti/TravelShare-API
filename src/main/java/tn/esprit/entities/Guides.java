@@ -1,13 +1,13 @@
 package tn.esprit.entities;
 
-public class Guide {
+public class Guides {
     private int id_guide, experience;
     private String name, lastname, email, phone_num, language;
 
-    public  Guide(){
+    public Guides(){
     }
 
-    public Guide(int experience, String name, String lastname, String email, String phone_num, String language) {
+    public Guides(int experience, String name, String lastname, String email, String phone_num, String language) {
         this.experience = experience;
         this.name = name;
         this.lastname = lastname;
@@ -16,7 +16,7 @@ public class Guide {
         this.language = language;
     }
 
-    public Guide(int id_guide, int experience, String name, String lastname, String email, String phone_num, String language) {
+    public Guides(int id_guide, int experience, String name, String lastname, String email, String phone_num, String language) {
         this.id_guide = id_guide;
         this.experience = experience;
         this.name = name;

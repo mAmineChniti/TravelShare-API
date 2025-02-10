@@ -5,29 +5,30 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class dbCon {
-    private static dbCon instance;
-    private static final String URL = "jdbc:mysql://localhost:3306/TravelShare";
-    private static final String USER = System.getenv("DB_USER");
-    private static final String PASS = System.getenv("DB_PASS");
-    private final Connection con;
+    final String URL="jdbc:mysql://localhost:3306/travelshare";
 
-    private dbCon() {
+    final String USERNAME="root";
+    final String PASSWORD="";
+    Connection connection;
+
+    static dbCon instance;
+    private dbCon(){
         try {
-            con = DriverManager.getConnection(URL, USER, PASS);
-            System.out.println("we hacked the mainframe");
+            connection= DriverManager.getConnection(URL,USERNAME,PASSWORD);
+            System.out.println("Connexion établie");
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.out.println(e.getMessage());
         }
     }
 
-    public static dbCon getInstance() {
-        if (instance == null) {
-            instance = new dbCon();
+    public static   dbCon getInstance(){
+        if (instance==null){
+            instance= new dbCon();
         }
         return instance;
     }
 
     public Connection getConnection() {
-        return con;
+        return connection;
     }
 }
