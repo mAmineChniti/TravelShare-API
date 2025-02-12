@@ -17,7 +17,7 @@ public class LikesService {
 
     public void addOrRemove(Likes like) throws SQLException {
         String checkLikeQuery = "SELECT COUNT(*) FROM likes WHERE Liker_id = ? AND Post_id = ?";
-        String insertLikeQuery = "INSERT INTO likes (Liker_id, Post_id, created_at) VALUES (?, ?, NOW())";
+        String insertLikeQuery = "INSERT INTO likes (Liker_id, Post_id) VALUES (?, ?)";
         String deleteLikeQuery = "DELETE FROM likes WHERE Liker_id = ? AND Post_id = ?";
 
         try (PreparedStatement checkStmt = con.prepareStatement(checkLikeQuery)) {
