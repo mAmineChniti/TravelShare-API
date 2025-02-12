@@ -1,7 +1,7 @@
 package tn.esprit.entities;
 
 public class Guides {
-    private int id_guide, experience;
+    private int guide_id, experience;
     private String name, lastname, email, phone_num, language;
 
     public Guides(){
@@ -16,8 +16,8 @@ public class Guides {
         this.language = language;
     }
 
-    public Guides(int id_guide, int experience, String name, String lastname, String email, String phone_num, String language) {
-        this.id_guide = id_guide;
+    public Guides(int guide_id, int experience, String name, String lastname, String email, String phone_num, String language) {
+        this.guide_id = guide_id;
         this.experience = experience;
         this.name = name;
         this.lastname = lastname;
@@ -26,12 +26,12 @@ public class Guides {
         this.language = language;
     }
 
-    public int getId_guide() {
-        return id_guide;
+    public int getGuide_id() {
+        return guide_id;
     }
 
-    public void setId_guide(int id_guide) {
-        this.id_guide = id_guide;
+    public void setGuide_id(int guide_id) {
+        this.guide_id = guide_id;
     }
 
     public int getExperience() {
@@ -85,7 +85,7 @@ public class Guides {
     @Override
     public String toString() {
         return "Guide{" +
-                "id_guide=" + id_guide +
+                "guide_id=" + guide_id +
                 ", experience=" + experience +
                 ", name='" + name + '\'' +
                 ", lastname='" + lastname + '\'' +

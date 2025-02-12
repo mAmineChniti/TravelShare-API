@@ -16,6 +16,32 @@ public  class ServiceGuide implements IService <Guides>{
 
     @Override
     public void add(Guides guides) throws SQLException {
+
+        //controle de saisie pour experience
+        if (guides.getExperience() < 0) {
+            throw new IllegalArgumentException("L'expérience doit être positive ou nulle.");
+        }
+        //controle de saisie pour nom
+        if (guides.getName() == null || guides.getName().isEmpty()) {
+            throw new IllegalArgumentException("Le nom ne doit pas être vide.");
+        }
+        //controle de saisie pour prenom
+        if (guides.getLastname() == null || guides.getLastname().isEmpty()) {
+            throw new IllegalArgumentException("Le prénom ne doit pas être vide.");
+        }
+        //controle de saisie pour email
+        if (guides.getEmail() == null || !guides.getEmail().matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
+            throw new IllegalArgumentException("L'email n'est pas valide.");
+        }
+        //controle de saisie pour nmr telephone
+        if (guides.getPhone_num() == null || !guides.getPhone_num().matches("\\d+")) {
+            throw new IllegalArgumentException("Le numéro de téléphone doit contenir uniquement des chiffres.");
+        }
+        //controle de saisie pour langage
+        if (guides.getLanguage() == null || guides.getLanguage().isEmpty()) {
+            throw new IllegalArgumentException("La langue ne doit pas être vide.");
+        }
+
         String checkQuery = "SELECT COUNT(*) FROM guides WHERE email = ? OR phone_num = ?";
 
         try (PreparedStatement checkStmt = connection.prepareStatement(checkQuery)) {
@@ -47,8 +73,33 @@ public  class ServiceGuide implements IService <Guides>{
 
     @Override
     public void update(Guides guides) throws SQLException {
+        //controle de saisie pour experience
+        if (guides.getExperience() < 0) {
+            throw new IllegalArgumentException("L'expérience doit être positive ou nulle.");
+        }
+        //controle de saisie pour nom
+        if (guides.getName() == null || guides.getName().isEmpty()) {
+            throw new IllegalArgumentException("Le nom ne doit pas être vide.");
+        }
+        //controle de saisie pour prenom
+        if (guides.getLastname() == null || guides.getLastname().isEmpty()) {
+            throw new IllegalArgumentException("Le prénom ne doit pas être vide.");
+        }
+        //controle de saisie pour email
+        if (guides.getEmail() == null || !guides.getEmail().matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
+            throw new IllegalArgumentException("L'email n'est pas valide.");
+        }
+        //controle de saisie pour nmr tele
+        if (guides.getPhone_num() == null || !guides.getPhone_num().matches("\\d+")) {
+            throw new IllegalArgumentException("Le numéro de téléphone doit contenir uniquement des chiffres.");
+        }
+        //controle de saisie pour langue
+        if (guides.getLanguage() == null || guides.getLanguage().isEmpty()) {
+            throw new IllegalArgumentException("La langue ne doit pas être vide.");
+        }
 
-        String req = "UPDATE guides SET experience=?, name=?, last_name=?, email=?, phone_num=?, language=? WHERE guide_id=?";
+        String req = "UPDATE guides SET experience=?, name=?, last_name=?," +
+                " email=?, phone_num=?, language=? WHERE guide_id=?";
 
         PreparedStatement preparedStatement = connection.prepareStatement(req);
         preparedStatement.setInt(1, guides.getExperience());
@@ -57,7 +108,7 @@ public  class ServiceGuide implements IService <Guides>{
         preparedStatement.setString(4, guides.getEmail());
         preparedStatement.setString(5, guides.getPhone_num());
         preparedStatement.setString(6, guides.getLanguage());
-        preparedStatement.setInt(7, guides.getId_guide());
+        preparedStatement.setInt(7, guides.getGuide_id());
         preparedStatement.executeUpdate();
     }
 
@@ -81,7 +132,7 @@ public  class ServiceGuide implements IService <Guides>{
 
             while (rs.next()) {
                 Guides guide = new Guides();
-                guide.setId_guide(rs.getInt("guide_id"));
+                guide.setGuide_id(rs.getInt("guide_id"));
                 guide.setExperience(rs.getInt("experience"));
                 guide.setName(rs.getString("name"));
                 guide.setLastname(rs.getString("last_name"));
