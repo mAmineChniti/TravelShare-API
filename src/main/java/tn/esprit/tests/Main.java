@@ -46,8 +46,8 @@ public class Main {
             serviceGuide.update(guide4);
 
             //supprimer guide d'id 4
-           // int idToDelete = 4;
-           // serviceGuide.delete(idToDelete);
+            int idToDelete = 2;
+           serviceGuide.delete(idToDelete);
 
             //afficher list de guide
             System.out.println(serviceGuide.ListAll());
@@ -61,7 +61,7 @@ public class Main {
             serviceExcursion.update(excursion3);
 
             //supprimer excursion d'id 2
-            int idToDelete = 2;
+            idToDelete = 2;
             serviceExcursion.delete(idToDelete);
 
             //afficher list d'excursion

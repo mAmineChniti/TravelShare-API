@@ -3,6 +3,7 @@ package tn.esprit.entities;
 public class Guides {
     private int guide_id, experience;
     private String name, lastname, email, phone_num, language;
+    private Excursions excursions;
 
     public Guides(){
     }
