@@ -81,14 +81,14 @@ public class TestGuidesExcursions {
             //ajout de 2 excursion
               serviceExcursion.add(excursion1);
               serviceExcursion.add(excursion2);
-            serviceExcursion.add(excursion4);
+              serviceExcursion.add(excursion4);
 
             //modifier excursion
             serviceExcursion.update(excursion3);
 
             //supprimer excursion d'id 2
-            idToDelete = 2;
-            serviceExcursion.delete(idToDelete);
+          //  idToDelete = 2;
+           // serviceExcursion.delete(idToDelete);
 
             //afficher list d'excursion
             System.out.println(serviceExcursion.ListAll());
