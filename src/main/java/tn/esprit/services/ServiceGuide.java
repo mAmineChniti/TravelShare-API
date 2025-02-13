@@ -29,10 +29,11 @@ public  class ServiceGuide implements IService <Guides>{
         if (guides.getLastname() == null || guides.getLastname().isEmpty()) {
             throw new IllegalArgumentException("Le prénom ne doit pas être vide.");
         }
+        /*
         //controle de saisie pour email
         if (guides.getEmail() == null || !guides.getEmail().matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
             throw new IllegalArgumentException("L'email n'est pas valide.");
-        }
+        } */
         //controle de saisie pour nmr telephone
         if (guides.getPhone_num() == null || !guides.getPhone_num().matches("\\d+")) {
             throw new IllegalArgumentException("Le numéro de téléphone doit contenir uniquement des chiffres.");
@@ -85,10 +86,11 @@ public  class ServiceGuide implements IService <Guides>{
         if (guides.getLastname() == null || guides.getLastname().isEmpty()) {
             throw new IllegalArgumentException("Le prénom ne doit pas être vide.");
         }
+        /*
         //controle de saisie pour email
         if (guides.getEmail() == null || !guides.getEmail().matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
             throw new IllegalArgumentException("L'email n'est pas valide.");
-        }
+        } */
         //controle de saisie pour nmr tele
         if (guides.getPhone_num() == null || !guides.getPhone_num().matches("\\d+")) {
             throw new IllegalArgumentException("Le numéro de téléphone doit contenir uniquement des chiffres.");
