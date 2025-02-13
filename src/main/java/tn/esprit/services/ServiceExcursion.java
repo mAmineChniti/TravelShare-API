@@ -98,6 +98,7 @@ public class ServiceExcursion implements IService<Excursions> {
         preparedStatement.setInt(5, excursions.getGuide_id());
         preparedStatement.setInt(6, excursions.getExcursion_id());
         preparedStatement.executeUpdate();
+        System.out.println("Excursion modifié avec succès !");
     }
 
     @Override
@@ -108,6 +109,7 @@ public class ServiceExcursion implements IService<Excursions> {
         preparedStatement.setInt(1,id);
 
         preparedStatement.executeUpdate();
+        System.out.println("Excursion supprimé avec succès !");
     }
 
     @Override
