@@ -7,6 +7,14 @@ public class Reclamation {
     private String title, description;
     private Date date_reclamation;
 
+    // Relation ManyToOne avec Utilisateur
+    // Relation bidirectionnelle avec Utilisateur
+    private Utilisateur utilisateur; // Un utilisateur peut avoir plusieurs réclamations
+
+    // Relation OneToOne avec Reponse
+    // Relation unidirectionnelle avec Reponse
+    private Reponse reponse; // Une réclamation a une seule réponse
+
     // Constructeur par défaut
     public Reclamation() {}
 
@@ -67,6 +75,15 @@ public class Reclamation {
     public void setDate_reclamation(Date date_reclamation) {
         this.date_reclamation = date_reclamation;
     }
+
+    // Getters et setters pour utilisateur et reponse
+    public Utilisateur getUtilisateur() { return utilisateur; }
+
+    public void setUtilisateur(Utilisateur utilisateur) { this.utilisateur = utilisateur; }
+
+    public Reponse getReponse() { return reponse; }
+
+    public void setReponse(Reponse reponse) { this.reponse = reponse; }
 
     // Méthode toString pour afficher les informations de la reclamation
     @Override

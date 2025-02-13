@@ -33,7 +33,7 @@ public class ServiceUtilisateur implements IService<Utilisateur>{
         }
 
         // Requête pour insérer un nouvel utilisateur
-        String req = "INSERT INTO users (name, last_name, email, password, address, phone_num, role) " +
+        String req = "INSERT INTO users (name, last_name, email, password, phone_num, address, role) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement statement = con.prepareStatement(req)) {
@@ -41,8 +41,8 @@ public class ServiceUtilisateur implements IService<Utilisateur>{
             statement.setString(2, utilisateur.getLast_name());
             statement.setString(3, utilisateur.getEmail());
             statement.setString(4, utilisateur.getPassword());
-            statement.setString(5, utilisateur.getAddress());
-            statement.setInt(6, utilisateur.getPhone_num());
+            statement.setInt(5, utilisateur.getPhone_num());
+            statement.setString(6, utilisateur.getAddress());
             statement.setByte(7, utilisateur.getRole());
 
             // Exécuter la requête
@@ -56,7 +56,7 @@ public class ServiceUtilisateur implements IService<Utilisateur>{
     @Override
     public void update(Utilisateur utilisateur) throws SQLException {
         // Requête SQL pour la mise à jour des données
-        String req = "UPDATE users SET name = ?, last_name = ?, email = ?, password = ?, address = ?, phone_num = ?, role = ? WHERE user_id = ?";
+        String req = "UPDATE users SET name = ?, last_name = ?, email = ?, password = ?, phone_num = ?, address = ?, role = ? WHERE user_id = ?";
         PreparedStatement preparedStatement = con.prepareStatement(req);
 
         // Définir les valeurs des paramètres
@@ -64,8 +64,8 @@ public class ServiceUtilisateur implements IService<Utilisateur>{
         preparedStatement.setString(2, utilisateur.getLast_name());
         preparedStatement.setString(3, utilisateur.getEmail());
         preparedStatement.setString(4, utilisateur.getPassword());
-        preparedStatement.setString(5, utilisateur.getAddress());
-        preparedStatement.setInt(6, utilisateur.getPhone_num());
+        preparedStatement.setInt(5, utilisateur.getPhone_num());
+        preparedStatement.setString(6, utilisateur.getAddress());
         preparedStatement.setByte(7, utilisateur.getRole());
         preparedStatement.setInt(8, utilisateur.getUser_id());
 
@@ -124,8 +124,8 @@ public class ServiceUtilisateur implements IService<Utilisateur>{
             utilisateur.setLast_name(rs.getString("last_name"));
             utilisateur.setEmail(rs.getString("email"));
             utilisateur.setPassword(rs.getString("password"));
-            utilisateur.setAddress(rs.getString("address"));
             utilisateur.setPhone_num(rs.getInt("phone_num"));
+            utilisateur.setAddress(rs.getString("address"));
             utilisateur.setRole(rs.getByte("role")); // Récupération du rôle
 
             // Ajouter l'utilisateur à la liste

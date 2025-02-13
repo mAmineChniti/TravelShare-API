@@ -39,14 +39,15 @@ public class ServiceReclamation implements IService<Reclamation>{
     @Override
     public void update(Reclamation reclamation) throws SQLException {
         // Requête SQL pour la mise à jour des données
-        String req = "UPDATE reclamations SET title = ?, description = ?, date_reclamation = ? WHERE reclamation_id = ?";
+        String req = "UPDATE reclamations SET user_id = ?, title = ?, description = ?, date_reclamation = ? WHERE reclamation_id = ?";
 
         try (PreparedStatement preparedStatement = con.prepareStatement(req)) {
             // Définir les valeurs des paramètres
-            preparedStatement.setString(1, reclamation.getTitle());
-            preparedStatement.setString(2, reclamation.getDescription());
-            preparedStatement.setDate(3, reclamation.getDate_reclamation());
-            preparedStatement.setInt(4, reclamation.getReclamation_id());
+            preparedStatement.setInt(1, reclamation.getUser_id());
+            preparedStatement.setString(2, reclamation.getTitle());
+            preparedStatement.setString(3, reclamation.getDescription());
+            preparedStatement.setDate(4, reclamation.getDate_reclamation());
+            preparedStatement.setInt(5, reclamation.getReclamation_id());
 
             // Exécuter la requête
             int rowsUpdated = preparedStatement.executeUpdate();

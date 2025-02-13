@@ -1,11 +1,16 @@
 package tn.esprit.entities;
 
 import java.sql.Date;
+import java.util.List;
 
 public class Reponse {
     private int reponse_id, reclamation_id;
     private String contenu;
     private Date date_reponse;
+
+    // Relation OneToOne avec Reclamation
+    // Relation unidirectionnelle avec Reclamation
+    private Reclamation reclamation; // Une réclamation est associée à une seule réponse
 
     // Constructeur par défaut
     public Reponse() {}
@@ -58,8 +63,12 @@ public class Reponse {
         this.date_reponse = date_reponse;
     }
 
-    // Méthode toString pour afficher les informations de la reponse
+    // Getter et setter pour reclamation
+    public Reclamation getReclamation() { return reclamation; }
 
+    public void setReclamation(Reclamation reclamation) { this.reclamation = reclamation; }
+
+    // Méthode toString pour afficher les informations de la reponse
     @Override
     public String toString() {
         return "Reponse{" +
