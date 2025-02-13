@@ -20,6 +20,8 @@ import java.util.List;
         Utilisateur u1 = new Utilisateur(1, "wiem", "ben msahel", "wiem@example.com", "password123@", 23456789, "123 Main St", (byte) 0);
         Utilisateur u2 = new Utilisateur(2, "tttt", "test", "test@example.com", "password456@", 98456123, "456 Elm St", (byte) 0);
         Utilisateur u3 = new Utilisateur(5, "tttt", "tttt", "tttt@example.com", "password456@", 58963741, "456 Elm St", (byte) 0);
+        Utilisateur u4 = new Utilisateur(6, "test2", "test2", "tttt2@example.com", "passworddf4@", 58963741, "456 Elm St", (byte) 0);
+
 
         // Créer des objets Reclamation
         Reclamation r1 = new Reclamation(1, 1, "pffff", "Le vol réservé a été annulé sans préavis, et aucune alternative n'a été proposée.", java.sql.Date.valueOf("2025-02-12"));
@@ -36,6 +38,7 @@ import java.util.List;
             //serviceUtilisateur.add(u1);
             //serviceUtilisateur.add(u2);
             //serviceUtilisateur.add(u3);
+            serviceUtilisateur.add(u4);
 
             // Ajouter une réclamation
             //serviceReclamation.add(r1);
@@ -85,10 +88,10 @@ import java.util.List;
             }*/
 
             // Afficher toutes les réponses
-            List<Reponse> reponses = serviceReponse.ListAll();
+            /*List<Reponse> reponses = serviceReponse.ListAll();
             for (Reponse reponse : reponses) {
                 System.out.println(reponse);
-            }
+            }*/
 
         } catch (SQLException e) {
             System.out.println("Erreur : " + e.getMessage());

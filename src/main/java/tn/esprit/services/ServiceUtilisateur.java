@@ -6,21 +6,68 @@ import tn.esprit.utils.dbCon;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class ServiceUtilisateur implements IService<Utilisateur>{
+public class ServiceUtilisateur implements IService<Utilisateur> {
     // Initialiser la connexion à la base de données
     Connection con;
-    public ServiceUtilisateur(){
-        con= dbCon.getInstance().getConnection();
+
+    public ServiceUtilisateur() {
+        con = dbCon.getInstance().getConnection();
     }
 
-    // Méthode pour ajouter un utilisateur
+    // Méthode pour ajouter un utilisateur avec contrôle de saisie
     @Override
     public void add(Utilisateur utilisateur) throws SQLException {
+        // Contrôle des champs vides
+        if (utilisateur.getName() == null || utilisateur.getName().isEmpty()) {
+            System.out.println("⚠️ Le nom ne peut pas être vide.");
+            return;
+        }
+        if (utilisateur.getLast_name() == null || utilisateur.getLast_name().isEmpty()) {
+            System.out.println("⚠️ Le prénom ne peut pas être vide.");
+            return;
+        }
+        if (utilisateur.getEmail() == null || utilisateur.getEmail().isEmpty()) {
+            System.out.println("⚠️ L'email ne peut pas être vide.");
+            return;
+        }
+        if (utilisateur.getPassword() == null || utilisateur.getPassword().isEmpty()) {
+            System.out.println("⚠️ Le mot de passe ne peut pas être vide.");
+            return;
+        }
+        if (utilisateur.getPhone_num() == 0) {
+            System.out.println("⚠️ Le numéro de téléphone ne peut pas être vide.");
+            return;
+        }
+        if (utilisateur.getAddress() == null || utilisateur.getAddress().isEmpty()) {
+            System.out.println("⚠️ L'adresse ne peut pas être vide.");
+            return;
+        }
+
+        // Contrôle du format de l'email (doit être de la forme chaine@chaine.com)
+        String emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
+        Pattern patternEmail = Pattern.compile(emailPattern);
+        Matcher matcherEmail = patternEmail.matcher(utilisateur.getEmail());
+
+        if (!matcherEmail.matches()) {
+            System.out.println("⚠️ Format d'email invalide ! L'email doit être de la forme chaine@chaine.com");
+            return; // Arrêter l'ajout si l'email est invalide
+        }
+
+        // Contrôle du mot de passe : au moins une lettre, un chiffre et un caractère spécial
+        String passwordPattern = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*(),.?\":{}|<>]).{6,}$";
+        Pattern patternPassword = Pattern.compile(passwordPattern);
+        Matcher matcherPassword = patternPassword.matcher(utilisateur.getPassword());
+
+        if (!matcherPassword.matches()) {
+            System.out.println("⚠️ Le mot de passe doit contenir au moins une lettre, un chiffre et un caractère spécial !");
+            return; // Arrêter l'ajout si le mot de passe est invalide
+        }
 
         // Vérifier si l'utilisateur existe déjà dans la base de données via son email
         String checkQuery = "SELECT COUNT(*) FROM users WHERE email = ?";
-
         try (PreparedStatement checkStmt = con.prepareStatement(checkQuery)) {
             checkStmt.setString(1, utilisateur.getEmail());
 
@@ -35,7 +82,6 @@ public class ServiceUtilisateur implements IService<Utilisateur>{
         // Requête pour insérer un nouvel utilisateur
         String req = "INSERT INTO users (name, last_name, email, password, phone_num, address, role) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?)";
-
         try (PreparedStatement statement = con.prepareStatement(req)) {
             statement.setString(1, utilisateur.getName());
             statement.setString(2, utilisateur.getLast_name());
@@ -51,10 +97,55 @@ public class ServiceUtilisateur implements IService<Utilisateur>{
         }
     }
 
-
-    // Méthode pour modifier un utilisateur
+    // Méthode pour modifier un utilisateur avec contrôle de saisie
     @Override
     public void update(Utilisateur utilisateur) throws SQLException {
+        // Contrôle des champs vides
+        if (utilisateur.getName() == null || utilisateur.getName().isEmpty()) {
+            System.out.println("⚠️ Le nom ne peut pas être vide.");
+            return;
+        }
+        if (utilisateur.getLast_name() == null || utilisateur.getLast_name().isEmpty()) {
+            System.out.println("⚠️ Le prénom ne peut pas être vide.");
+            return;
+        }
+        if (utilisateur.getEmail() == null || utilisateur.getEmail().isEmpty()) {
+            System.out.println("⚠️ L'email ne peut pas être vide.");
+            return;
+        }
+        if (utilisateur.getPassword() == null || utilisateur.getPassword().isEmpty()) {
+            System.out.println("⚠️ Le mot de passe ne peut pas être vide.");
+            return;
+        }
+        if (utilisateur.getPhone_num() == 0) {
+            System.out.println("⚠️ Le numéro de téléphone ne peut pas être vide.");
+            return;
+        }
+        if (utilisateur.getAddress() == null || utilisateur.getAddress().isEmpty()) {
+            System.out.println("⚠️ L'adresse ne peut pas être vide.");
+            return;
+        }
+
+        // Contrôle du format de l'email (doit être de la forme chaine@chaine.com)
+        String emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
+        Pattern patternEmail = Pattern.compile(emailPattern);
+        Matcher matcherEmail = patternEmail.matcher(utilisateur.getEmail());
+
+        if (!matcherEmail.matches()) {
+            System.out.println("⚠️ Format d'email invalide ! L'email doit être de la forme chaine@chaine.com");
+            return; // Arrêter la modification si l'email est invalide
+        }
+
+        // Contrôle du mot de passe : au moins une lettre, un chiffre et un caractère spécial
+        String passwordPattern = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*(),.?\":{}|<>]).{6,}$";
+        Pattern patternPassword = Pattern.compile(passwordPattern);
+        Matcher matcherPassword = patternPassword.matcher(utilisateur.getPassword());
+
+        if (!matcherPassword.matches()) {
+            System.out.println("⚠️ Le mot de passe doit contenir au moins une lettre, un chiffre et un caractère spécial !");
+            return; // Arrêter la modification si le mot de passe est invalide
+        }
+
         // Requête SQL pour la mise à jour des données
         String req = "UPDATE users SET name = ?, last_name = ?, email = ?, password = ?, phone_num = ?, address = ?, role = ? WHERE user_id = ?";
         PreparedStatement preparedStatement = con.prepareStatement(req);
@@ -80,10 +171,28 @@ public class ServiceUtilisateur implements IService<Utilisateur>{
         }
     }
 
-
     // Méthode pour supprimer un utilisateur
     @Override
     public void delete(int user_id) throws SQLException {
+        // Contrôle de saisie : Vérifier si l'ID de l'utilisateur est valide
+        if (user_id <= 0) {
+            System.out.println("⚠️ L'ID de l'utilisateur doit être positif.");
+            return; // Arrêter la suppression si l'ID est invalide
+        }
+
+        // Vérification si l'utilisateur existe dans la base de données
+        String checkQuery = "SELECT COUNT(*) FROM users WHERE user_id = ?";
+        try (PreparedStatement checkStmt = con.prepareStatement(checkQuery)) {
+            checkStmt.setInt(1, user_id);
+
+            try (ResultSet rs = checkStmt.executeQuery()) {
+                if (rs.next() && rs.getInt(1) == 0) {
+                    System.out.println("⚠️ Aucun utilisateur trouvé avec cet ID. Suppression non effectuée.");
+                    return; // Arrêter si l'utilisateur n'existe pas
+                }
+            }
+        }
+
         // Requête SQL pour la suppression
         String req = "DELETE FROM users WHERE user_id = ?";
         PreparedStatement preparedStatement = con.prepareStatement(req);
@@ -101,7 +210,6 @@ public class ServiceUtilisateur implements IService<Utilisateur>{
             System.out.println("⚠️ Aucun utilisateur trouvé avec cet ID. Suppression non effectuée.");
         }
     }
-
 
     // Méthode pour afficher la liste des utilisateurs
     @Override
@@ -134,6 +242,4 @@ public class ServiceUtilisateur implements IService<Utilisateur>{
 
         return utilisateurs;
     }
-
 }
-
