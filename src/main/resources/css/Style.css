@@ -1,0 +1,48 @@
+.root {
+    -fx-background-color: #ffffff;
+    -fx-font-family: "Regular";
+}
+
+.button {
+    -fx-background-color: #0958ff;
+    -fx-text-fill: white;
+}
+
+.text-field {
+    -fx-background-color: transparent;
+    -fx-border-color: #0598ff;
+    -fx-border-width: 0px 0px 2px 0px;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+    -fx-text-fill: #0598ff;
+    -fx-font-size: 13px;
+}
+
+.imageAccueil {
+    -fx-background-image: url("../images/image1.jpg");
+    -fx-background-size: cover;
+    -fx-background-position: center;
+}
+
+.vbox {
+    -fx-background-color: linear-gradient(to bottom, #87CEEB, #4C5B70);
+    -fx-padding: 30px;
+    -fx-background-radius: 0 30 30 0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 15, 0, 5, 0);
+}
+
+.buttonNavigation {
+    -fx-background-color: #2C3E50;
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-border-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 5, 0, 0, 2);
+}
+
+.buttonDeconnexion {
+    -fx-background-color: #F1895C;
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-border-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 5, 0, 0, 2);
+}

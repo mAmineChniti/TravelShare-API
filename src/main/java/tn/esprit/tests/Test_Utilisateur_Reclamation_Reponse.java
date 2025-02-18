@@ -21,6 +21,7 @@ import java.util.List;
         Utilisateur u2 = new Utilisateur(2, "tttt", "test", "test@example.com", "password456@", 98456123, "456 Elm St", (byte) 0);
         Utilisateur u3 = new Utilisateur(5, "tttt", "tttt", "tttt@example.com", "password456@", 58963741, "456 Elm St", (byte) 0);
         Utilisateur u4 = new Utilisateur(6, "test2", "test2", "tttt2@example.com", "passworddf4@", 58963741, "456 Elm St", (byte) 0);
+        Utilisateur u5 = new Utilisateur(7, "wafa", "Chabbi", "wafa@example.com", "123azerty@", 58963741, "456 Elm St", (byte) 0);
 
 
         // Créer des objets Reclamation
@@ -38,7 +39,7 @@ import java.util.List;
             //serviceUtilisateur.add(u1);
             //serviceUtilisateur.add(u2);
             //serviceUtilisateur.add(u3);
-            serviceUtilisateur.add(u4);
+            serviceUtilisateur.add(u5);
 
             // Ajouter une réclamation
             //serviceReclamation.add(r1);
