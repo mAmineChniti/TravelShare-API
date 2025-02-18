@@ -52,7 +52,7 @@ public class Utilisateur {
 
     public String getLast_name() { return last_name; }
 
-    public void setLast_name(String lastname) { this.last_name = last_name; }
+    public void setLast_name(String lastname) { this.last_name = lastname; }
 
     public String getEmail() { return email; }
 
