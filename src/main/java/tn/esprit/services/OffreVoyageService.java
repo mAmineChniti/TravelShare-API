@@ -19,7 +19,7 @@ public class OffreVoyageService implements IService<OffreVoyages> {
 
     @Override
     public void add(OffreVoyages offreVoyages) throws SQLException {
-        String addReq = "INSERT INTO offre_voyage (titre,destination,description,date_depart,date_retour,prix,places_disponibles) VALUES (?,?,?,?,?,?,?) ";
+        String addReq = "INSERT INTO offres_voyage (titre,destination,description,date_depart,date_retour,prix,places_disponibles) VALUES (?,?,?,?,?,?,?) ";
         try (PreparedStatement prepStat = con.prepareStatement(addReq)) {
             prepStat.setString(1, offreVoyages.getTitre());
             prepStat.setString(2, offreVoyages.getDestination());
@@ -34,7 +34,7 @@ public class OffreVoyageService implements IService<OffreVoyages> {
 
     @Override
     public void update(OffreVoyages offreVoyages) throws SQLException {
-        String updateReq = "UPDATE offre_voyage SET titre =?, destination =?, description =?, date_depart =?, date_retour =?, prix =?, places_disponibles =? WHERE offres_voyage_id  = ?";
+        String updateReq = "UPDATE offres_voyage SET titre =?, destination =?, description =?, date_depart =?, date_retour =?, prix =?, places_disponibles =? WHERE offres_voyage_id  = ?";
         try (PreparedStatement prepStat = con.prepareStatement(updateReq)) {
             prepStat.setString(1, offreVoyages.getTitre());
             prepStat.setString(2, offreVoyages.getDestination());
@@ -50,7 +50,7 @@ public class OffreVoyageService implements IService<OffreVoyages> {
 
     @Override
     public void delete(int id) throws SQLException {
-        String deleteReq = "DELETE FROM offre_voyage  WHERE offres_voyage_id = ?";
+        String deleteReq = "DELETE FROM offres_voyage  WHERE offres_voyage_id = ?";
         try (PreparedStatement prepStat = con.prepareStatement(deleteReq)) {
             prepStat.setInt(1, id);
             prepStat.executeUpdate();
@@ -60,7 +60,7 @@ public class OffreVoyageService implements IService<OffreVoyages> {
     @Override
     public List<OffreVoyages> ListAll() throws SQLException {
         List<OffreVoyages> voyages = new ArrayList<>();
-        String listReq = "SELECT * FROM offre_voyage";
+        String listReq = "SELECT * FROM offres_voyage";
         try (PreparedStatement prepStat = con.prepareStatement(listReq)) {
             ResultSet rs = prepStat.executeQuery();
             while (rs.next()) {

@@ -1,6 +1,7 @@
 package tn.esprit.services;
 
 import tn.esprit.entities.ReservationPack;
+import tn.esprit.entities.statusReservationPack;
 import tn.esprit.utils.dbCon;
 
 import java.sql.Connection;
@@ -23,7 +24,7 @@ public class ReservationPackService implements IService<ReservationPack>{
             prepStat.setInt(1, reservationPack.getClient_id());
             prepStat.setInt(2, reservationPack.getPack_id());
             prepStat.setDate(3, reservationPack.getDate_reservation());
-            // enum
+            prepStat.setString(4, reservationPack.getStatus().name());
             prepStat.setDouble(5, reservationPack.getPrix_total());
             prepStat.executeUpdate();
         }
@@ -37,7 +38,7 @@ public class ReservationPackService implements IService<ReservationPack>{
         prepStat.setInt(1, reservationPack.getClient_id());
         prepStat.setInt(2, reservationPack.getPack_id());
         prepStat.setDate(3, reservationPack.getDate_reservation());
-        // enum
+        prepStat.setString(4, reservationPack.getStatus().name());
         prepStat.setDouble(5, reservationPack.getPrix_total());
         prepStat.setInt(6, reservationPack.getReservation_pack_id());
         prepStat.executeUpdate();
@@ -66,7 +67,7 @@ public class ReservationPackService implements IService<ReservationPack>{
                 reservationPack.setClient_id(rs.getInt("client_id"));
                 reservationPack.setPack_id(rs.getInt("pack_id"));
                 reservationPack.setDate_reservation(rs.getDate("date_reservation"));
-                // enum
+                reservationPack.setStatus(statusReservationPack.valueOf(rs.getString("status")));
                 reservationPack.setPrix_total(rs.getDouble("prix_total"));
                 reservationPacks.add(reservationPack);
             }
