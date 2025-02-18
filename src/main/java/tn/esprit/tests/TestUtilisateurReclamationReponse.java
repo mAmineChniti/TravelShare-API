@@ -10,7 +10,7 @@ import tn.esprit.services.ServiceUtilisateur;
 import java.sql.SQLException;
 import java.util.List;
 
-    public class Test_Utilisateur_Reclamation_Reponse {
+    public class TestUtilisateurReclamationReponse {
     public static void main(String[] args) {
         ServiceUtilisateur serviceUtilisateur = new ServiceUtilisateur();
         ServiceReclamation serviceReclamation = new ServiceReclamation();
