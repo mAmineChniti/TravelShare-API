@@ -67,4 +67,29 @@ public class PostsService implements IService<Posts> {
         }
         return posts;
     }
+
+    public List<Posts> fetchPosts(int offset, int limit) throws SQLException {
+        List<Posts> posts = new ArrayList<>();
+        String query = "SELECT p.*, u.name, u.last_name FROM posts p " +
+                "JOIN users u ON p.Owner_id = u.user_id " +
+                "ORDER BY p.created_at DESC LIMIT ? OFFSET ?";
+        try (PreparedStatement prepStat = con.prepareStatement(query)) {
+            prepStat.setInt(1, limit);
+            prepStat.setInt(2, offset);
+            try (ResultSet rs = prepStat.executeQuery()) {
+                while (rs.next()) {
+                    Posts post = new Posts();
+                    post.setPost_id(rs.getInt("Post_id"));
+                    post.setOwner_id(rs.getInt("Owner_id"));
+                    post.setCreated_at(rs.getDate("created_at"));
+                    post.setUpdated_at(rs.getDate("updated_at"));
+                    post.setText_content(rs.getString("text_content"));
+                    post.setOwner_name(rs.getString("name"));
+                    post.setOwner_last_name(rs.getString("last_name"));
+                    posts.add(post);
+                }
+            }
+        }
+        return posts;
+    }
 }
