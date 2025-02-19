@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+
+<AnchorPane prefHeight="550.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.ListExcursionGuideController">
+   <children>
+      <VBox layoutX="-1.0" prefHeight="570.0" prefWidth="218.0" style="-fx-background-color: linear-gradient(to bottom, #2C3E50, #4C5B70);                    -fx-padding: 30px;                    -fx-background-radius: 0 30 30 0;                    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 15, 0, 5, 0);">
+         <children>
+            <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-radius: 50px;                               -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 4);">
+               <VBox.margin>
+                  <Insets bottom="20.0" left="30.0" />
+               </VBox.margin>
+               <image>
+                  <Image url="@images/agence.png" />
+               </image>
+            </ImageView>
+            <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" style="-fx-background-color: transparent;                            -fx-text-fill: #c0c9d6;                            -fx-font-size: 18px;                            -fx-font-family: 'Segoe UI';                            -fx-font-weight: bold;                            -fx-alignment: CENTER_LEFT;                            -fx-background-radius: 15px;                            -fx-padding: 0 0 0 20px;                            -fx-border-color: transparent;                            -fx-border-width: 2px;                            -fx-cursor: hand;" text="Home">
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" style="-fx-background-color: transparent;                            -fx-text-fill: #c0c9d6;                            -fx-font-size: 18px;                            -fx-font-family: 'Segoe UI';                            -fx-font-weight: bold;                            -fx-alignment: CENTER_LEFT;                            -fx-background-radius: 15px;                            -fx-padding: 0 0 0 20px;                            -fx-border-color: transparent;                            -fx-border-width: 2px;                            -fx-cursor: hand;" text="Hotels">
+               <VBox.margin>
+                  <Insets top="20.0" />
+               </VBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" style="-fx-background-color: transparent;                            -fx-text-fill: #c0c9d6;                            -fx-font-size: 18px;                            -fx-font-family: 'Segoe UI';                            -fx-font-weight: bold;                            -fx-alignment: CENTER_LEFT;                            -fx-background-radius: 15px;                            -fx-padding: 0 0 0 20px;                            -fx-border-color: transparent;                            -fx-border-width: 2px;                            -fx-cursor: hand;" text="Packages">
+               <VBox.margin>
+                  <Insets top="20.0" />
+               </VBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" style="-fx-background-color: transparent;                            -fx-text-fill: #c0c9d6;                            -fx-font-size: 18px;                            -fx-font-family: 'Segoe UI';                            -fx-font-weight: bold;                            -fx-alignment: CENTER_LEFT;                            -fx-background-radius: 15px;                            -fx-padding: 0 0 0 20px;                            -fx-border-color: transparent;                            -fx-border-width: 2px;                            -fx-cursor: hand;" text="Excursions">
+               <VBox.margin>
+                  <Insets top="20.0" />
+               </VBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" style="-fx-background-color: transparent;                            -fx-text-fill: #c0c9d6;                            -fx-font-size: 18px;                            -fx-font-family: 'Segoe UI';                            -fx-font-weight: bold;                            -fx-alignment: CENTER_LEFT;                            -fx-background-radius: 15px;                            -fx-padding: 0 0 0 20px;                            -fx-border-color: transparent;                            -fx-border-width: 2px;                            -fx-cursor: hand;" text="Posts">
+               <VBox.margin>
+                  <Insets top="20.0" />
+               </VBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" style="-fx-background-color: transparent;                            -fx-text-fill: #c0c9d6;                            -fx-font-size: 18px;                            -fx-font-family: 'Segoe UI';                            -fx-font-weight: bold;                            -fx-alignment: CENTER_LEFT;                            -fx-background-radius: 15px;                            -fx-padding: 0 0 0 20px;                            -fx-border-color: transparent;                            -fx-border-width: 2px;                            -fx-cursor: hand;" text="Profile">
+               <VBox.margin>
+                  <Insets top="20.0" />
+               </VBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" style="-fx-background-color: #F1895C;                            -fx-text-fill: white;                            -fx-font-size: 18px;                            -fx-font-family: 'Segoe UI';                            -fx-font-weight: bold;                            -fx-background-radius: 25px;                            -fx-border-radius: 25px;                            -fx-alignment: CENTER;                            -fx-cursor: hand;                            -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 8, 0, 0, 4);" text="Logout">
+               <VBox.margin>
+                  <Insets top="40.0" />
+               </VBox.margin>
+            </Button>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
