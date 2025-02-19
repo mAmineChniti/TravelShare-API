@@ -7,9 +7,10 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
 import java.io.IOException;
 
-public class AccueilController {
+public class AccueilAdminController {
 
     public void SwitchToPosts(ActionEvent actionEvent) {
         try {
@@ -35,7 +36,7 @@ public class AccueilController {
             e.printStackTrace();
         }
     }
-    
+
     @FXML
     void deconnexion(ActionEvent event) {
         try {

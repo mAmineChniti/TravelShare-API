@@ -1,5 +1,6 @@
 package tn.esprit.services;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import tn.esprit.entities.Utilisateur;
 import tn.esprit.utils.dbCon;
 
@@ -34,17 +35,20 @@ public class ServiceUtilisateur implements IService<Utilisateur> {
         }
 
         // Requête pour insérer un nouvel utilisateur
+
+        // Assigner un rôle par défaut à 0 pour l'utilisateur
+        utilisateur.setRole((byte) 0);
         String req = "INSERT INTO users (name, last_name, email, password, phone_num, address, role) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String hashedPassword = BCrypt.withDefaults().hashToString(12, utilisateur.getPassword().toCharArray());
         try (PreparedStatement statement = con.prepareStatement(req)) {
             statement.setString(1, utilisateur.getName());
             statement.setString(2, utilisateur.getLast_name());
             statement.setString(3, utilisateur.getEmail());
-            statement.setString(4, utilisateur.getPassword());
+            statement.setString(4, hashedPassword);
             statement.setInt(5, utilisateur.getPhone_num());
             statement.setString(6, utilisateur.getAddress());
             statement.setByte(7, utilisateur.getRole());
-
             // Exécuter la requête
             statement.executeUpdate();
             System.out.println("✅ Utilisateur ajouté avec succès !");
@@ -55,18 +59,17 @@ public class ServiceUtilisateur implements IService<Utilisateur> {
     @Override
     public void update(Utilisateur utilisateur) throws SQLException {
         // Requête SQL pour la mise à jour des données
-        String req = "UPDATE users SET name = ?, last_name = ?, email = ?, password = ?, phone_num = ?, address = ?, role = ? WHERE user_id = ?";
+        String req = "UPDATE users SET name = ?, last_name = ?, email = ?, password = ?, phone_num = ?, address = ? WHERE user_id = ?";
         PreparedStatement preparedStatement = con.prepareStatement(req);
-
+        String hashedPassword = BCrypt.withDefaults().hashToString(12, utilisateur.getPassword().toCharArray());
         // Définir les valeurs des paramètres
         preparedStatement.setString(1, utilisateur.getName());
         preparedStatement.setString(2, utilisateur.getLast_name());
         preparedStatement.setString(3, utilisateur.getEmail());
-        preparedStatement.setString(4, utilisateur.getPassword());
+        preparedStatement.setString(4, hashedPassword);
         preparedStatement.setInt(5, utilisateur.getPhone_num());
         preparedStatement.setString(6, utilisateur.getAddress());
-        preparedStatement.setByte(7, utilisateur.getRole());
-        preparedStatement.setInt(8, utilisateur.getUser_id());
+        preparedStatement.setInt(7, utilisateur.getUser_id());
 
         // Exécuter la requête
         int rowsUpdated = preparedStatement.executeUpdate();
@@ -120,7 +123,7 @@ public class ServiceUtilisateur implements IService<Utilisateur> {
             utilisateur.setName(rs.getString("name"));
             utilisateur.setLast_name(rs.getString("last_name"));
             utilisateur.setEmail(rs.getString("email"));
-            utilisateur.setPassword(rs.getString("password"));
+            // utilisateur.setPassword(rs.getString("password"));
             utilisateur.setPhone_num(rs.getInt("phone_num"));
             utilisateur.setAddress(rs.getString("address"));
             utilisateur.setRole(rs.getByte("role")); // Récupération du rôle
@@ -130,5 +133,44 @@ public class ServiceUtilisateur implements IService<Utilisateur> {
         }
 
         return utilisateurs;
+    }
+
+    // Méthode pour authentifier un utilisateur
+    public Utilisateur authenticate(String email, String password) throws SQLException {
+        String query = "SELECT * FROM users WHERE email = ?";
+
+        try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
+            preparedStatement.setString(1, email);
+
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+                if (rs.next()) {
+                    // Get stored hashed password from DB
+                    String storedHashedPassword = rs.getString("password");
+
+                    // Verify entered password against stored hash
+                    BCrypt.Result result = BCrypt.verifyer().verify(password.toCharArray(), storedHashedPassword);
+
+                    if (result.verified) {  // Correct password
+                        Utilisateur utilisateur = new Utilisateur();
+                        utilisateur.setUser_id(rs.getInt("user_id"));
+                        utilisateur.setName(rs.getString("name"));
+                        utilisateur.setLast_name(rs.getString("last_name"));
+                        utilisateur.setEmail(rs.getString("email"));
+                        utilisateur.setPhone_num(rs.getInt("phone_num"));
+                        utilisateur.setAddress(rs.getString("address"));
+                        utilisateur.setRole(rs.getByte("role"));
+
+                        System.out.println("✅ Authentification réussie !");
+                        return utilisateur;
+                    } else {
+                        System.out.println("⚠️ Email ou mot de passe incorrect !");
+                        return null;
+                    }
+                } else {
+                    System.out.println("⚠️ Utilisateur non trouvé !");
+                    return null;
+                }
+            }
+        }
     }
 }
