@@ -12,10 +12,12 @@ public class Utilisateur {
     private List<Reclamation> reclamations; // Un utilisateur peut avoir plusieurs réclamations
 
     // Constructeur par défaut
-    public Utilisateur() {}
+    public Utilisateur() {
+        this.role = 0;
+    }
 
     // Constructeur paramétré (y compris l'ID)
-    public Utilisateur(int user_id, String name, String last_name, String email, String password, int phone_num, String address, byte role) {
+    public Utilisateur(int user_id, String name, String last_name, String email, String password, int phone_num, String address) {
         this.user_id = user_id;
         this.name = name;
         this.last_name = last_name;
@@ -23,18 +25,18 @@ public class Utilisateur {
         this.password = password;
         this.phone_num = phone_num;
         this.address = address;
-        this.role = role;
+        this.role = 0;
     }
 
     // Constructeur paramétré (sans l'ID)
-    public Utilisateur(String name, String last_name, String email, String password, int phone_num, String address, byte role) {
+    public Utilisateur(String name, String last_name, String email, String password, int phone_num, String address) {
         this.name = name;
         this.last_name = last_name;
         this.email = email;
         this.password = password;
         this.phone_num = phone_num;
         this.address = address;
-        this.role = role;
+        this.role = 0;
     }
 
     // Getters et Setters
@@ -52,7 +54,7 @@ public class Utilisateur {
 
     public String getLast_name() { return last_name; }
 
-    public void setLast_name(String lastname) { this.last_name = lastname; }
+    public void setLast_name(String last_name) { this.last_name = last_name; }
 
     public String getEmail() { return email; }
 

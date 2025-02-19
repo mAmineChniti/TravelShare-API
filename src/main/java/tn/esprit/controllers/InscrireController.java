@@ -42,9 +42,6 @@ public class InscrireController {
     private TextField phoneField;
 
     @FXML
-    private TextField roleField;
-
-    @FXML
     private Label u1;
 
     @FXML
@@ -55,16 +52,15 @@ public class InscrireController {
     void switchToAccueil(ActionEvent event) {
         // Récupérer les valeurs des champs
         String name = nameField.getText();
-        String lastname = lastnameField.getText();
+        String last_name = lastnameField.getText();
         String email = emailField.getText();
         String password = passwordField.getText();
         String phone = phoneField.getText();
         String address = addressField.getText();
-        String role = roleField.getText();
 
         // Vérification si tous les champs sont remplis
-        if (name.isEmpty() || lastname.isEmpty() || email.isEmpty() || password.isEmpty() ||
-                phone.isEmpty() || address.isEmpty() || role.isEmpty()) {
+        if (name.isEmpty() || last_name.isEmpty() || email.isEmpty() || password.isEmpty() ||
+                phone.isEmpty() || address.isEmpty())  {
             // Créer une alerte d'erreur
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Champs manquants");
@@ -77,25 +73,23 @@ public class InscrireController {
         try {
             // Convertir les valeurs numériques
             int phoneNum = Integer.parseInt(phone);
-            byte roleByte = Byte.parseByte(role);
 
             // Créer un objet Utilisateur
             Utilisateur utilisateur = new Utilisateur();
             utilisateur.setName(name);
-            utilisateur.setLast_name(lastname);
+            utilisateur.setLast_name(last_name);
             utilisateur.setEmail(email);
             utilisateur.setPassword(password);
             utilisateur.setPhone_num(phoneNum);
             utilisateur.setAddress(address);
-            utilisateur.setRole(roleByte);
 
             // Ajouter l'utilisateur à la base de données
             ServiceUtilisateur serviceUtilisateur = new ServiceUtilisateur();
             serviceUtilisateur.add(utilisateur);
             System.out.println("Utilisateur ajouté avec succès !");
 
-            // Rediriger vers la page Accueil.fxml après une inscription réussie
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Accueil.fxml"));
+            // Rediriger vers la page Connecter.fxml après une inscription réussie
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Connecter.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));

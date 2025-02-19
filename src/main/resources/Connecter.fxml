@@ -20,17 +20,17 @@
                                 <Font size="25.0" />
                             </font>
                         </Label>
-                        <TextField layoutX="196.0" layoutY="238.0" promptText="Email" styleClass="text-field" stylesheets="@css/Style.css" AnchorPane.bottomAnchor="300.0" AnchorPane.leftAnchor="180.0">
+                        <TextField fx:id="emailField1" layoutX="196.0" layoutY="238.0" promptText="Email" styleClass="text-field" stylesheets="@css/Style.css" AnchorPane.bottomAnchor="300.0" AnchorPane.leftAnchor="180.0">
                             <font>
                                 <Font size="13.0" />
                             </font>
                         </TextField>
-                        <TextField layoutX="196.0" layoutY="288.0" promptText="Password" styleClass="text-field" stylesheets="@css/Style.css" AnchorPane.bottomAnchor="250.0" AnchorPane.leftAnchor="180.0">
+                        <TextField fx:id="passwordField1" layoutX="196.0" layoutY="288.0" promptText="Password" styleClass="text-field" stylesheets="@css/Style.css" AnchorPane.bottomAnchor="250.0" AnchorPane.leftAnchor="180.0">
                             <font>
                                 <Font size="13.0" />
                             </font>
                         </TextField>
-                        <Button fx:id="btnsignup" layoutX="192.0" layoutY="343.0" mnemonicParsing="false" onAction="#btnsignup" prefHeight="30.0" prefWidth="115.0" stylesheets="@css/Style.css" text="Se Connecter" textFill="WHITE">
+                        <Button layoutX="192.0" layoutY="343.0" mnemonicParsing="false" onAction="#btnsignin" prefHeight="30.0" prefWidth="115.0" stylesheets="@css/Style.css" text="Se Connecter" textFill="WHITE">
                             <font>
                                 <Font size="15.0" />
                             </font></Button>
