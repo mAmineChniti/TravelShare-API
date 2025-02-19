@@ -21,7 +21,7 @@ public class HomeController {
         stage.setScene(new Scene(root));
         stage.show();
     } catch (IOException e) {
-        System.err.println("Erreur lors du chargement de l'FXML: " + e.getMessage());
+        System.err.println("Page loading error FXML: " + e.getMessage());
         e.printStackTrace();
     }
     }
@@ -35,7 +35,7 @@ public class HomeController {
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
-            System.err.println("Erreur lors du chargement de l'FXML: " + e.getMessage());
+            System.err.println("Page loading error FXML: " + e.getMessage());
             e.printStackTrace();
         }
 

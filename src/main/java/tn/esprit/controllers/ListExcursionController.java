@@ -36,13 +36,13 @@ public class ListExcursionController {
             // Récupérer la liste des excursions
             excursionsList = serviceExcursion.ListAll();
         } catch (SQLException e) {
-            System.err.println("Erreur lors de la récupération des excursions depuis la base de données.");
+            System.err.println("Error retrieving excursions from database.");
             e.printStackTrace();
             return;
         }
 
         if (excursionsList.isEmpty()) {
-            gridPane.add(new Label("Aucune excursion disponible."), 0, 0);
+            gridPane.add(new Label("No excursions available."), 0, 0);
             return;
         }
 
@@ -51,7 +51,7 @@ public class ListExcursionController {
         for (Excursions excursion : excursionsList) {
             gridPane.add(new Label(excursion.getTitle()), 0, row);
             gridPane.add(new Label(" " + excursion.getDescription()), 1, row);
-            gridPane.add(new Label(String.valueOf("  " + excursion.getDuration()) + " jours"), 2, row);
+            gridPane.add(new Label(String.valueOf("  " + excursion.getDuration()) + " days"), 2, row);
             gridPane.add(new Label(String.valueOf(excursion.getDate_excursion())), 3, row);
 
 
@@ -72,7 +72,7 @@ public class ListExcursionController {
                     }
 
                 } catch (SQLException e) {
-                    System.err.println("Erreur lors de la suppression du guide.");
+                    System.err.println("Error deleting guide.");
                     e.printStackTrace();
                 }
             });
@@ -81,7 +81,7 @@ public class ListExcursionController {
             Button updateButton = new Button("!");
             updateButton.setOnAction(event -> {
                 try {
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/UpdateGuide.fxml"));
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/UpdateExcursion.fxml"));
                     Parent root = loader.load();
 
                     // Obtenir le contrôleur de la page UpdateGuide
@@ -103,10 +103,10 @@ public class ListExcursionController {
             // Utiliser l'ID du guide pour récupérer l'objet Guide
             try {
                 Guides guide = serviceGuide.getGuideById(excursion.getGuide_id()); // Utilisation de getGuideById
-                String guideName = (guide != null) ? guide.getName() : "Guide inconnu";
+                String guideName = (guide != null) ? guide.getName() : "Unknown guide\n";
                 gridPane.add(new Label(guideName), 4, row);
             } catch (SQLException e) {
-                gridPane.add(new Label("Erreur guide"), 4, row);
+                gridPane.add(new Label("Error guide"), 4, row);
                 e.printStackTrace();
             }
 
@@ -142,7 +142,7 @@ public class ListExcursionController {
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
-            System.err.println("Erreur lors du chargement de l'FXML: " + e.getMessage());
+            System.err.println("Page loading error FXML: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -156,7 +156,7 @@ public class ListExcursionController {
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
-            System.err.println("Erreur lors du chargement de l'FXML: " + e.getMessage());
+            System.err.println("Page loading error FXML: " + e.getMessage());
             e.printStackTrace();
         }
     }

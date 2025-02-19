@@ -58,7 +58,7 @@ public class UpdateGuideController {
                 phoneTF.getText().isEmpty() || languageTF.getText().isEmpty()) {
 
             // Alerte en cas de champ vide
-            showAlert(Alert.AlertType.WARNING, "Champs vides", "Tous les champs doivent être remplis.");
+            showAlert(Alert.AlertType.WARNING, "Empty fields", "All fields must be completed.");
             return;
         }
 
@@ -66,7 +66,7 @@ public class UpdateGuideController {
         try {
             Integer.parseInt(experienceTF.getText());
         } catch (NumberFormatException e) {
-            showAlert(Alert.AlertType.WARNING, "Expérience invalide", "L'expérience doit être un nombre entier.");
+            showAlert(Alert.AlertType.WARNING, "Invalid experience", "Experience must be an integer.");
             return;
         }
 
@@ -82,10 +82,10 @@ public class UpdateGuideController {
             serviceGuide.update(guideToEdit);
 
             // Alerte de succès
-            showAlert(Alert.AlertType.INFORMATION, "Succès", "Guide mis à jour avec succès !");
+            showAlert(Alert.AlertType.INFORMATION, "Succes", "Guide updated successfully !");
         } catch (SQLException e) {
             e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Une erreur est survenue lors de la mise à jour.");
+            showAlert(Alert.AlertType.ERROR, "Error", "An error occurred while updating.");
         }
     }
 
@@ -113,7 +113,7 @@ public class UpdateGuideController {
             stage.show();  // Afficher la nouvelle scène
 
         } catch (IOException e) {
-            System.out.println("Erreur de chargement de la page ListGuide.fxml : " + e.getMessage());
+            System.out.println("Page loading error ListGuide.fxml : " + e.getMessage());
         }
     }
 }

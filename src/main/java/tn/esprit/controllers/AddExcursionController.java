@@ -66,7 +66,7 @@ public class AddExcursionController implements Initializable {
 
         // Validation des champs
         if (title.isEmpty() || description.isEmpty() || durationStr.isEmpty() || selectedGuide == null || excursionDate == null) {
-            showAlert("Erreur", "Veuillez remplir tous les champs", Alert.AlertType.ERROR);
+            showAlert("Error", "Please fill in all fields", Alert.AlertType.ERROR);
             return;
         }
 
@@ -74,7 +74,7 @@ public class AddExcursionController implements Initializable {
         try {
             duration = Integer.parseInt(durationStr);  // Vérifier si la durée est un nombre entier
         } catch (NumberFormatException e) {
-            showAlert("Erreur", "La durée doit être un nombre entier", Alert.AlertType.ERROR);
+            showAlert("Error", "Duration must be an integer", Alert.AlertType.ERROR);
             return;
         }
 
@@ -92,7 +92,7 @@ public class AddExcursionController implements Initializable {
             guide = serviceGuide.getGuideByName(selectedGuide);  // Récupérer le guide par son nom
             excursion.setGuide_id(guide.getGuide_id());  // Associer le guide à l'excursion
         } catch (SQLException e) {
-            showAlert("Erreur", "Erreur lors de la récupération du guide : " + e.getMessage(), Alert.AlertType.ERROR);
+            showAlert("Error", "Error retrieving guide : " + e.getMessage(), Alert.AlertType.ERROR);
             return;
         }
 
@@ -100,10 +100,10 @@ public class AddExcursionController implements Initializable {
         ServiceExcursion serviceExcursion = new ServiceExcursion();
         try {
             serviceExcursion.add(excursion);  // Appel à la méthode add du service
-            showAlert("Succès", "Excursion ajoutée avec succès", Alert.AlertType.INFORMATION);
+            showAlert("Success", "Excursion added successfully", Alert.AlertType.INFORMATION);
             clearFields();  // Effacer les champs après l'ajout
         } catch (Exception e) {
-            showAlert("Erreur", "Erreur lors de l'ajout de l'excursion : " + e.getMessage(), Alert.AlertType.ERROR);
+            showAlert("Error", "Error adding excursion: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
@@ -137,7 +137,7 @@ public class AddExcursionController implements Initializable {
             stage.show();  // Afficher la nouvelle scène
 
         } catch (IOException e) {
-            System.out.println("Erreur de chargement de la page ListGuide.fxml : " + e.getMessage());
+            System.out.println("Page loading error ListGuide.fxml : " + e.getMessage());
         }
     }
 }

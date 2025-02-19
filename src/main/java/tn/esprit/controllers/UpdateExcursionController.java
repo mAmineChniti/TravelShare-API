@@ -62,9 +62,9 @@ public class UpdateExcursionController {
 
             // Alerte si des champs sont vides
             Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Champs vides");
+            alert.setTitle("Empty fields");
             alert.setHeaderText(null);
-            alert.setContentText("Tous les champs doivent être remplis.");
+            alert.setContentText("All fields must be completed.");
             alert.showAndWait();
             return;
         }
@@ -81,17 +81,17 @@ public class UpdateExcursionController {
 
             // Alerte de succès
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Succès");
+            alert.setTitle("Success");
             alert.setHeaderText(null);
-            alert.setContentText("Excursion mise à jour avec succès !");
+            alert.setContentText("Excursion successfully updated !");
             alert.showAndWait();
 
         } catch (SQLException e) {
             e.printStackTrace();
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Erreur");
+            alert.setTitle("Error");
             alert.setHeaderText(null);
-            alert.setContentText("Une erreur est survenue lors de la mise à jour.");
+            alert.setContentText("An error occurred while updating.");
             alert.showAndWait();
         }
     }
@@ -109,7 +109,7 @@ public class UpdateExcursionController {
             stage.show();  // Afficher la nouvelle scène
 
         } catch (IOException e) {
-            System.out.println("Erreur de chargement de la page ListExcursion.fxml : " + e.getMessage());
+            System.out.println("Error loading page ListExcursion.fxml : " + e.getMessage());
         }
     }
 }

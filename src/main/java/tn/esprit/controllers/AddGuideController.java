@@ -45,14 +45,14 @@ public class AddGuideController {
 
         // Validation des champs
         if (name.isEmpty() || lastname.isEmpty() || email.isEmpty() || phone.isEmpty() || language.isEmpty() || experienceTF.getText().isEmpty()) {
-            showAlert("Erreur", "Veuillez remplir tous les champs", Alert.AlertType.ERROR);
+            showAlert("Error", "Please fill in all fields\n", Alert.AlertType.ERROR);
             return;
         }
 
         try {
             experience = Integer.parseInt(experienceTF.getText());
         } catch (NumberFormatException e) {
-            showAlert("Erreur", "L'expérience doit être un nombre entier", Alert.AlertType.ERROR);
+            showAlert("Error", "Experience must be an integer", Alert.AlertType.ERROR);
             return;
         }
 
@@ -69,10 +69,10 @@ public class AddGuideController {
         ServiceGuide serviceGuide = new ServiceGuide();
         try {
             serviceGuide.add(guide);  // Appel à la méthode add du service
-            showAlert("Succès", "Guide ajouté avec succès", Alert.AlertType.INFORMATION);
+            showAlert("Succès", "Guide added successfully", Alert.AlertType.INFORMATION);
             clearFields();  // Effacer les champs après l'ajout
         } catch (Exception e) {
-            showAlert("Erreur", "Erreur lors de l'ajout du guide : " + e.getMessage(), Alert.AlertType.ERROR);
+            showAlert("Error", "Error adding guide : " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
@@ -107,7 +107,7 @@ public class AddGuideController {
             stage.show();  // Afficher la nouvelle scène
 
         } catch (IOException e) {
-            System.out.println("Erreur de chargement de la page ListGuide.fxml : " + e.getMessage());
+            System.out.println("Page loading error ListGuide.fxml : " + e.getMessage());
         }
     }
 

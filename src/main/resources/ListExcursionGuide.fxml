@@ -2,11 +2,15 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
-
+<?import javafx.scene.shape.Rectangle?>
 
 <AnchorPane prefHeight="550.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.ListExcursionGuideController">
    <children>
@@ -57,5 +61,39 @@
             </Button>
          </children>
       </VBox>
+      <ImageView fitHeight="229.0" fitWidth="539.0" layoutX="260.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true" style="-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.7), 20, 0, 0, 10);                   -fx-opacity: 0.9;">
+         <clip>
+            <Rectangle arcHeight="50" arcWidth="50" height="229.0" width="539.0" />
+         </clip>
+         <image>
+            <Image url="@images/a.jpg" />
+         </image>
+      </ImageView>
+      <GridPane fx:id="gridPane" layoutX="232.0" layoutY="238.0" prefHeight="216.0" prefWidth="596.0" style="-fx-background-color: #ECF0F1; -fx-padding: 20px; -fx-border-radius: 15px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 15, 0, 0, 12);">
+         <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS" maxWidth="130.0" minWidth="43.2" prefWidth="88.79998779296875" />
+            <ColumnConstraints hgrow="ALWAYS" maxWidth="150.0" minWidth="60.0" prefWidth="142.20003662109372" />
+            <ColumnConstraints hgrow="ALWAYS" maxWidth="170.0" minWidth="80.0" prefWidth="92.59996337890624" />
+            <ColumnConstraints hgrow="ALWAYS" maxWidth="230.0" minWidth="63.79998779296875" prefWidth="92.59996337890624" />
+            <ColumnConstraints hgrow="ALWAYS" maxWidth="210.0" minWidth="50.0" prefWidth="79.20003662109377" />
+            <ColumnConstraints hgrow="ALWAYS" maxWidth="240.0" minWidth="68.79997558593755" prefWidth="83.20002441406245" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="80.0" vgrow="ALWAYS" />
+            <RowConstraints minHeight="10.0" prefHeight="80.0" vgrow="ALWAYS" />
+            <RowConstraints minHeight="10.0" prefHeight="80.0" vgrow="ALWAYS" />
+            <RowConstraints minHeight="10.0" prefHeight="80.0" vgrow="ALWAYS" />
+            <RowConstraints minHeight="10.0" prefHeight="80.0" vgrow="ALWAYS" />
+            <RowConstraints minHeight="10.0" prefHeight="80.0" vgrow="ALWAYS" />
+         </rowConstraints>
+         <children>
+            <Label fx:id="nameTF" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #34495E;" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <Label fx:id="lastnameTF" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #34495E;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label fx:id="emailTF" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #34495E;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <Label fx:id="experienceTF" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #34495E;" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+            <Label fx:id="langageTF" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #34495E;" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+            <Label fx:id="phoneTF" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #34495E;" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+         </children>
+      </GridPane>
    </children>
 </AnchorPane>

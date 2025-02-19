@@ -3,7 +3,6 @@ package tn.esprit.controllers;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -33,13 +32,13 @@ public class ListGuideController {
             // Récupérer la liste des guides
             guidesList = serviceGuide.ListAll();
         } catch (SQLException e) {
-            System.err.println("Erreur lors de la récupération des guides depuis la base de données.");
+            System.err.println("Error retrieving guides from database.");
             e.printStackTrace();
             return;
         }
 
         if (guidesList.isEmpty()) {
-            gridPane.add(new Label("Aucun guide disponible."), 0, 0);
+            gridPane.add(new Label("No guide available."), 0, 0);
             return;
         }
 
@@ -73,7 +72,7 @@ public class ListGuideController {
                     }
 
                 } catch (SQLException e) {
-                    System.err.println("Erreur lors de la suppression du guide.");
+                    System.err.println("Error deleting guide.");
                     e.printStackTrace();
                 }
             });
@@ -137,7 +136,7 @@ public class ListGuideController {
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
-            System.err.println("Erreur lors du chargement de l'FXML: " + e.getMessage());
+            System.err.println("Error loading FXML: " + e.getMessage());
             e.printStackTrace();
         }
 
@@ -152,7 +151,7 @@ public class ListGuideController {
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
-            System.err.println("Erreur lors du chargement de l'FXML: " + e.getMessage());
+            System.err.println("Error loading FXML: " + e.getMessage());
             e.printStackTrace();
         }
     }
