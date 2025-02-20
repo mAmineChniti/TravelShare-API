@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+
+<AnchorPane prefHeight="550.0" prefWidth="850.0" styleClass="root" stylesheets="@css/Style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.ChambreController">
+    <children>
+        <!-- Barre de navigation -->
+        <VBox layoutX="-4.0" prefHeight="570.0" prefWidth="234.0" styleClass="vbox" stylesheets="@css/Style.css">
+            <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Accueil"/>
+            <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Packages">
+                <VBox.margin><Insets top="20.0"/></VBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Hotels">
+                <VBox.margin><Insets top="20.0"/></VBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Excursions">
+                <VBox.margin><Insets top="20.0"/></VBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Postes">
+                <VBox.margin><Insets top="20.0"/></VBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Profile">
+                <VBox.margin><Insets top="20.0"/></VBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" styleClass="buttonDeconnexion" stylesheets="@css/Style.css" text="Déconnexion">
+                <VBox.margin><Insets top="20.0"/></VBox.margin>
+            </Button>
+        </VBox>
+
+        <!-- Conteneur principal des chambres -->
+        <VBox layoutX="250.0" layoutY="20.0" prefWidth="580.0" prefHeight="500.0" style="-fx-padding: 10px; -fx-spacing: 10px;">
+
+            <!-- Bouton pour ajouter une chambre (affiché uniquement si admin) -->
+            <Button fx:id="btnAdd" text="Ajouter Chambre" onAction="#handleAddChambre"
+                    style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8px 20px;"
+                    visible="false"/>
+
+            <!-- Conteneur pour afficher les chambres dynamiquement (wrapped in a ScrollPane) -->
+            <ScrollPane fx:id="chambreScrollPane" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="ALWAYS">
+                <content>
+                    <VBox fx:id="chambreContainer" style="-fx-padding: 10px; -fx-spacing: 10px;" />
+                </content>
+            </ScrollPane>
+
+        </VBox>
+    </children>
+</AnchorPane>

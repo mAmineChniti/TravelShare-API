@@ -22,6 +22,19 @@ public class AccueilController {
             e.printStackTrace();
         }
     }
+    
+    @FXML
+    void SwitchToHotels(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Hotel.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @FXML
     void switchToProfile(ActionEvent event) {
