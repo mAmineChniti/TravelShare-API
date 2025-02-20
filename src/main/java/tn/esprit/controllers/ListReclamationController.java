@@ -10,6 +10,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import tn.esprit.entities.SessionManager;
 import tn.esprit.entities.Utilisateur;
 import tn.esprit.services.ServiceReclamation;
 import tn.esprit.entities.Reclamation;
@@ -20,8 +21,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static tn.esprit.entities.SessionManager.getCurrentUtilisateur;
 
 public class ListReclamationController {
 
@@ -45,7 +44,8 @@ public class ListReclamationController {
     @FXML
     private void initialize() {
         try {
-            Utilisateur currentUser = getCurrentUtilisateur();
+            SessionManager session = SessionManager.getInstance();
+            Utilisateur currentUser = session.getCurrentUtilisateur();
             int user_id = currentUser.getUser_id();
 
             List<Reclamation> userReclamations = serviceReclamation.ListAll().stream()
@@ -147,7 +147,8 @@ public class ListReclamationController {
                         Date currentDate = new Date(System.currentTimeMillis());
 
                         // Récupérer l'ID de l'utilisateur actuel (assumant que cette méthode existe)
-                        int user_id = getCurrentUtilisateur().getUser_id();
+                        SessionManager session = SessionManager.getInstance();
+                        int user_id = session.getCurrentUtilisateur().getUser_id();
 
                         // Mettre à jour la réclamation dans la base de données avec la date et les autres informations
                         Reclamation updatedReclamation = new Reclamation(reclamation_id, user_id, newTitle, newDescription, currentDate);
