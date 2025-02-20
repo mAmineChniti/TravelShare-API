@@ -17,8 +17,8 @@
                         <Image url="@images/agence.png" />
                     </image>
                 </ImageView>
-                <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" styleClass="buttonEnCours" stylesheets="@css/Style.css" text="Accueil" />
-                <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Packages">
+                <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Accueil" />
+                <Button fx:id="Packages" mnemonicParsing="false" onAction="#SwitchToPackages" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Voyages">
                     <VBox.margin>
                         <Insets top="20.0" />
                     </VBox.margin>

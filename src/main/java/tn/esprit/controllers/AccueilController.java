@@ -35,7 +35,20 @@ public class AccueilController {
             e.printStackTrace();
         }
     }
-
+    
+    @FXML
+    public void SwitchToPackages(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Voyages.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
     @FXML
     void switchToProfile(ActionEvent event) {
         try {
