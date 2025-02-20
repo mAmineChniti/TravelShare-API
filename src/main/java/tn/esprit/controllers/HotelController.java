@@ -29,7 +29,7 @@ public class HotelController {
     @FXML
     public void initialize() {
         loadHotels();
-        Utilisateur currentUser = SessionManager.getCurrentUtilisateur();
+        Utilisateur currentUser = SessionManager.getInstance().getCurrentUtilisateur();
         // Show "Add Hotel" button only for admin users
         if (currentUser != null && currentUser.getRole()==1) {
             addHotelButton.setVisible(true);
@@ -75,7 +75,7 @@ public class HotelController {
 
                 // Create an HBox for buttons (only for admin)
                 HBox adminButtons = new HBox(10);
-                Utilisateur currentUser = SessionManager.getCurrentUtilisateur();
+                Utilisateur currentUser = SessionManager.getInstance().getCurrentUtilisateur();
                 if (currentUser != null && currentUser.getRole()==1) {
                     Button updateButton = new Button("Modifier");
                     updateButton.setStyle("-fx-background-color: #f1c40f; -fx-text-fill: white;");

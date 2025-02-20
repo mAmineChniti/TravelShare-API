@@ -11,9 +11,10 @@ import java.io.IOException;
 
 public class AccueilController {
 
-    public void SwitchToPosts(ActionEvent actionEvent) {
+    @FXML
+    public void SwitchToVoyages(ActionEvent actionEvent) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Posts.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Voyages.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -22,7 +23,7 @@ public class AccueilController {
             e.printStackTrace();
         }
     }
-    
+
     @FXML
     void SwitchToHotels(ActionEvent event) {
         try {
@@ -35,11 +36,10 @@ public class AccueilController {
             e.printStackTrace();
         }
     }
-    
-    @FXML
-    public void SwitchToPackages(ActionEvent actionEvent) {
+
+    public void SwitchToPosts(ActionEvent actionEvent) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Voyages.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Posts.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -48,7 +48,7 @@ public class AccueilController {
             e.printStackTrace();
         }
     }
-    
+
     @FXML
     void switchToProfile(ActionEvent event) {
         try {
@@ -61,7 +61,7 @@ public class AccueilController {
             e.printStackTrace();
         }
     }
-    
+
     @FXML
     void deconnexion(ActionEvent event) {
         try {
