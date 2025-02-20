@@ -8,10 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import tn.esprit.entities.Reclamation;
 import tn.esprit.entities.Reponse;
@@ -47,15 +44,28 @@ public class ListReponseController {
     void initialize() {
         try {
             List<String> reponses = serviceReponse.getReponsesWithUserInfoAndRec();
-
-            // Convertir la liste en observable et l'afficher dans la ListView
             ObservableList<String> observableList = FXCollections.observableArrayList(reponses);
             reponseListView.setItems(observableList);
+
+            // Ajouter un listener pour afficher le contenu dans reponseField
+            reponseListView.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
+                if (newValue != null) {
+                    // Extraction du contenu de la réponse
+                    String[] parts = newValue.split(" , ");
+                    if (parts.length >= 4) {
+                        String contenu = parts[3].split(": ")[1].trim();
+                        reponseField.setText(contenu);
+                    } else {
+                        reponseField.clear(); // Effacer si problème de format
+                    }
+                }
+            });
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
 
     @FXML
     void updateReponse(ActionEvent event) {
@@ -64,48 +74,48 @@ public class ListReponseController {
 
         if (selectedReponseText != null) {
             try {
-                // Extraire l'ancien contenu de la réponse
-                String oldReponse = selectedReponseText.split(" - Contenu : ")[0];
-                System.out.println("Ancien contenu: " + oldReponse);  // Afficher le contenu pour vérifier
+                // Extraction correcte du contenu
+                String[] parts = selectedReponseText.split(" , ");
+                if (parts.length >= 4) {  // Vérifier que la structure est correcte
+                    String oldReponse = parts[3].split(": ")[1].trim();
+                    System.out.println("Ancien contenu extrait : " + oldReponse);
 
-                // Récupérer l'ID de la réponse via l'ancien contenu
-                int reponse_id = serviceReponse.getReponseIdByContenu(oldReponse);
-                System.out.println("ID de la réponse: " + reponse_id);  // Vérifier l'ID récupéré
+                    // Récupérer l'ID de la réponse via l'ancien contenu
+                    int reponse_id = serviceReponse.getReponseIdByContenu(oldReponse);
+                    System.out.println("ID de la réponse trouvé : " + reponse_id);
 
-                if (reponse_id != -1) {
-                    // Récupérer la nouvelle réponse
-                    String newContenu = reponseField.getText().trim();
+                    if (reponse_id != -1) {
+                        // Récupérer la nouvelle réponse
+                        String newContenu = reponseField.getText().trim();
 
-                    if (!newContenu.isEmpty()) {
-                        // Mettre à jour le contenu de la réponse dans la base de données
-                        serviceReponse.updateReponseContenu(reponse_id, newContenu);
+                        if (!newContenu.isEmpty()) {
+                            // Mettre à jour la réponse
+                            serviceReponse.updateReponseContenu(reponse_id, newContenu);
 
-                        // Récupérer l'index sélectionné
-                        int selectedIndex = reponseListView.getSelectionModel().getSelectedIndex();
+                            // Mise à jour de l'affichage
+                            int selectedIndex = reponseListView.getSelectionModel().getSelectedIndex();
+                            String name = parts[0].split(": ")[1];
+                            String email = parts[1].split(": ")[1];
+                            String title = parts[2].split(": ")[1];
+                            String dateReponse = parts[4].split(": ")[1];
 
-                        // Récupérer les anciennes valeurs pour les afficher correctement
-                        String[] parts = selectedReponseText.split(" - ");
-                        String name = parts[0].split(": ")[1]; // Extraire le nom
-                        String email = parts[1].split(": ")[1]; // Extraire l'email
-                        String title = parts[2].split(": ")[1]; // Extraire le titre
-                        String dateReponse = parts[4].split(": ")[1]; // Extraire la date
+                            String newAffichage = "Nom : " + name +
+                                    " , Email : " + email +
+                                    " , Titre : " + title +
+                                    " , Contenu : " + newContenu +
+                                    " , Date : " + dateReponse;
 
-                        // Mettre à jour l'affichage dans la ListView
-                        String newAffichage = "Nom : " + name +
-                                " , Email : " + email +
-                                " , Titre : " + title +
-                                " , Contenu : " + newContenu +
-                                " , Date : " + dateReponse;
+                            reponseListView.getItems().set(selectedIndex, newAffichage);
 
-                        reponseListView.getItems().set(selectedIndex, newAffichage);
-
-                        // Afficher un message de succès
-                        showAlert(Alert.AlertType.INFORMATION, "Mise à jour réussie", "Réponse mise à jour avec succès !");
+                            showAlert(Alert.AlertType.INFORMATION, "Mise à jour réussie", "Réponse mise à jour avec succès !");
+                        } else {
+                            showAlert(Alert.AlertType.WARNING, "Champs vides", "Veuillez remplir tous les champs !");
+                        }
                     } else {
-                        showAlert(Alert.AlertType.WARNING, "Champs vides", "Veuillez remplir tous les champs !");
+                        showAlert(Alert.AlertType.ERROR, "Erreur", "Réponse introuvable !");
                     }
                 } else {
-                    showAlert(Alert.AlertType.ERROR, "Erreur", "Réponse introuvable !");
+                    showAlert(Alert.AlertType.ERROR, "Erreur", "Format de la réponse incorrect !");
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -114,7 +124,59 @@ public class ListReponseController {
         } else {
             showAlert(Alert.AlertType.WARNING, "Aucune sélection", "Veuillez sélectionner une réponse.");
         }
+
     }
+
+
+    @FXML
+    void deletereponse(ActionEvent event) {
+        // Récupérer la réponse sélectionnée
+        String selectedReponseText = reponseListView.getSelectionModel().getSelectedItem();
+
+        if (selectedReponseText != null) {
+            try {
+                // Extraction correcte du contenu
+                String[] parts = selectedReponseText.split(" , ");
+                if (parts.length >= 4) {  // Vérifier que la structure est correcte
+                    String oldReponse = parts[3].split(": ")[1].trim();
+                    System.out.println("Ancien contenu extrait : " + oldReponse);
+
+                    // Récupérer l'ID de la réponse via l'ancien contenu
+                    int reponse_id = serviceReponse.getReponseIdByContenu(oldReponse);
+                    System.out.println("ID de la réponse trouvé : " + reponse_id);
+
+                    if (reponse_id != -1) {
+                        // Demander confirmation avant suppression
+                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                        alert.setTitle("Confirmation de suppression");
+                        alert.setHeaderText("Êtes-vous sûr de vouloir supprimer cette réponse ?");
+                        alert.setContentText("Cette action est irréversible.");
+                        if (alert.showAndWait().get() == ButtonType.OK) {
+                            // Supprimer la réponse de la base de données
+                            serviceReponse.delete(reponse_id);
+                            System.out.println("Réponse supprimée avec succès.");
+
+                            // Mise à jour de l'affichage
+                            int selectedIndex = reponseListView.getSelectionModel().getSelectedIndex();
+                            reponseListView.getItems().remove(selectedIndex);
+
+                            showAlert(Alert.AlertType.INFORMATION, "Suppression réussie", "Réponse supprimée avec succès !");
+                        }
+                    } else {
+                        showAlert(Alert.AlertType.ERROR, "Erreur", "Réponse introuvable !");
+                    }
+                } else {
+                    showAlert(Alert.AlertType.ERROR, "Erreur", "Format de la réponse incorrect !");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                showAlert(Alert.AlertType.ERROR, "Erreur SQL", "Impossible de supprimer la réponse.");
+            }
+        } else {
+            showAlert(Alert.AlertType.WARNING, "Aucune sélection", "Veuillez sélectionner une réponse à supprimer.");
+        }
+    }
+
 
 
     @FXML

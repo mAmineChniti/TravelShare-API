@@ -68,7 +68,7 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <Button fx:id="delButton" layoutX="440.0" layoutY="478.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="218.0" styleClass="buttonSupprime" stylesheets="@css/Style.css" text="Supprimer la reponse" textFill="WHITE">
+      <Button fx:id="delButton" layoutX="440.0" layoutY="478.0" mnemonicParsing="false" onAction="#deletereponse" prefHeight="31.0" prefWidth="218.0" styleClass="buttonSupprime" stylesheets="@css/Style.css" text="Supprimer la reponse" textFill="WHITE">
          <font>
             <Font size="15.0" />
          </font>

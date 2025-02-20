@@ -117,19 +117,6 @@ public class ServiceReponse implements IService<Reponse> {
         return -1;  // Retourne -1 si la réponse n'est pas trouvée
     }
 
-    public int getReclamationIdByReponseId(int reponse_id) throws SQLException {
-        String query = "SELECT reclamation_id FROM reponses WHERE reponse_id = ?";
-
-        try (PreparedStatement statement = con.prepareStatement(query)) {
-            statement.setInt(1, reponse_id);
-            ResultSet rs = statement.executeQuery();
-
-            if (rs.next()) {
-                return rs.getInt("reclamation_id"); // Retourner l'ID de la réclamation trouvée
-            }
-        }
-        return -1; // Retourner -1 si aucun ID trouvé
-    }
 
     public List<String> getReponsesWithUserInfoAndRec() throws SQLException {
         List<String> affichageList = new ArrayList<>();
