@@ -33,7 +33,7 @@
                         <Insets top="20.0" />
                     </VBox.margin>
                 </Button>
-                <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Postes">
+                <Button fx:id="PostsButton" mnemonicParsing="false" onAction="#SwitchToPosts" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Postes">
                     <VBox.margin>
                         <Insets top="20.0" />
                     </VBox.margin>

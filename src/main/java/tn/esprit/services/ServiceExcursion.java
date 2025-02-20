@@ -1,7 +1,6 @@
 package tn.esprit.services;
 
 import tn.esprit.entities.Excursions;
-import tn.esprit.entities.Guides;
 import tn.esprit.utils.dbCon;
 
 import java.sql.*;
@@ -15,27 +14,6 @@ public class ServiceExcursion implements IService<Excursions> {
     }
     @Override
     public void add(Excursions excursions) throws SQLException {
-        //controle de saisie pour experience
-        if (excursions.getGuide_id() <= 0) {
-            throw new IllegalArgumentException("L'ID du guide doit être positif.");
-        }
-        //controle de saisie pour titre
-        if (excursions.getTitle() == null || excursions.getTitle().isEmpty()) {
-            throw new IllegalArgumentException("Le titre ne doit pas être vide.");
-        }
-        //controle de saisie pour description
-        if (excursions.getDescription() == null || excursions.getDescription().isEmpty()) {
-            throw new IllegalArgumentException("La description ne doit pas être vide.");
-        }
-        //controle de saisie pour duree
-        if (excursions.getDuration() <= 0) {
-            throw new IllegalArgumentException("La durée doit être positive.");
-        }
-        //controle de saisie pour date
-        if (excursions.getDate_excursion() == null) {
-            throw new IllegalArgumentException("La date de l'excursion ne doit pas être vide.");
-        }
-
         String checkQuery = "SELECT COUNT(*) FROM excursions WHERE title = ? OR description = ?";
 
         try (PreparedStatement checkStmt = connection.prepareStatement(checkQuery)) {
@@ -67,26 +45,6 @@ public class ServiceExcursion implements IService<Excursions> {
 
     @Override
     public void update(Excursions excursions) throws SQLException {
-        //controle de saisie pour guide id
-        if (excursions.getGuide_id() <= 0) {
-            throw new IllegalArgumentException("L'ID du guide doit être positif.");
-        }
-        //controle de saisie pour titre
-        if (excursions.getTitle() == null || excursions.getTitle().isEmpty()) {
-            throw new IllegalArgumentException("Le titre ne doit pas être vide.");
-        }
-        //controle de saisie pour description
-        if (excursions.getDescription() == null || excursions.getDescription().isEmpty()) {
-            throw new IllegalArgumentException("La description ne doit pas être vide.");
-        }
-        //controle de saisie pour duree
-        if (excursions.getDuration() <= 0) {
-            throw new IllegalArgumentException("La durée doit être positive.");
-        }
-        //controle de saisie pour date
-        if (excursions.getDate_excursion() == null) {
-            throw new IllegalArgumentException("La date de l'excursion ne doit pas être vide.");
-        }
 
         String req = "UPDATE excursions SET duration=?, title=?, description=?," +
                 " date_excursion=?, guide_id=? WHERE excursion_id=?";

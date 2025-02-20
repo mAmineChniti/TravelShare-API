@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class MainFx extends Application {
+public class MainFX extends Application {
 
     public static void main(String[] args) {
         launch(args);
@@ -16,15 +16,16 @@ public class MainFx extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Connecter.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListExcursionGuide.fxml"));
         try {
             Parent parent = loader.load();
             Scene scene = new Scene(parent);
             primaryStage.setScene(scene);
-            primaryStage.setTitle("Bienvenu !");
+            primaryStage.setTitle("TravelShare");
             primaryStage.show();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
     }
 }

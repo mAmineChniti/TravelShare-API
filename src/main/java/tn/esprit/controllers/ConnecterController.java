@@ -54,7 +54,7 @@ public class ConnecterController {
 
             if (utilisateur != null) {
                 // Si l'utilisateur est trouvé, on le sauvegarde dans la session
-                SessionManager.setCurrentUtilisateur(utilisateur);
+                SessionManager.getInstance().setCurrentUtilisateur(utilisateur);
 
                 // Vérification du rôle de l'utilisateur
                 FXMLLoader loader;
@@ -81,11 +81,11 @@ public class ConnecterController {
                 stage.show();
 
                 // Afficher un message de bienvenue
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                /*Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Connexion réussie");
                 alert.setHeaderText("Bienvenue, " + utilisateur.getName() + " !");
                 alert.setContentText("Vous êtes maintenant connecté.");
-                alert.showAndWait();
+                alert.showAndWait();*/
 
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
