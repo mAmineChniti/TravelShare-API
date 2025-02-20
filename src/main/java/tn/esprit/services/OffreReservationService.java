@@ -19,7 +19,7 @@ public class OffreReservationService implements IService<OffreReservations> {
 
     @Override
     public void add(OffreReservations offreReservations) throws SQLException {
-        String addReq = "INSERT INTO offres_reservations (client_id, offre_id, date_reserved, status) VALUES (?,?,?,?)";
+        String addReq = "INSERT INTO reservation_offres_voyage (client_id, offre_id, date_reserved, status) VALUES (?,?,?,?)";
         try (PreparedStatement prepStat = con.prepareStatement(addReq)) {
             prepStat.setInt(1, offreReservations.getClient_id());
             prepStat.setInt(2, offreReservations.getOffre_id());
@@ -31,7 +31,7 @@ public class OffreReservationService implements IService<OffreReservations> {
 
     @Override
     public void update(OffreReservations offreReservations) throws SQLException {
-        String updateReq = "UPDATE offres_reservations SET client_id =?, offre_id =?, date_reserved =?, status =? WHERE reservation_id = ?";
+        String updateReq = "UPDATE reservation_offres_voyage SET client_id =?, offre_id =?, date_reserved =?, status =? WHERE reservation_id = ?";
         try (PreparedStatement prepStat = con.prepareStatement(updateReq)) {
             prepStat.setInt(1, offreReservations.getClient_id());
             prepStat.setInt(2, offreReservations.getOffre_id());
@@ -44,7 +44,7 @@ public class OffreReservationService implements IService<OffreReservations> {
 
     @Override
     public void delete(int id) throws SQLException {
-        String deleteReq = "DELETE FROM offres_reservations WHERE reservation_id = ?";
+        String deleteReq = "DELETE FROM reservation_offres_voyage WHERE reservation_id = ?";
         try (PreparedStatement prepStat = con.prepareStatement(deleteReq)) {
             prepStat.setInt(1, id);
             prepStat.executeUpdate();
@@ -54,7 +54,7 @@ public class OffreReservationService implements IService<OffreReservations> {
     @Override
     public List<OffreReservations> ListAll() throws SQLException {
         List<OffreReservations> reservations = new ArrayList<>();
-        String listReq = "SELECT * FROM offres_reservations";
+        String listReq = "SELECT * FROM reservation_offres_voyage";
         try (PreparedStatement prepStat = con.prepareStatement(listReq)) {
             ResultSet rs = prepStat.executeQuery();
             while (rs.next()) {

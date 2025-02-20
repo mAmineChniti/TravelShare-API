@@ -12,27 +12,49 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import tn.esprit.entities.OffreVoyages;
+import tn.esprit.entities.Utilisateur;
 import tn.esprit.services.OffreVoyageService;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
+import static tn.esprit.entities.SessionManager.getCurrentUtilisateur;
+
 public class VoyagesController {
 
+    private final OffreVoyageService offreVoyageService = new OffreVoyageService();
     @FXML
     private GridPane gridPane;
 
-    private final OffreVoyageService offreVoyageService = new OffreVoyageService();
+    @FXML
+    private javafx.scene.control.Button addVoyageButton;
+
+    @FXML
+    void switchToVoyageAddition(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AddVoyage.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @FXML
     public void initialize() {
         try {
             displayOffers();
+
+            // Initialize the add voyage button
+            addVoyageButton.setOnAction(this::switchToVoyageAddition);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
     public void SwitchToPackages(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Voyages.fxml"));
@@ -44,7 +66,8 @@ public class VoyagesController {
             e.printStackTrace();
         }
     }
-    public void SwitchToAccueil(ActionEvent actionEvent) {
+
+    /*public void SwitchToAccueil(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Accueil.fxml"));
             Parent root = loader.load();
@@ -54,31 +77,36 @@ public class VoyagesController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
-    private void displayOffers() throws SQLException {
-        List<OffreVoyages> offers = offreVoyageService.ListAll();
-        int column = 0;
-        int row = 0;
+    public void displayOffers() throws SQLException {
+        gridPane.getChildren().clear(); // Clear the grid before reloading
+        try {
+            List<OffreVoyages> offers = offreVoyageService.ListAll();
+            int column = 0;
+            int row = 0;
 
-        for (OffreVoyages offer : offers) {
-            VBox card = createOfferCard(offer);
+            for (OffreVoyages offer : offers) {
+                VBox card = createOfferCard(offer);
 
-            // Add click event to navigate to the details page
-            card.setOnMouseClicked(event -> {
-                try {
-                    goToOfferDetails(event, offer);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                // Add click event to navigate to the details page
+                card.setOnMouseClicked(event -> {
+                    try {
+                        goToOfferDetails(event, offer);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+
+                if (column == 3) { // Adjust number of columns as needed
+                    column = 0;
+                    row++;
                 }
-            });
 
-            if (column == 3) { // Adjust number of columns as needed
-                column = 0;
-                row++;
+                gridPane.add(card, column++, row);
             }
-
-            gridPane.add(card, column++, row);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -111,6 +139,60 @@ public class VoyagesController {
         Label availableSeats = new Label("Seats: " + offer.getPlaces_disponibles());
 
         card.getChildren().addAll(title, destination, description, departureDate, returnDate, price, availableSeats);
+
+        // Get the current user
+        Utilisateur currentUser = getCurrentUtilisateur();
+
+        // Check if the user is an admin (role = 0)
+        if (currentUser != null && currentUser.getRole() == 1) {
+            // Add buttons for admin
+            javafx.scene.control.Button updateButton = new javafx.scene.control.Button("Update");
+            javafx.scene.control.Button deleteButton = new javafx.scene.control.Button("Delete");
+
+            // Style buttons
+            updateButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-border-radius: 5;");
+            deleteButton.setStyle("-fx-background-color: #f44336; -fx-text-fill: white; -fx-border-radius: 5;");
+
+            // Set actions for buttons
+            updateButton.setOnAction(event -> handleUpdateOffer(offer));
+            deleteButton.setOnAction(event -> handleDeleteOffer(offer));
+
+            card.getChildren().addAll(updateButton, deleteButton);
+        }
+
         return card;
+    }
+
+    private void handleUpdateOffer(OffreVoyages offer) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/UpdateOfferForm.fxml"));
+                Parent root = loader.load();
+
+                // Pass the selected offer to the UpdateOfferFormController
+                UpdateOfferFormController updateController = loader.getController();
+                updateController.setOfferDetails(offer);
+
+                // Open the update form in the current stage
+                Stage stage = new Stage();
+                stage.setScene(new Scene(root));
+                stage.setTitle("Update Offer");
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        private void handleDeleteOffer(OffreVoyages offer) {
+        try {
+            // Call service to delete the offer
+            offreVoyageService.delete(offer.getOffres_voyage_id());
+            System.out.println("Offer deleted successfully: " + offer.getTitre());
+            // Refresh the grid to reflect changes
+            displayOffers();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

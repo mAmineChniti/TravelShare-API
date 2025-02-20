@@ -9,9 +9,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
+import tn.esprit.entities.OffreReservations;
 import tn.esprit.entities.OffreVoyages;
+import tn.esprit.entities.SessionManager;
+import tn.esprit.services.OffreReservationService;
 
 import java.io.IOException;
+import java.sql.Date;
+import java.sql.SQLException;
 
 public class OfferDetailsController {
 
@@ -67,8 +72,21 @@ public class OfferDetailsController {
 
     @FXML
     public void reserveOffer() {
-        // Logic to reserve the offer (e.g., database update)
-        System.out.println("Reserving offer: " + currentOffer.getTitre());
+        if (currentOffer != null) {
+            OffreReservationService resOffre = new OffreReservationService();
+            OffreReservations reservation = new OffreReservations();
+            try {
+                reservation.setOffre_id(currentOffer.getOffres_voyage_id());
+                reservation.setClient_id(SessionManager.getCurrentUtilisateur().getUser_id());
+                reservation.setDate_reserved(new Date(new java.util.Date().getTime()));
+                reservation.setReserved(true);
+                resOffre.add(reservation);
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("Offre null");
+        }
     }
 }
 
