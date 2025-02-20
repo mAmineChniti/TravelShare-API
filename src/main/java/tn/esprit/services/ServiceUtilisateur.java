@@ -164,4 +164,18 @@ public class ServiceUtilisateur implements IService<Utilisateur> {
         }
     }
 
+    public boolean emailExiste(String email) throws SQLException {
+        String query = "SELECT COUNT(*) FROM users WHERE email = ?";
+        try (Connection conn = dbCon.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setString(1, email);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0; // Retourne vrai si l'email existe déjà
+                }
+            }
+        }
+        return false;
+    }
+
 }

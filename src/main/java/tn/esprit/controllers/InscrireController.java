@@ -61,36 +61,31 @@ public class InscrireController {
         // Vérification si tous les champs sont remplis
         if (name.isEmpty() || last_name.isEmpty() || email.isEmpty() || password.isEmpty() ||
                 phone.isEmpty() || address.isEmpty()) {
-            // Créer une alerte d'erreur
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Champs manquants");
-            alert.setHeaderText("Tous les champs doivent être remplis !");
-            alert.setContentText("Veuillez remplir tous les champs avant de vous inscrire.");
-            alert.showAndWait();
-            return; // Arrêter l'exécution si des champs sont vides
+            showAlert(Alert.AlertType.ERROR, "Champs manquants", "Tous les champs doivent être remplis !");
+            return;
         }
 
         // Vérification du format de l'email
         if (!email.matches("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$")) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Erreur de format");
-            alert.setHeaderText("Format d'email invalide !");
-            alert.setContentText("L'email doit être au format valide : exemple@domaine.com");
-            alert.showAndWait();
+            showAlert(Alert.AlertType.ERROR, "Erreur de format", "L'email doit être valide (exemple@domaine.com)");
             return;
         }
 
         // Vérification du mot de passe
         if (password.length() < 4 || !password.matches(".*\\d.*") || !password.matches(".*[!@#$%^&*].*")) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Erreur de format");
-            alert.setHeaderText("Mot de passe invalide !");
-            alert.setContentText("Le mot de passe doit contenir au moins 4 caractères, un chiffre et un caractère spécial.");
-            alert.showAndWait();
+            showAlert(Alert.AlertType.ERROR, "Erreur de format", "Le mot de passe doit contenir au moins 4 caractères, un chiffre et un caractère spécial.");
             return;
         }
 
         try {
+            ServiceUtilisateur serviceUtilisateur = new ServiceUtilisateur();
+
+            // Vérifier si l'email existe déjà dans la base de données
+            if (serviceUtilisateur.emailExiste(email)) {
+                showAlert(Alert.AlertType.ERROR, "Email existant", "Cet email est déjà utilisé. Veuillez en choisir un autre.");
+                return;
+            }
+
             // Convertir les valeurs numériques
             int phoneNum = Integer.parseInt(phone);
 
@@ -104,7 +99,6 @@ public class InscrireController {
             utilisateur.setAddress(address);
 
             // Ajouter l'utilisateur à la base de données
-            ServiceUtilisateur serviceUtilisateur = new ServiceUtilisateur();
             serviceUtilisateur.add(utilisateur);
             System.out.println("Utilisateur ajouté avec succès !");
 
@@ -115,22 +109,22 @@ public class InscrireController {
             stage.setScene(new Scene(root));
             stage.show();
         } catch (NumberFormatException e) {
-            // Gérer les erreurs de conversion
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Erreur de saisie");
-            alert.setHeaderText("Format incorrect !");
-            alert.setContentText("Veuillez entrer un numéro de téléphone valide.");
-            alert.showAndWait();
+            showAlert(Alert.AlertType.ERROR, "Erreur de saisie", "Veuillez entrer un numéro de téléphone valide.");
         } catch (SQLException | IOException e) {
-            // Gérer les erreurs SQL ou de navigation
             e.printStackTrace();
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Erreur");
-            alert.setHeaderText("Une erreur est survenue.");
-            alert.setContentText("Veuillez réessayer plus tard.");
-            alert.showAndWait();
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Une erreur est survenue. Veuillez réessayer plus tard.");
         }
     }
+
+    // Méthode pour afficher les alertes
+    private void showAlert(Alert.AlertType type, String titre, String message) {
+        Alert alert = new Alert(type);
+        alert.setTitle(titre);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
 
 
     @FXML

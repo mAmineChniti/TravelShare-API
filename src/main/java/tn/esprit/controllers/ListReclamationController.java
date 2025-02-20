@@ -195,6 +195,12 @@ public class ListReclamationController {
         changeScene(event, "/Connecter.fxml");
     }
 
+    @FXML
+    void VoirReponse(ActionEvent event) {
+        changeScene(event, "/VoirReponse.fxml");
+    }
+
+
     private void showAlert(Alert.AlertType type, String title, String message) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
