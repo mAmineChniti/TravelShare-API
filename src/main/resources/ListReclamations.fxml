@@ -56,14 +56,14 @@
                 </Button>
             </children>
         </VBox>
-      <ListView fx:id="reclamationListView" layoutX="271.0" layoutY="50.0" prefHeight="231.0" prefWidth="558.0" />
-      <Label layoutX="271.0" layoutY="14.0" text="Réclamations :" textFill="#0598ff">
+      <ListView fx:id="reclamationListView" layoutX="271.0" layoutY="50.0" prefHeight="231.0" prefWidth="558.0" AnchorPane.bottomAnchor="290.0" AnchorPane.leftAnchor="270.0" />
+      <Label layoutX="271.0" layoutY="14.0" text="Réclamations :" textFill="#0598ff" AnchorPane.bottomAnchor="530.0" AnchorPane.leftAnchor="270.0">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <TextArea fx:id="objetField" layoutX="271.0" layoutY="299.0" prefHeight="42.0" prefWidth="234.0" promptText="Objet" styleClass="reclamation" stylesheets="@css/Style.css" />
-      <TextArea fx:id="descriptionField" layoutX="271.0" layoutY="354.0" prefHeight="82.0" prefWidth="558.0" promptText="Saisissez votre réclamation..." styleClass="reclamation" stylesheets="@css/Style.css" />
+      <TextArea fx:id="objetField" layoutX="271.0" layoutY="299.0" prefHeight="42.0" prefWidth="234.0" promptText="Objet" styleClass="reclamation" stylesheets="@css/Style.css" AnchorPane.leftAnchor="270.0" />
+      <TextArea fx:id="descriptionField" layoutX="271.0" layoutY="354.0" prefHeight="82.0" prefWidth="558.0" promptText="Saisissez votre réclamation..." styleClass="reclamation" stylesheets="@css/Style.css" AnchorPane.bottomAnchor="133.99999999999997" AnchorPane.leftAnchor="270.0" />
       <Button fx:id="saveButton" layoutX="441.0" layoutY="464.0" mnemonicParsing="false" onAction="#updateReclamation" prefHeight="31.0" prefWidth="218.0" stylesheets="@css/Style.css" text="Enregistrer les modifications" textFill="WHITE">
          <font>
             <Font size="15.0" />

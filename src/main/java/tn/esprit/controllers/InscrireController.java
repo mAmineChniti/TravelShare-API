@@ -49,7 +49,7 @@ public class InscrireController {
 
 
     @FXML
-    void switchToAccueil(ActionEvent event) {
+    void sinscrire(ActionEvent event) {
         // Récupérer les valeurs des champs
         String name = nameField.getText();
         String last_name = lastnameField.getText();
@@ -60,7 +60,7 @@ public class InscrireController {
 
         // Vérification si tous les champs sont remplis
         if (name.isEmpty() || last_name.isEmpty() || email.isEmpty() || password.isEmpty() ||
-                phone.isEmpty() || address.isEmpty())  {
+                phone.isEmpty() || address.isEmpty()) {
             // Créer une alerte d'erreur
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Champs manquants");
@@ -68,6 +68,26 @@ public class InscrireController {
             alert.setContentText("Veuillez remplir tous les champs avant de vous inscrire.");
             alert.showAndWait();
             return; // Arrêter l'exécution si des champs sont vides
+        }
+
+        // Vérification du format de l'email
+        if (!email.matches("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$")) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur de format");
+            alert.setHeaderText("Format d'email invalide !");
+            alert.setContentText("L'email doit être au format valide : exemple@domaine.com");
+            alert.showAndWait();
+            return;
+        }
+
+        // Vérification du mot de passe
+        if (password.length() < 4 || !password.matches(".*\\d.*") || !password.matches(".*[!@#$%^&*].*")) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur de format");
+            alert.setHeaderText("Mot de passe invalide !");
+            alert.setContentText("Le mot de passe doit contenir au moins 4 caractères, un chiffre et un caractère spécial.");
+            alert.showAndWait();
+            return;
         }
 
         try {
@@ -99,7 +119,7 @@ public class InscrireController {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur de saisie");
             alert.setHeaderText("Format incorrect !");
-            alert.setContentText("Veuillez entrer un numéro de téléphone et un rôle valides.");
+            alert.setContentText("Veuillez entrer un numéro de téléphone valide.");
             alert.showAndWait();
         } catch (SQLException | IOException e) {
             // Gérer les erreurs SQL ou de navigation

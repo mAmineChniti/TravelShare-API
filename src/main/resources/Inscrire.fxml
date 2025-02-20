@@ -47,7 +47,7 @@
                         <Font size="13.0" />
                      </font>
                   </TextField>
-                        <Button layoutX="210.0" layoutY="433.0" mnemonicParsing="false" onAction="#switchToAccueil" prefHeight="30.0" prefWidth="80.0" stylesheets="@css/Style.css" text="S'inscrire" textFill="WHITE">
+                        <Button layoutX="210.0" layoutY="433.0" mnemonicParsing="false" onAction="#sinscrire" prefHeight="30.0" prefWidth="80.0" stylesheets="@css/Style.css" text="S'inscrire" textFill="WHITE">
                      <font>
                         <Font size="15.0" />
                      </font></Button>

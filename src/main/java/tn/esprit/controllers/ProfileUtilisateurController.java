@@ -44,7 +44,7 @@ public class ProfileUtilisateurController {
     private TextArea objetField;
 
     @FXML
-    private PasswordField passwordField;
+    private TextField passwordField;
 
     @FXML
     private TextField phoneField;

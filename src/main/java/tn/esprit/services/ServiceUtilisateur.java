@@ -6,8 +6,6 @@ import tn.esprit.utils.dbCon;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ServiceUtilisateur implements IService<Utilisateur> {
     // Initialiser la connexion à la base de données
