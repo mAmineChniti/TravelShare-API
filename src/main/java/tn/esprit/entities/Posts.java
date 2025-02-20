@@ -8,9 +8,17 @@ public class Posts {
     private Date created_at;
     private Date updated_at;
     private String text_content;
+    private String owner_name;
+    private String owner_last_name;
 
     public Posts(int post_id, int owner_id, Date created_at, Date updated_at, String text_content) {
         setPost_id(post_id);
+        setOwner_id(owner_id);
+        setCreated_at(created_at);
+        setUpdated_at(updated_at);
+        setText_content(text_content);
+    }
+    public Posts(int owner_id, Date created_at, Date updated_at, String text_content) {
         setOwner_id(owner_id);
         setCreated_at(created_at);
         setUpdated_at(updated_at);
@@ -76,5 +84,20 @@ public class Posts {
             throw new IllegalArgumentException("Post ID must be a positive integer.");
         }
         this.post_id = post_id;
+    }
+    public String getOwner_name() {
+        return owner_name;
+    }
+
+    public void setOwner_name(String owner_name) {
+        this.owner_name = owner_name;
+    }
+
+    public String getOwner_last_name() {
+        return owner_last_name;
+    }
+
+    public void setOwner_last_name(String owner_last_name) {
+        this.owner_last_name = owner_last_name;
     }
 }

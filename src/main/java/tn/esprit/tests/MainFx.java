@@ -16,7 +16,7 @@ public class MainFx extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Inscrire.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Connecter.fxml"));
         try {
             Parent parent = loader.load();
             Scene scene = new Scene(parent);
