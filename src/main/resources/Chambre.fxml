@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
 
-<AnchorPane prefHeight="550.0" prefWidth="850.0" styleClass="root" stylesheets="@css/Style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.HotelController">
+<AnchorPane prefHeight="550.0" prefWidth="850.0" styleClass="root" stylesheets="@css/Style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.ChambreController">
     <children>
         <VBox layoutX="-4.0" prefHeight="570.0" prefWidth="234.0" styleClass="vbox" stylesheets="@css/Style.css">
             <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation"
@@ -49,7 +49,7 @@
             </Button>
         </VBox>
 
-        <!-- Conteneur pour afficher les hôtels dynamiquement -->
-        <VBox layoutX="250.0" layoutY="20.0" prefWidth="580.0" prefHeight="500.0" fx:id="hotelContainer" style="-fx-padding: 10px; -fx-spacing: 10px;" />
+        <!-- Conteneur pour afficher les chambres dynamiquement -->
+        <VBox layoutX="250.0" layoutY="20.0" prefWidth="580.0" prefHeight="500.0" fx:id="chambreContainer" style="-fx-padding: 10px; -fx-spacing: 10px;" />
     </children>
 </AnchorPane>

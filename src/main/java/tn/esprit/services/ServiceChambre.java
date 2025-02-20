@@ -70,4 +70,26 @@ public class ServiceChambre implements IService<Chambres> {
         }
         return chambres;
     }
+
+    // New method to filter rooms by hotel ID
+    public List<Chambres> ListByHotelId(int hotelId) throws SQLException {
+        List<Chambres> chambres = new ArrayList<>();
+        String req = "SELECT * FROM chambres WHERE hotel_id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(req)) {
+            ps.setInt(1, hotelId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Chambres chambre = new Chambres(
+                        rs.getInt("chambre_id"),
+                        rs.getInt("hotel_id"),
+                        rs.getString("numero_chambre"),
+                        rs.getString("type_enu"),
+                        rs.getDouble("prix_par_nuit"),
+                        rs.getBoolean("disponible")
+                );
+                chambres.add(chambre);
+            }
+        }
+        return chambres;
+    }
 }
