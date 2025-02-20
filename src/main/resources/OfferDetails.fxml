@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="550.0" prefWidth="850.0" styleClass="root" stylesheets="@css/Style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.OfferDetailsController">
+<AnchorPane prefHeight="550.0" prefWidth="850.0" styleClass="root" stylesheets="@css/Style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.OfferDetailsController">
 <children>
     <!-- Sidebar -->
     <VBox layoutX="-4.0" prefHeight="570.0" prefWidth="234.0" styleClass="vbox" stylesheets="@css/Style.css">
@@ -22,7 +19,7 @@
                 </image>
             </ImageView>
             <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Accueil" />
-            <Button fx:id="Packages" mnemonicParsing="false" onAction="#SwitchToPackages" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Packages">
+            <Button fx:id="Packages" mnemonicParsing="false" onAction="#SwitchToPackages" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Voyages">
                 <VBox.margin>
                     <Insets top="20.0" />
                 </VBox.margin>
@@ -56,7 +53,7 @@
     </VBox>
 
     <!-- Offer Details Section -->
-    <VBox layoutX="250.0" layoutY="20.0" spacing="10" alignment="CENTER" prefWidth="600.0" stylesheets="@css/Style.css">
+    <VBox alignment="CENTER" layoutX="250.0" layoutY="20.0" prefWidth="600.0" spacing="10" stylesheets="@css/Style.css">
         <children>
             <Label fx:id="titleLabel" style="-fx-font-size: 18; -fx-font-weight: bold;" />
             <Label fx:id="destinationLabel" />
@@ -65,7 +62,7 @@
             <Label fx:id="returnDateLabel" />
             <Label fx:id="priceLabel" />
             <Label fx:id="availableSeatsLabel" />
-            <Button fx:id="reserveButton" text="Reserve Now" onAction="#reserveOffer" />
+            <Button fx:id="reserveButton" onAction="#reserveOffer" text="Reserve Now" />
         </children>
     </VBox>
 </children>
