@@ -17,33 +17,6 @@ public  class ServiceGuide implements IService <Guides>{
     @Override
     public void add(Guides guides) throws SQLException {
 
-        //controle de saisie pour experience
-        if (guides.getExperience() < 0) {
-            throw new IllegalArgumentException("L'expérience doit être positive ou nulle.");
-        }
-        //controle de saisie pour nom
-        if (guides.getName() == null || guides.getName().isEmpty()) {
-            throw new IllegalArgumentException("Le nom ne doit pas être vide.");
-        }
-        //controle de saisie pour prenom
-        if (guides.getLastname() == null || guides.getLastname().isEmpty()) {
-            throw new IllegalArgumentException("Le prénom ne doit pas être vide.");
-        }
-
-        /*
-        //controle de saisie pour email
-        if (guides.getEmail() == null || !guides.getEmail().matches("^[a-z]+[0-9]*@gmail\\.com$")) {
-            throw new IllegalArgumentException("L'email n'est pas valide.");
-        }  */
-        //controle de saisie pour nmr telephone
-        if (guides.getPhone_num() == null || !guides.getPhone_num().matches("\\d+")) {
-            throw new IllegalArgumentException("Le numéro de téléphone doit contenir uniquement des chiffres.");
-        }
-        //controle de saisie pour langage
-        if (guides.getLanguage() == null || guides.getLanguage().isEmpty()) {
-            throw new IllegalArgumentException("La langue ne doit pas être vide.");
-        }
-
         String checkQuery = "SELECT COUNT(*) FROM guides WHERE email = ? OR phone_num = ?";
 
         try (PreparedStatement checkStmt = connection.prepareStatement(checkQuery)) {
@@ -75,31 +48,6 @@ public  class ServiceGuide implements IService <Guides>{
 
     @Override
     public void update(Guides guides) throws SQLException {
-        //controle de saisie pour experience
-        if (guides.getExperience() < 0) {
-            throw new IllegalArgumentException("L'expérience doit être positive ou nulle.");
-        }
-        //controle de saisie pour nom
-        if (guides.getName() == null || guides.getName().isEmpty()) {
-            throw new IllegalArgumentException("Le nom ne doit pas être vide.");
-        }
-        //controle de saisie pour prenom
-        if (guides.getLastname() == null || guides.getLastname().isEmpty()) {
-            throw new IllegalArgumentException("Le prénom ne doit pas être vide.");
-        }
-
-        //controle de saisie pour email
-      /*  if (guides.getEmail() == null || !guides.getEmail().matches("^[a-z]+[0-9]*@gmail\\.com$")) {
-             throw new IllegalArgumentException("L'email n'est pas valide.");
-            } */
-        //controle de saisie pour nmr tele
-        if (guides.getPhone_num() == null || !guides.getPhone_num().matches("\\d+")) {
-            throw new IllegalArgumentException("Le numéro de téléphone doit contenir uniquement des chiffres.");
-        }
-        //controle de saisie pour langue
-        if (guides.getLanguage() == null || guides.getLanguage().isEmpty()) {
-            throw new IllegalArgumentException("La langue ne doit pas être vide.");
-        }
 
         String req = "UPDATE guides SET experience=?, name=?, last_name=?," +
                 " email=?, phone_num=?, language=? WHERE guide_id=?";
@@ -127,6 +75,7 @@ public  class ServiceGuide implements IService <Guides>{
         System.out.println("Guide supprimé avec succès !");
     }
 
+
     @Override
     public List<Guides> ListAll() throws SQLException {
         List<Guides> guidesList = new ArrayList<>();
@@ -151,4 +100,60 @@ public  class ServiceGuide implements IService <Guides>{
 
         return guidesList;
     }
+
+
+    public Guides getGuideByName(String name) throws SQLException {
+        Guides guide = null;
+        String query = "SELECT * FROM guides WHERE name = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, name);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                guide = new Guides();
+                guide.setGuide_id(rs.getInt("guide_id"));
+                guide.setName(rs.getString("name"));
+                guide.setLastname(rs.getString("last_name"));
+                guide.setEmail(rs.getString("email"));
+                guide.setPhone_num(rs.getString("phone_num"));
+                guide.setLanguage(rs.getString("language"));
+                guide.setExperience(rs.getInt("experience"));
+            }
+        }
+        return guide;
+    }
+
+    public Guides getGuideById(int guideId) throws SQLException {
+        Guides guide = null;
+        String query = "SELECT * FROM guides WHERE guide_id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, guideId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                guide = new Guides();
+                guide.setGuide_id(rs.getInt("guide_id"));
+                guide.setName(rs.getString("name"));
+                guide.setLastname(rs.getString("last_name"));
+                guide.setEmail(rs.getString("email"));
+                guide.setPhone_num(rs.getString("phone_num"));
+                guide.setLanguage(rs.getString("language"));
+                guide.setExperience(rs.getInt("experience"));
+            }
+        }
+        return guide;
+    }
+
+
+    public void deleteExcursionsByGuide(int guideId) throws SQLException {
+        String query = "DELETE FROM excursions WHERE guide_id = ?";
+        try (PreparedStatement pst = connection.prepareStatement(query)) {
+            pst.setInt(1, guideId);
+            pst.executeUpdate();
+        }
+    }
+
+
 }
