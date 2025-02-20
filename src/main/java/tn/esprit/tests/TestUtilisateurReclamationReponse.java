@@ -17,11 +17,12 @@ import java.util.List;
         ServiceReponse serviceReponse = new ServiceReponse();
 
         // Créer des objets Utilisateur avec le rôle de simple utilisateur (role = 0)
-        Utilisateur u1 = new Utilisateur(1, "wiem", "ben msahel", "wiem@example.com", "password123@", 23456789, "123 Main St", (byte) 0);
-        Utilisateur u2 = new Utilisateur(2, "tttt", "test", "test@example.com", "password456@", 98456123, "456 Elm St", (byte) 0);
-        Utilisateur u3 = new Utilisateur(5, "tttt", "tttt", "tttt@example.com", "password456@", 58963741, "456 Elm St", (byte) 0);
-        Utilisateur u4 = new Utilisateur(6, "test2", "test2", "tttt2@example.com", "passworddf4@", 58963741, "456 Elm St", (byte) 0);
-        Utilisateur u5 = new Utilisateur(7, "wafa", "Chabbi", "wafa@example.com", "123azerty@", 58963741, "456 Elm St", (byte) 0);
+        Utilisateur u1 = new Utilisateur(1, "wiem", "ben msahel", "wiem@example.com", "password123@", 23456789, "123 Main St");
+        Utilisateur u2 = new Utilisateur(2, "tttt", "test", "test@example.com", "password456@", 98456123, "456 Elm St");
+        Utilisateur u3 = new Utilisateur(6, "test2", "test2", "tttt2@example.com", "passworddf4@", 58963741, "456 Elm St");
+
+        Utilisateur u4 = new Utilisateur(8, "wafa", "Chabbi", "wafa@example.com", "123azerty@", 58963741, "456 Elm St");
+        Utilisateur u5 = new Utilisateur(13, "toto", "tttt", "tttt@example.com", "password456@", 58963741, "456 Elm St");
 
 
         // Créer des objets Reclamation
@@ -54,7 +55,7 @@ import java.util.List;
             // Modifier un utilisateur existant
             //serviceUtilisateur.update(u1);
             //serviceUtilisateur.update(u2);
-            //serviceUtilisateur.update(u3);
+            //serviceUtilisateur.update(u5);
 
             // Modifier une réclamation
             //serviceReclamation.update(r1);
@@ -65,7 +66,7 @@ import java.util.List;
             //serviceReponse.update(rep3);
 
             // Supprimer un utilisateur par ID
-            //int idToDelete = 4; // Remplacez par l'ID à supprimer
+            //int idToDelete = 12; // Remplacez par l'ID à supprimer
             //serviceUtilisateur.delete(idToDelete);
 
             // Supprimer une reclamation par ID
