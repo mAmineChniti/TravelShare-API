@@ -99,7 +99,6 @@ public class AddGuideController {
         try {
             // Charger la scène ListGuide.fxml
             Parent root = FXMLLoader.load(getClass().getResource("/ListGuide.fxml"));
-
             // Créer une nouvelle scène et la mettre sur le stage actuel
             Scene scene = new Scene(root);
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
