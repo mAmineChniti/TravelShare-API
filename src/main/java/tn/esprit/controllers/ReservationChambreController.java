@@ -61,7 +61,7 @@ public class ReservationChambreController {
         }
 
         ReservationHotel reservation = new ReservationHotel();
-        reservation.setClient_id(SessionManager.getCurrentUtilisateur().getUser_id()); // Remplacez avec l'ID du client connecté
+        reservation.setClient_id(SessionManager.getInstance().getCurrentUtilisateur().getUser_id()); // Remplacez avec l'ID du client connecté
         reservation.setChambre_id(chambre.getChambre_id());
         reservation.setDate_debut(java.sql.Date.valueOf(startDatePicker.getValue()));
         reservation.setDate_fin(java.sql.Date.valueOf(endDatePicker.getValue()));

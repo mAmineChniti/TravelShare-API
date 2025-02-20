@@ -49,7 +49,7 @@ public class ChambreController {
             chambreContainer.setPadding(new Insets(20));
             chambreContainer.setStyle("-fx-background-color: #f5f6fa;");
 
-            Utilisateur currentUser = SessionManager.getCurrentUtilisateur();
+            Utilisateur currentUser = SessionManager.getInstance().getCurrentUtilisateur();
             boolean isAdmin = currentUser != null && currentUser.getRole() == 1;
 
             btnAdd.setVisible(isAdmin);

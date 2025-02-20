@@ -12,14 +12,13 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import tn.esprit.entities.OffreVoyages;
+import tn.esprit.entities.SessionManager;
 import tn.esprit.entities.Utilisateur;
 import tn.esprit.services.OffreVoyageService;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-
-import static tn.esprit.entities.SessionManager.getCurrentUtilisateur;
 
 public class VoyagesController {
 
@@ -141,7 +140,7 @@ public class VoyagesController {
         card.getChildren().addAll(title, destination, description, departureDate, returnDate, price, availableSeats);
 
         // Get the current user
-        Utilisateur currentUser = getCurrentUtilisateur();
+        Utilisateur currentUser = SessionManager.getInstance().getCurrentUtilisateur();
 
         // Check if the user is an admin (role = 0)
         if (currentUser != null && currentUser.getRole() == 1) {

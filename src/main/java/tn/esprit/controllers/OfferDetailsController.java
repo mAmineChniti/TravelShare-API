@@ -77,7 +77,7 @@ public class OfferDetailsController {
             OffreReservations reservation = new OffreReservations();
             try {
                 reservation.setOffre_id(currentOffer.getOffres_voyage_id());
-                reservation.setClient_id(SessionManager.getCurrentUtilisateur().getUser_id());
+                reservation.setClient_id(SessionManager.getInstance().getCurrentUtilisateur().getUser_id());
                 reservation.setDate_reserved(new Date(new java.util.Date().getTime()));
                 reservation.setReserved(true);
                 resOffre.add(reservation);
