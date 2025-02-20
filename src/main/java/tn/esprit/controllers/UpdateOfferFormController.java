@@ -59,11 +59,7 @@ public class UpdateOfferFormController {
     @FXML
     private void saveOffer(ActionEvent event) {
         // Validate input fields
-        if (titleField.getText().isEmpty() || destinationField.getText().isEmpty() ||
-                descriptionField.getText().isEmpty() || departureDatePicker.getValue() == null ||
-                returnDatePicker.getValue() == null || priceField.getText().isEmpty() ||
-                availableSeatsField.getText().isEmpty()) {
-            showAlert("Validation Error", "All fields are required.");
+        if (!validateInputs()) {
             return;
         }
 
@@ -94,12 +90,82 @@ public class UpdateOfferFormController {
         }
     }
 
-
     @FXML
     private void cancel(ActionEvent event) {
         // Close the form
         Stage stage = (Stage) cancelButton.getScene().getWindow();
         stage.close();
+    }
+
+    private boolean validateInputs() {
+        // Title validation
+        if (titleField.getText().isEmpty()) {
+            showAlert("Validation Error", "The title field cannot be empty.");
+            return false;
+        }
+
+        // Destination validation
+        if (destinationField.getText().isEmpty()) {
+            showAlert("Validation Error", "The destination field cannot be empty.");
+            return false;
+        }
+
+        // Description validation
+        if (descriptionField.getText().isEmpty()) {
+            showAlert("Validation Error", "The description field cannot be empty.");
+            return false;
+        }
+
+        // Departure date validation
+        if (departureDatePicker.getValue() == null) {
+            showAlert("Validation Error", "The departure date must be selected.");
+            return false;
+        }
+
+        // Return date validation
+        if (returnDatePicker.getValue() == null) {
+            showAlert("Validation Error", "The return date must be selected.");
+            return false;
+        }
+
+        if (!departureDatePicker.getValue().isBefore(returnDatePicker.getValue())) {
+            showAlert("Validation Error", "The return date must be after the departure date.");
+            return false;
+        }
+
+        // Price validation
+        if (priceField.getText().isEmpty()) {
+            showAlert("Validation Error", "The price field cannot be empty.");
+            return false;
+        }
+        try {
+            double price = Double.parseDouble(priceField.getText());
+            if (price <= 0) {
+                showAlert("Validation Error", "The price must be a positive value.");
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            showAlert("Validation Error", "The price must be a valid number.");
+            return false;
+        }
+
+        // Available seats validation
+        if (availableSeatsField.getText().isEmpty()) {
+            showAlert("Validation Error", "The available seats field cannot be empty.");
+            return false;
+        }
+        try {
+            int seats = Integer.parseInt(availableSeatsField.getText());
+            if (seats <= 0) {
+                showAlert("Validation Error", "The available seats must be a positive integer.");
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            showAlert("Validation Error", "The available seats must be a valid integer.");
+            return false;
+        }
+
+        return true;
     }
 
     private void showAlert(String title, String message) {

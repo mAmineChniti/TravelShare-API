@@ -17,6 +17,7 @@ import tn.esprit.services.OffreVoyageService;
 import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 public class AddVoyagesController {
 
@@ -48,6 +49,10 @@ public class AddVoyagesController {
 
     @FXML
     void submitVoyage(ActionEvent event) {
+        if (!validateInputs()) {
+            return; // Stop submission if validation fails
+        }
+
         try {
             String titre = titreField.getText();
             String destination = destinationField.getText();
@@ -77,14 +82,89 @@ public class AddVoyagesController {
 
             // Navigate back to the main Voyages page
             switchToVoyages(event);
-        } catch (SQLException | NumberFormatException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("Failed to Add Voyage");
-            alert.setContentText("An error occurred while adding the voyage. Please check your input.");
-            alert.showAndWait();
+            showErrorAlert("Failed to Add Voyage", "An error occurred while adding the voyage: " + e.getMessage());
         }
+    }
+
+    private boolean validateInputs() {
+        // Validate title field
+        if (titreField.getText().trim().isEmpty()) {
+            showErrorAlert("Validation Error", "The title field cannot be empty.");
+            return false;
+        }
+
+        // Validate destination field
+        if (destinationField.getText().trim().isEmpty()) {
+            showErrorAlert("Validation Error", "The destination field cannot be empty.");
+            return false;
+        }
+
+        // Validate description field
+        if (descriptionField.getText().trim().isEmpty()) {
+            showErrorAlert("Validation Error", "The description field cannot be empty.");
+            return false;
+        }
+
+        // Validate departure date
+        if (dateDepartPicker.getValue() == null) {
+            showErrorAlert("Validation Error", "The departure date must be selected.");
+            return false;
+        }
+
+        // Validate return date
+        if (dateRetourPicker.getValue() == null) {
+            showErrorAlert("Validation Error", "The return date must be selected.");
+            return false;
+        }
+
+        if (!dateDepartPicker.getValue().isBefore(dateRetourPicker.getValue())) {
+            showErrorAlert("Validation Error", "The return date must be after the departure date.");
+            return false;
+        }
+
+        // Validate price field
+        if (prixField.getText().trim().isEmpty()) {
+            showErrorAlert("Validation Error", "The price field cannot be empty.");
+            return false;
+        }
+        try {
+            double prix = Double.parseDouble(prixField.getText().trim());
+            if (prix <= 0) {
+                showErrorAlert("Validation Error", "The price must be a positive number.");
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            showErrorAlert("Validation Error", "The price must be a valid number.");
+            return false;
+        }
+
+        // Validate places field
+        if (placesField.getText().trim().isEmpty()) {
+            showErrorAlert("Validation Error", "The number of available seats cannot be empty.");
+            return false;
+        }
+        try {
+            int places = Integer.parseInt(placesField.getText().trim());
+            if (places <= 0) {
+                showErrorAlert("Validation Error", "The number of available seats must be a positive integer.");
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            showErrorAlert("Validation Error", "The number of available seats must be a valid integer.");
+            return false;
+        }
+
+        return true; // All validations passed
+    }
+
+    private void showErrorAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     @FXML
