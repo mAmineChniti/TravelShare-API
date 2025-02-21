@@ -4,11 +4,11 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="550.0" prefWidth="850.0" styleClass="root" stylesheets="@css/Style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.HotelController">
+<AnchorPane prefHeight="550.0" prefWidth="850.0" styleClass="root" stylesheets="@css/Style.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.HotelController">
     <children>
         <VBox layoutX="-4.0" prefHeight="570.0" prefWidth="234.0" styleClass="vbox" stylesheets="@css/Style.css">
-            <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Accueil" />
-            <Button mnemonicParsing="false" onAction="#SwitchToVoyages" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Packages">
+            <Button mnemonicParsing="false" onAction="#SwitchToAccueil" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Accueil" />
+            <Button mnemonicParsing="false" onAction="#SwitchToVoyages" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Voyages">
                 <VBox.margin>
                     <Insets top="20.0" />
                 </VBox.margin>

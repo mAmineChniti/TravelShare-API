@@ -4,12 +4,12 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="550.0" prefWidth="850.0" styleClass="root" stylesheets="@css/Style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.ChambreController">
+<AnchorPane prefHeight="550.0" prefWidth="850.0" styleClass="root" stylesheets="@css/Style.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.ChambreController">
     <children>
         <!-- Barre de navigation -->
         <VBox layoutX="-4.0" prefHeight="570.0" prefWidth="234.0" styleClass="vbox" stylesheets="@css/Style.css">
-            <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Accueil" />
-            <Button mnemonicParsing="false" onAction="#SwitchToVoyages" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Packages">
+            <Button mnemonicParsing="false" onAction="#SwitchToAccueil" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Accueil" />
+            <Button mnemonicParsing="false" onAction="#SwitchToVoyages" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Voyages">
                 <VBox.margin><Insets top="20.0" /></VBox.margin>
             </Button>
             <Button mnemonicParsing="false" onAction="#SwitchToHotels" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Hotels">
@@ -24,7 +24,7 @@
             <Button mnemonicParsing="false" onAction="#switchToProfile" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Profile">
                 <VBox.margin><Insets top="20.0" /></VBox.margin>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" styleClass="buttonDeconnexion" stylesheets="@css/Style.css" text="Déconnexion">
+            <Button mnemonicParsing="false" onAction="#deconnexion" prefHeight="50.0" prefWidth="230.0" styleClass="buttonDeconnexion" stylesheets="@css/Style.css" text="Déconnexion">
                 <VBox.margin><Insets top="20.0" /></VBox.margin>
             </Button>
         </VBox>
