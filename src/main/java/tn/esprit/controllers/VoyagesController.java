@@ -30,6 +30,70 @@ public class VoyagesController {
     private javafx.scene.control.Button addVoyageButton;
 
     @FXML
+    public void initialize() {
+        try {
+            displayOffers();
+
+            // Initialize the add voyage button
+            addVoyageButton.setOnAction(this::switchToVoyageAddition);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void SwitchToAccueil(ActionEvent actionEvent) {
+        try {
+            String AccueilLink = SessionManager.getInstance().getCurrentUtilisateur().getRole() == 1 ? "/AccueilAdmin.fxml" : "/Accueil.fxml";
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(AccueilLink));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void SwitchToHotels(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Hotel.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void SwitchToPosts(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Posts.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void switchToProfile(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ProfileUtilisateur.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     void switchToVoyageAddition(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AddVoyage.fxml"));
@@ -43,40 +107,17 @@ public class VoyagesController {
     }
 
     @FXML
-    public void initialize() {
+    void deconnexion(ActionEvent event) {
         try {
-            displayOffers();
-
-            // Initialize the add voyage button
-            addVoyageButton.setOnAction(this::switchToVoyageAddition);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void SwitchToPackages(ActionEvent actionEvent) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Voyages.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Connecter.fxml"));
             Parent root = loader.load();
-            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-    /*public void SwitchToAccueil(ActionEvent actionEvent) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Accueil.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }*/
 
     public void displayOffers() throws SQLException {
         gridPane.getChildren().clear(); // Clear the grid before reloading
