@@ -18,20 +18,6 @@ public class ServiceReponse implements IService<Reponse> {
     // Méthode pour ajouter une réponse
     @Override
     public void add(Reponse reponse) throws SQLException {
-        // Contrôle de saisie
-        if (reponse.getReclamation_id() <= 0) {
-            System.out.println("⚠️ L'ID de la réclamation est invalide.");
-            return;
-        }
-        if (reponse.getContenu() == null || reponse.getContenu().isEmpty()) {
-            System.out.println("⚠️ Le contenu de la réponse ne peut pas être vide.");
-            return;
-        }
-        if (reponse.getDate_reponse() == null) {
-            System.out.println("⚠️ La date de réclamation ne peut pas être nulle.");
-            return;
-        }
-
         // Requête SQL pour insérer une nouvelle réponse
         String req = "INSERT INTO reponses (reclamation_id, contenu, date_reponse) " +
                 "VALUES (?, ?, ?)";
@@ -51,24 +37,6 @@ public class ServiceReponse implements IService<Reponse> {
     // Méthode pour modifier une réponse
     @Override
     public void update(Reponse reponse) throws SQLException {
-        // Contrôle de saisie
-        if (reponse.getReponse_id() <= 0) {
-            System.out.println("⚠️ L'ID de la réponse est invalide.");
-            return;
-        }
-        if (reponse.getReclamation_id() <= 0) {
-            System.out.println("⚠️ L'ID de la réclamation est invalide.");
-            return;
-        }
-        if (reponse.getContenu() == null || reponse.getContenu().isEmpty()) {
-            System.out.println("⚠️ Le contenu de la réponse ne peut pas être vide.");
-            return;
-        }
-        if (reponse.getDate_reponse() == null) {
-            System.out.println("⚠️ La date de réclamation ne peut pas être nulle.");
-            return;
-        }
-
         // Requête SQL pour la mise à jour des données
         String req = "UPDATE reponses SET reclamation_id = ?, contenu = ?, date_reponse = ? WHERE reponse_id = ?";
 
@@ -92,12 +60,6 @@ public class ServiceReponse implements IService<Reponse> {
     // Méthode pour supprimer une réponse
     @Override
     public void delete(int reponse_id) throws SQLException {
-        // Contrôle de saisie
-        if (reponse_id <= 0) {
-            System.out.println("⚠️ L'ID de la réponse est invalide.");
-            return;
-        }
-
         // Requête SQL pour la suppression
         String req = "DELETE FROM reponses WHERE reponse_id = ?";
 
@@ -142,4 +104,52 @@ public class ServiceReponse implements IService<Reponse> {
 
         return reponses;
     }
+
+    public int getReponseIdByContenu(String contenu) throws SQLException {
+        String query = "SELECT reponse_id FROM reponses WHERE contenu = ?";
+        try (PreparedStatement statement = con.prepareStatement(query)) {
+            statement.setString(1, contenu);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt("reponse_id");
+            }
+        }
+        return -1;  // Retourne -1 si la réponse n'est pas trouvée
+    }
+
+
+    public List<String> getReponsesWithUserInfoAndRec() throws SQLException {
+        List<String> affichageList = new ArrayList<>();
+
+        // Requête avec jointure entre `users`, `reclamations`, et `reponses`
+        String req = "SELECT u.name, u.email, r.title, rp.contenu, rp.date_reponse " +
+                "FROM reponses rp " +
+                "JOIN reclamations r ON rp.reclamation_id = r.reclamation_id " +
+                "JOIN users u ON r.user_id = u.user_id";
+
+        try (Statement statement = con.createStatement();
+             ResultSet rs = statement.executeQuery(req)) {
+
+            while (rs.next()) {
+                String affichage = "Nom : " + rs.getString("name") +
+                        " , Email : " + rs.getString("email") +
+                        " , Titre : " + rs.getString("title") +
+                        " , Contenu : " + rs.getString("contenu") +
+                        " , Date : " + rs.getDate("date_reponse");
+                affichageList.add(affichage);
+            }
+        }
+
+        return affichageList;
+    }
+
+    public void updateReponseContenu(int reponse_id, String newContenu) throws SQLException {
+        String query = "UPDATE reponses SET contenu = ? WHERE reponse_id = ?";
+        try (PreparedStatement statement = con.prepareStatement(query)) {
+            statement.setString(1, newContenu);
+            statement.setInt(2, reponse_id);
+            statement.executeUpdate();
+        }
+    }
+
 }

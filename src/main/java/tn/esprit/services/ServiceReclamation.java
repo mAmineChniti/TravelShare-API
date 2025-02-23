@@ -120,4 +120,29 @@ public class ServiceReclamation implements IService<Reclamation> {
         return -1; // Si aucun ID trouvé
     }
 
+    public List<String> getReclamationsWithUserInfo() throws SQLException {
+        List<String> affichageList = new ArrayList<>();
+
+        // Requête avec jointure entre `users` et `reclamations`
+        String req = "SELECT u.name, u.email, r.title, r.description, r.date_reclamation " +
+                "FROM reclamations r " +
+                "JOIN users u ON r.user_id = u.user_id";
+
+        try (Statement statement = con.createStatement();
+             ResultSet rs = statement.executeQuery(req)) {
+
+            while (rs.next()) {
+                String affichage = "Nom : " + rs.getString("name") +
+                        " - Email : " + rs.getString("email") +
+                        " - Titre : " + rs.getString("title") +
+                        " - Description : " + rs.getString("description") +
+                        " - Date de reclamation : " + rs.getDate("date_reclamation");
+                affichageList.add(affichage);
+            }
+        }
+
+        return affichageList;
+    }
+
+
 }
