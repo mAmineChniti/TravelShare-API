@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="550.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.PostsController">
+    <children>
+        <VBox layoutX="0.0" prefHeight="570.0" prefWidth="234.0" styleClass="vbox" stylesheets="@css/Style.css">
+            <children>
+                <ImageView fitHeight="88.0" fitWidth="124.0" pickOnBounds="true" preserveRatio="true">
+                    <VBox.margin>
+                        <Insets bottom="20.0" left="30.0" />
+                    </VBox.margin>
+                    <image>
+                        <Image url="@images/agence.png" />
+                    </image>
+                </ImageView>
+                <Button mnemonicParsing="false" onAction="#SwitchToAccueil" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" text="Accueil" />
+                <Button fx:id="Voyages" mnemonicParsing="false" onAction="#SwitchToVoyages" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" text="Voyages">
+                    <VBox.margin>
+                        <Insets top="20.0" />
+                    </VBox.margin>
+                </Button>
+                <Button fx:id="Hotels" mnemonicParsing="false" onAction="#SwitchToHotels" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" text="Hotels">
+                    <VBox.margin>
+                        <Insets top="20.0" />
+                    </VBox.margin>
+                </Button>
+                <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" text="Excursions">
+                    <VBox.margin>
+                        <Insets top="20.0" />
+                    </VBox.margin>
+                </Button>
+                <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" text="Postes">
+                    <VBox.margin>
+                        <Insets top="20.0" />
+                    </VBox.margin>
+                </Button>
+                <Button fx:id="Profile" mnemonicParsing="false" onAction="#switchToProfile" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" text="Profile">
+                    <VBox.margin>
+                        <Insets top="20.0" />
+                    </VBox.margin>
+                </Button>
+                <Button fx:id="Decon" mnemonicParsing="false" onAction="#deconnexion" prefHeight="50.0" prefWidth="230.0" styleClass="buttonDeconnexion" text="Déconnexion">
+                    <VBox.margin>
+                        <Insets top="20.0" />
+                    </VBox.margin>
+                </Button>
+            </children>
+        </VBox>
+
+        <VBox layoutX="234.0" prefHeight="570.0" prefWidth="616.0" spacing="10.0">
+            <padding>
+                <Insets bottom="10" left="10" right="10" top="10" />
+            </padding>
+            <HBox spacing="10.0">
+                <TextArea fx:id="postInput" prefHeight="50.0" prefWidth="540.0" promptText="What's on your mind?" HBox.hgrow="ALWAYS" />
+                <Button fx:id="postButton" onAction="#handlePostButtonAction" prefHeight="50.0" prefWidth="100.0" style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-size: 14px;                    -fx-border-radius: 5; -fx-background-radius: 5;" text="Post" />
+            </HBox>
+            <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+                <VBox fx:id="postsContainer" spacing="10.0">
+                    <padding>
+                        <Insets bottom="10" left="10" right="10" top="10" />
+                    </padding>
+                </VBox>
+            </ScrollPane>
+        </VBox>
+    </children>
+</AnchorPane>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="550.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.AddGuideController" style="-fx-background-color: #f4f8fc;">
+   <children>
+      <!-- Header -->
+      <HBox alignment="CENTER" prefHeight="74.0" prefWidth="850.0" style="-fx-background-color: #3498db; -fx-padding: 10px; -fx-background-radius: 0 0 30 30;">
+         <children>
+            <Label alignment="CENTER" text="Add Guide" textFill="white" style="-fx-font-size: 32px; -fx-font-family: 'Segoe UI'; -fx-font-weight: bold;" />
+         </children>
+      </HBox>
+
+      <!-- Name and Last Name Fields -->
+      <TextField fx:id="nameTF" promptText="Name" layoutX="40.0" layoutY="120.0" prefWidth="350.0"
+                 style="-fx-background-color: white;
+                        -fx-background-radius: 20px;
+                        -fx-padding: 10px;
+                        -fx-border-color: #3498db;
+                        -fx-border-radius: 20px;
+                        -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 4);" />
+      <TextField fx:id="lastnameTF" promptText="Last Name" layoutX="460.0" layoutY="120.0" prefWidth="350.0"
+                 style="-fx-background-color: white;
+                        -fx-background-radius: 20px;
+                        -fx-padding: 10px;
+                        -fx-border-color: #3498db;
+                        -fx-border-radius: 20px;
+                        -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 4);" />
+
+      <!-- Email and Phone Fields -->
+      <TextField fx:id="emailTF" promptText="Email" layoutX="40.0" layoutY="210.0" prefWidth="350.0"
+                 style="-fx-background-color: white;
+                        -fx-background-radius: 20px;
+                        -fx-padding: 10px;
+                        -fx-border-color: #3498db;
+                        -fx-border-radius: 20px;
+                        -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 4);" />
+      <TextField fx:id="phoneTF" promptText="Phone Number" layoutX="460.0" layoutY="210.0" prefWidth="350.0"
+                 style="-fx-background-color: white;
+                        -fx-background-radius: 20px;
+                        -fx-padding: 10px;
+                        -fx-border-color: #3498db;
+                        -fx-border-radius: 20px;
+                        -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 4);" />
+
+      <!-- Language and Experience Fields -->
+      <TextField fx:id="languageTF" promptText="Language" layoutX="40.0" layoutY="300.0" prefWidth="350.0"
+                 style="-fx-background-color: white;
+                        -fx-background-radius: 20px;
+                        -fx-padding: 10px;
+                        -fx-border-color: #3498db;
+                        -fx-border-radius: 20px;
+                        -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 4);" />
+      <TextField fx:id="experienceTF" promptText="Experience" layoutX="460.0" layoutY="300.0" prefWidth="350.0"
+                 style="-fx-background-color: white;
+                        -fx-background-radius: 20px;
+                        -fx-padding: 10px;
+                        -fx-border-color: #3498db;
+                        -fx-border-radius: 20px;
+                        -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 4);" />
+
+      <!-- Add Button with Hover Effects -->
+      <Button layoutX="380.0" layoutY="420.0" mnemonicParsing="false" onAction="#addGuide" text="Add"
+              style="-fx-background-color: linear-gradient(to right, #2980b9, #3498db);
+                     -fx-text-fill: white;
+                     -fx-font-size: 18px;
+                     -fx-font-weight: bold;
+                     -fx-background-radius: 25px;
+                     -fx-padding: 10px 20px;
+                     -fx-cursor: hand;
+                     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 4);" />
+
+      <!-- Back Button -->
+      <Button layoutX="40.0" layoutY="420.0" mnemonicParsing="false" onAction="#goBack" text="Back"
+              style="-fx-background-color: linear-gradient(to right, #e74c3c, #c0392b);
+               -fx-text-fill: white;
+               -fx-font-size: 18px;
+               -fx-font-weight: bold;
+               -fx-background-radius: 25px;
+               -fx-padding: 10px 20px;
+               -fx-cursor: hand;
+               -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 4);" />
+
+   </children>
+</AnchorPane>

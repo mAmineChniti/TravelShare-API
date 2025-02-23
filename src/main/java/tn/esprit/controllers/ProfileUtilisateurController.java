@@ -21,8 +21,6 @@ import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
 
-import static tn.esprit.entities.SessionManager.getCurrentUtilisateur;
-
 public class ProfileUtilisateurController {
 
     @FXML
@@ -79,7 +77,8 @@ public class ProfileUtilisateurController {
         alert.showAndWait().ifPresent(response -> {
             if (response == javafx.scene.control.ButtonType.OK) {
                 // Vérifier si un utilisateur est connecté
-                Utilisateur currentUtilisateur = SessionManager.getCurrentUtilisateur();
+                SessionManager session = SessionManager.getInstance();
+                Utilisateur currentUtilisateur = session.getCurrentUtilisateur();
                 if (currentUtilisateur != null) {
                     int user_id = currentUtilisateur.getUser_id(); // Récupérer l'ID de l'utilisateur connecté
 
@@ -136,7 +135,8 @@ public class ProfileUtilisateurController {
         }
 
         // Récupérer l'utilisateur connecté et son ID
-        Utilisateur currentUser = getCurrentUtilisateur(); // Correction ici
+        SessionManager session = SessionManager.getInstance();
+        Utilisateur currentUser = session.getCurrentUtilisateur(); // Correction ici
         int user_id = currentUser.getUser_id(); // Extraire l'ID
 
         // Créer un utilisateur avec les nouvelles données
@@ -180,7 +180,8 @@ public class ProfileUtilisateurController {
         }
 
         // Récupérer l'ID de l'utilisateur (exemple : si l'utilisateur est déjà connecté)
-        int user_id = getCurrentUtilisateur().getUser_id();  // Méthode pour récupérer l'ID utilisateur
+        SessionManager session = SessionManager.getInstance();
+        int user_id = session.getCurrentUtilisateur().getUser_id();  // Méthode pour récupérer l'ID utilisateur
 
         // Obtenir la date du jour (automatiquement)
         Date currentDate = new Date(System.currentTimeMillis());  // Date actuelle du système
@@ -230,7 +231,8 @@ public class ProfileUtilisateurController {
     @FXML
     void initialize() {
         try {
-            utilisateur = getCurrentUtilisateur(); // Récupérer l'utilisateur connecté
+            SessionManager session = SessionManager.getInstance();
+            utilisateur = session.getCurrentUtilisateur(); // Récupérer l'utilisateur connecté
 
             if (utilisateur != null) {
                 nameField.setText(utilisateur.getName());
