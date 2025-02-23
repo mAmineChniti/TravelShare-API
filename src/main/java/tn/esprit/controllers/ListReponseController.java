@@ -20,8 +20,6 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
 
-import static tn.esprit.entities.SessionManager.getCurrentUtilisateur;
-
 public class ListReponseController {
 
     @FXML
