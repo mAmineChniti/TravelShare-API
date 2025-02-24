@@ -1,5 +1,7 @@
 package tn.esprit.controllers;
 
+import io.github.cdimascio.dotenv.Dotenv;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -18,6 +20,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import okhttp3.*;
+import org.json.JSONObject;
 import tn.esprit.entities.Likes;
 import tn.esprit.entities.Posts;
 import tn.esprit.entities.SessionManager;
@@ -41,7 +45,9 @@ public class PostsController {
     @FXML
     private Button postButton;
     private int currentPostCount = 0;
-
+    private static final String PROFANITY_API_URL = " https://neutrinoapi.net/bad-word-filter";
+    private static final String USER_ID = Dotenv.load().get("PROFANITY_USER_ID");
+    private static final String API_KEY = Dotenv.load().get("PROFANITY_API_KEY");
     @FXML
     public void SwitchToAccueil(ActionEvent actionEvent) {
         try {
@@ -136,27 +142,71 @@ public class PostsController {
     @FXML
     private void handlePostButtonAction() {
         String content = postInput.getText();
-        if (content != null && !content.trim().isEmpty()) {
-            Posts newPost = new Posts();
-            SessionManager session = SessionManager.getInstance();
-            newPost.setOwner_id(session.getCurrentUtilisateur().getUser_id());
-            newPost.setOwner_name(session.getCurrentUtilisateur().getName());
-            newPost.setOwner_last_name(session.getCurrentUtilisateur().getLast_name());
-            newPost.setText_content(content);
-            newPost.setCreated_at(new Date(System.currentTimeMillis()));
-            newPost.setUpdated_at(new Date(System.currentTimeMillis()));
-            try {
-                int postId = postsService.addAndId(newPost);
-                if (postId != -1) {
-                    newPost.setPost_id(postId);
-                    postsObservableList.add(0, newPost);
-                    postInput.clear();
-                    addPostToContainer(newPost, true);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        if (content == null || content.trim().isEmpty()) {
+            System.out.println("Post content cannot be empty.");
+            return;
         }
+
+        checkForProfanity(content, (isProfane) -> {
+            if (isProfane) {
+                Platform.runLater(() -> System.out.println("The content contains bad words and cannot be posted."));
+            } else {
+                Platform.runLater(() -> addPost(content));
+            }
+        });
+    }
+    private void addPost(String content) {
+        Posts newPost = new Posts();
+        SessionManager session = SessionManager.getInstance();
+        newPost.setOwner_id(session.getCurrentUtilisateur().getUser_id());
+        newPost.setOwner_name(session.getCurrentUtilisateur().getName());
+        newPost.setOwner_last_name(session.getCurrentUtilisateur().getLast_name());
+        newPost.setText_content(content);
+        newPost.setCreated_at(new Date(System.currentTimeMillis()));
+        newPost.setUpdated_at(new Date(System.currentTimeMillis()));
+
+        try {
+            int postId = postsService.addAndId(newPost);
+            if (postId != -1) {
+                newPost.setPost_id(postId);
+                postsObservableList.add(0, newPost);
+                postInput.clear();
+                addPostToContainer(newPost, true);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to save the post: " + e.getMessage(), e);
+        }
+    }
+
+    private void checkForProfanity(String content, java.util.function.Consumer<Boolean> callback) {
+        OkHttpClient client = new OkHttpClient();
+        RequestBody formBody = new FormBody.Builder()
+                .add("content", content)
+                .build();
+        Request request = new Request.Builder()
+                .url(PROFANITY_API_URL)
+                .post(formBody)
+                .addHeader("User-ID", USER_ID)
+                .addHeader("API-Key", API_KEY)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                System.out.println("Failed to connect: " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    throw new IOException("Unexpected response: " + response.message());
+                }
+
+                String responseBody = response.body().string();
+                boolean isProfane = new JSONObject(responseBody).getBoolean("is-bad");
+                callback.accept(isProfane);
+            }
+        });
     }
 
     private void loadMorePosts() {
@@ -245,8 +295,21 @@ public class PostsController {
                     postContent.setEditable(false);
                     postContent.setStyle("-fx-background-color: transparent; -fx-border-width: 0;");
                     editButton.setText("✏ Edit");
-                    if (postContent.getText() != null && !postContent.getText().trim().isEmpty()) {
-                        updatePost(post, postContent.getText());
+
+                    String newContent = postContent.getText();
+                    if (newContent != null && !newContent.trim().isEmpty()) {
+                        checkForProfanity(newContent, (isProfane) -> {
+                            if (isProfane) {
+                                Platform.runLater(() -> {
+                                    System.out.println("The content contains bad words. Reverting to original text.");
+                                    postContent.setText(post.getText_content());
+                                });
+                            } else {
+                                Platform.runLater(() -> {
+                                    updatePost(post, newContent);
+                                });
+                            }
+                        });
                     } else {
                         postContent.setText(post.getText_content());
                     }
