@@ -22,9 +22,11 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import okhttp3.*;
 import org.json.JSONObject;
+import tn.esprit.entities.FlaggedContent;
 import tn.esprit.entities.Likes;
 import tn.esprit.entities.Posts;
 import tn.esprit.entities.SessionManager;
+import tn.esprit.services.FlaggedContentService;
 import tn.esprit.services.LikesService;
 import tn.esprit.services.PostsService;
 
@@ -227,8 +229,37 @@ public class PostsController {
         postBox.setStyle("-fx-background-color: #f8f9fa; -fx-border-color: #ddd; -fx-border-radius: 8; -fx-background-radius: 8;");
         postBox.setMaxWidth(500);
 
+        HBox headerBox = new HBox();
+        headerBox.setAlignment(Pos.CENTER_LEFT);
+        headerBox.setSpacing(10);
+
         Label posterName = new Label(post.getOwner_name() + " " + post.getOwner_last_name());
         posterName.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+
+        Button flagButton = new Button("❌");
+        flagButton.setStyle("-fx-background-color: #dc3545; -fx-text-fill: white; -fx-border-radius: 5; -fx-background-radius: 5; -fx-font-size: 12px; -fx-padding: 2px 5px;");
+
+        flagButton.setOnMouseEntered(e -> flagButton.setStyle("-fx-background-color: #b02a37; -fx-text-fill: white;"));
+        flagButton.setOnMouseExited(e -> flagButton.setStyle("-fx-background-color: #dc3545; -fx-text-fill: white;"));
+
+        flagButton.setOnAction(event -> {
+            try {
+                FlaggedContentService flaggedContentService = new FlaggedContentService();
+                SessionManager session = SessionManager.getInstance();
+                int currentUserId = session.getCurrentUtilisateur().getUser_id();
+
+                FlaggedContent flaggedContent = new FlaggedContent(post.getPost_id(), currentUserId,new Date(System.currentTimeMillis()));
+                flaggedContentService.add(flaggedContent);
+
+                postsContainer.getChildren().remove(postBox);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+
+        headerBox.getChildren().addAll(posterName, flagButton);
+        HBox.setHgrow(posterName, javafx.scene.layout.Priority.ALWAYS);
+        headerBox.setAlignment(Pos.CENTER_LEFT);
 
         TextArea postContent = new TextArea(post.getText_content());
         postContent.setWrapText(true);
@@ -321,7 +352,7 @@ public class PostsController {
             buttonBox.getChildren().addAll(editButton, deleteButton);
         }
 
-        postBox.getChildren().addAll(posterName, postContent, buttonBox);
+        postBox.getChildren().addAll(headerBox, postContent, buttonBox);
         if (addToTop) {
             postsContainer.getChildren().add(0, postBox);
         } else {

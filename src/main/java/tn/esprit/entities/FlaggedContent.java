@@ -1,6 +1,6 @@
 package tn.esprit.entities;
 
-import java.util.Date;
+import java.sql.Date;
 
 public class FlaggedContent {
     private int post_id;
@@ -43,7 +43,7 @@ public class FlaggedContent {
     }
 
     public void setFlagged_at(Date flagged_at) {
-        if (flagged_at == null || flagged_at.after(new Date())) {
+        if (flagged_at == null || flagged_at.after(new Date(System.currentTimeMillis()))) {
             throw new IllegalArgumentException("Flagged date must be a valid past or present date.");
         }
         this.flagged_at = flagged_at;

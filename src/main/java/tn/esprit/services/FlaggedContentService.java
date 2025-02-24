@@ -19,10 +19,11 @@ public class FlaggedContentService implements IService<FlaggedContent> {
 
     @Override
     public void add(FlaggedContent flaggedContent) throws SQLException {
-        String insertQuery = "INSERT INTO flagged_content (post_id, flagger_id, flagged_at) VALUES (?, ?, NOW())";
+        String insertQuery = "INSERT INTO flagged_content (post_id, flagger_id, flagged_at) VALUES (?, ?, ?)";
         try (PreparedStatement stmt = con.prepareStatement(insertQuery)) {
             stmt.setInt(1, flaggedContent.getPost_id());
             stmt.setInt(2, flaggedContent.getFlagger_id());
+            stmt.setDate(3, flaggedContent.getFlagged_at());
             stmt.executeUpdate();
         }
     }
@@ -50,7 +51,7 @@ public class FlaggedContentService implements IService<FlaggedContent> {
                 FlaggedContent flaggedContent = new FlaggedContent();
                 flaggedContent.setPost_id(rs.getInt("post_id"));
                 flaggedContent.setFlagger_id(rs.getInt("flagger_id"));
-                flaggedContent.setFlagged_at(rs.getTimestamp("flagged_at"));
+                flaggedContent.setFlagged_at(rs.getDate("flagged_at"));
                 flaggedContents.add(flaggedContent);
             }
         }
