@@ -66,10 +66,7 @@ public class InscrireController {
         }
 
         // Vérification du format de l'email
-        if (!email.matches("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$")) {
-            showAlert(Alert.AlertType.ERROR, "Erreur de format", "L'email doit être valide (exemple@domaine.com)");
-            return;
-        }
+
 
         // Vérification du mot de passe
         if (password.length() < 4 || !password.matches(".*\\d.*") || !password.matches(".*[!@#$%^&*].*")) {
