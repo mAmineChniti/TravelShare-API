@@ -3,13 +3,17 @@ package tn.esprit.controllers;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
@@ -52,28 +56,37 @@ public class ListGuideController {
             gridPane.add(new Label(guide.getPhone_num()), 4, row);
             gridPane.add(new Label(guide.getLanguage()), 5, row);
 
-            // Bouton Supprimer
             javafx.scene.control.Button btnDelete = new javafx.scene.control.Button("X");
             btnDelete.setOnAction(event -> {
-                try {
-                    // Supprimer d'abord les excursions associées
-                    serviceGuide.deleteExcursionsByGuide(guide.getGuide_id());
+                // Créer une boîte de dialogue de confirmation
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Deletion confirmation");
+                alert.setHeaderText(null);
+                alert.setContentText("You are about to delete your profile. Are you sure?");
 
-                    // Ensuite, supprimer le guide
-                    serviceGuide.delete(guide.getGuide_id());
+                // Attendre la réponse de l'utilisateur
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.isPresent() && result.get() == ButtonType.OK) {
+                    try {
+                        // Supprimer d'abord les excursions associées
+                        serviceGuide.deleteExcursionsByGuide(guide.getGuide_id());
 
-                    // Trouver l'index de la ligne du bouton cliqué
-                    Integer rowIndex = GridPane.getRowIndex(btnDelete);
-                    if (rowIndex != null) {
-                        // Supprimer tous les nœuds de cette ligne
-                        gridPane.getChildren().removeIf(node ->
-                                GridPane.getRowIndex(node) != null && GridPane.getRowIndex(node).equals(rowIndex)
-                        );
+                        // Ensuite, supprimer le guide
+                        serviceGuide.delete(guide.getGuide_id());
+
+                        // Trouver l'index de la ligne du bouton cliqué
+                        Integer rowIndex = GridPane.getRowIndex(btnDelete);
+                        if (rowIndex != null) {
+                            // Supprimer tous les nœuds de cette ligne
+                            gridPane.getChildren().removeIf(node ->
+                                    GridPane.getRowIndex(node) != null && GridPane.getRowIndex(node).equals(rowIndex)
+                            );
+                        }
+
+                    } catch (SQLException e) {
+                        System.err.println("Error deleting guide.");
+                        e.printStackTrace();
                     }
-
-                } catch (SQLException e) {
-                    System.err.println("Error deleting guide.");
-                    e.printStackTrace();
                 }
             });
 
@@ -81,23 +94,33 @@ public class ListGuideController {
             //button update
             Button updateButton = new Button("!");
             updateButton.setOnAction(event -> {
-                try {
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/UpdateGuide.fxml"));
-                    Parent root = loader.load();
+                // Créer une boîte de dialogue de confirmation
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Change confirmation");
+                alert.setHeaderText(null);
+                alert.setContentText("You are about to edit your profile. Do you want to continue?");
 
-                    // Obtenir le contrôleur de la page UpdateGuide
-                    UpdateGuideController updateController = loader.getController();
+                // Attendre la réponse de l'utilisateur
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.isPresent() && result.get() == ButtonType.OK) {
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/UpdateGuide.fxml"));
+                        Parent root = loader.load();
 
-                    // Passer les informations du guide sélectionné
-                    updateController.setGuideToEdit(guide);
+                        // Obtenir le contrôleur de la page UpdateGuide
+                        UpdateGuideController updateController = loader.getController();
 
-                    // Charger la nouvelle scène
-                    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                    stage.setScene(new Scene(root));
-                    stage.show();
+                        // Passer les informations du guide sélectionné
+                        updateController.setGuideToEdit(guide);
 
-                } catch (IOException e) {
-                    e.printStackTrace();
+                        // Charger la nouvelle scène
+                        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                        stage.setScene(new Scene(root));
+                        stage.show();
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
             gridPane.add(btnDelete, 6, row);
@@ -112,16 +135,14 @@ public class ListGuideController {
     @FXML
     public void ajouterGuide(ActionEvent event) {
         try {
-            // Charger le fichier FXML pour la nouvelle page
-            Parent root = FXMLLoader.load(getClass().getResource("/AddGuide.fxml"));
-
-            // Remplacer la racine de la scène actuelle par celle de la nouvelle page
-            // L'élément (comme un bouton) qui a déclenché l'événement
-            // fournit la scène à partir de laquelle nous remplaçons la racine.
-            ((Node) event.getSource()).getScene().setRoot(root);
-
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AddGuide.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            System.err.println("Page loading error FXML: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

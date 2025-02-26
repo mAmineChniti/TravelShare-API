@@ -23,23 +23,16 @@ public class TestGuidesExcursions {
 
         //ajout de 2 excursion
         Date dateExcursion1 = Date.valueOf("2025-04-26");
-        Excursions excursion1 = new Excursions(17,"Randonnée au sommet de l'Atlas","Découvrez" +
+        Date dateExcursion11 = Date.valueOf("2025-04-26");
+        Excursions excursion1 = new Excursions(dateExcursion11,"Randonnée au sommet de l'Atlas","Découvrez" +
                 " les paysages époustouflants du massif de" +
                 " l'Atlas lors d'une randonnée guidée. Profitez d'une vue panoramique" +
-                " sur les vallées et les villages berbères, avec une pause déjeuner en pleine nature.",dateExcursion1,3);
+                " sur les vallées et les villages berbères, avec une pause déjeuner en pleine nature.",dateExcursion1,3,"a.png",20);
 
         Date dateExcursion2 = Date.valueOf("2025-01-20");
-        Excursions excursion2 = new Excursions(19,"Randonnée en montagne","Randonnée à travers les sentiers montagneux, avec un guide expérimenté qui vous expliquera la faune et la flore locales"
-                ,dateExcursion2,1);
-
-        Date dateExcursion4 = Date.valueOf("2025-01-20");
-       Excursions excursion4 = new Excursions(5,"Randonnée en montagne","Randonnée à travers les sentiers montagneux, avec un guide expérimenté qui vous expliquera la faune et la flore locales"
-                ,dateExcursion4,5);
-
-        //excursion a modifier
-        Date dateExcursion3 = Date.valueOf("2025-01-11");
-        Excursions excursion3 = new Excursions(3,11,"Randonnée en montagne","Randonnée à travers les sentiers montagneux, avec un guide expérimenté qui vous expliquera la faune et la flore locales"
-                ,dateExcursion3,8);
+        Date dateExcursion22 = Date.valueOf("2025-02-20");
+        Excursions excursion2 = new Excursions(dateExcursion22,"Randonnée en montagne","Randonnée à travers les sentiers montagneux, avec un guide expérimenté qui vous expliquera la faune et la flore locales"
+                ,dateExcursion2,1,"a.ipg",50);
 
 
         //test
@@ -80,11 +73,8 @@ public class TestGuidesExcursions {
 
             //ajout de 2 excursion
               serviceExcursion.add(excursion1);
-              serviceExcursion.add(excursion2);
-              serviceExcursion.add(excursion4);
-
             //modifier excursion
-            serviceExcursion.update(excursion3);
+            serviceExcursion.update(excursion2);
 
             //supprimer excursion d'id 2
           //  idToDelete = 2;
