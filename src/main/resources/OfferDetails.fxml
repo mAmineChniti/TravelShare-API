@@ -68,6 +68,7 @@
                 </HBox>
                 <Button fx:id="reserveButton" onAction="#reserveOffer" text="Reserve Now" />
                 <Label fx:id="reservationStatusLabel" style="-fx-text-fill: green;" text="" />
+                <Label fx:id="activitiesLabel" wrapText="true" maxWidth="500" />
             </children>
         </VBox>
     </children>

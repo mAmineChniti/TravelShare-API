@@ -1,5 +1,6 @@
 package tn.esprit.controllers;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -8,6 +9,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import okhttp3.*;
+import org.json.JSONObject;
 import tn.esprit.entities.OffreReservations;
 import tn.esprit.entities.OffreVoyages;
 import tn.esprit.entities.SessionManager;
@@ -22,6 +25,8 @@ public class OfferDetailsController {
     @FXML
     private Label titleLabel, destinationLabel, descriptionLabel, departureDateLabel,
             returnDateLabel, priceLabel, availableSeatsLabel, reservationStatusLabel;
+    @FXML
+    private Label activitiesLabel;
 
     @FXML
     private Button reserveButton;
@@ -30,6 +35,10 @@ public class OfferDetailsController {
     private Spinner<Integer> placesSpinner;
 
     private OffreVoyages currentOffer;
+    public static final String API_URL = "https://api.openai.com/v1/chat/completions";
+    public static final String OPENAI_API_KEY = Dotenv.load().get("OPENAI_API_KEY");
+
+
     @FXML
     public void SwitchToAccueil(ActionEvent actionEvent) {
         try {
@@ -115,7 +124,7 @@ public class OfferDetailsController {
             System.out.println("placesSpinner is null! Check FXML fx:id.");
         } else {
             SpinnerValueFactory.IntegerSpinnerValueFactory valueFactory =
-                    new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1, 1);
+                    new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 1, 1);
             placesSpinner.setValueFactory(valueFactory);
         }
     }
@@ -132,8 +141,49 @@ public class OfferDetailsController {
 
         // Update spinner max value based on available places
         placesSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, offer.getPlaces_disponibles(), 1));
+        try {
+            String activities = getActivitiesbyCountry(offer.getDestination());
+            activitiesLabel.setText("Activities: " + activities);
+        } catch (IOException e) {
+            activitiesLabel.setText("Could not fetch activities.");
+        }
     }
+    public String getActivitiesbyCountry(String country) throws IOException {
+        JSONObject request = new JSONObject();
+        request.put("model", "gpt-3.5-turbo");
+        request.put("store", true);
+        request.put("messages", new Object[]{new JSONObject().put("role", "user").put("content", "Describe to me in 500 characters maximum " + country + " and what are some activities I can do in " + country)});
 
+        OkHttpClient client = new OkHttpClient();
+        RequestBody body = RequestBody.create(request.toString(), MediaType.parse("application/json"));
+        Request fetcher = new Request.Builder()
+                .url(API_URL)
+                .post(body)
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Authorization", "Bearer " + OPENAI_API_KEY)
+                .build();
+
+        try (Response response = client.newCall(fetcher).execute()) {
+            System.out.println("Request sent to API.");
+            System.out.println("Response code: " + response.code());
+
+            if (!response.isSuccessful()) {
+                System.out.println("Request failed: " + response.message());
+                System.out.println("Response body: " + response.body().string());
+                throw new IOException("Failed to fetch activities: " + response.code());
+            }
+
+            String responseBody = response.body().string();
+            System.out.println("API Response: " + responseBody);
+
+            JSONObject responseObject = new JSONObject(responseBody);
+            return responseObject.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            e.printStackTrace();
+            return "Error fetching activities: " + e.getMessage();
+        }
+    }
     @FXML
     public void reserveOffer() {
         System.out.println("Reserve button clicked!");
