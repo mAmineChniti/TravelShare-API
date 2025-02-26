@@ -1,13 +1,21 @@
 package tn.esprit.controllers;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import tn.esprit.entities.Chambres;
 import tn.esprit.entities.Hotels;
+import tn.esprit.entities.SessionManager;
 import tn.esprit.services.ServiceChambre;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class AddChambreController {
@@ -16,44 +24,41 @@ public class AddChambreController {
     private TextField numeroField;
 
     @FXML
-    private TextField typeField;
+    private ComboBox<String> typeComboBox; // ComboBox for type
 
     @FXML
     private TextField prixField;
 
+    private Hotels selectedHotel;
+    private final ServiceChambre serviceChambre = new ServiceChambre();
+
+    // Initialize the ComboBox with type options
     @FXML
-    private TextField disponibleField;
+    public void initialize() {
+        typeComboBox.getItems().addAll("simple", "double", "suite");
+        typeComboBox.setValue("simple"); // Set default value
+    }
 
-    private ServiceChambre serviceChambre = new ServiceChambre();
-    private Hotels selectedHotel; // L'hôtel auquel la chambre sera ajoutée
-
+    // Set the selected hotel
     public void setSelectedHotel(Hotels hotel) {
         this.selectedHotel = hotel;
     }
 
-    private void showAlert(String title, String message, Alert.AlertType type) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
+    // Handle the "Ajouter" button click
     @FXML
     private void handleAdd() {
-        // Retrieve input values from the fields
+        // Retrieve values from the form
         String numero = numeroField.getText();
-        String type = typeField.getText();
+        String type = typeComboBox.getValue(); // Get selected type from ComboBox
         String prix = prixField.getText();
-        String disponible = disponibleField.getText();
 
-        // Validate the inputs (you can add more validation if needed)
-        if (numero.isEmpty() || type.isEmpty() || prix.isEmpty() || disponible.isEmpty()) {
+        // Validate input fields
+        if (numero.isEmpty() || type.isEmpty() || prix.isEmpty()) {
             showAlert("Erreur", "Veuillez remplir tous les champs.", Alert.AlertType.ERROR);
             return;
         }
 
-        // Validate if prix is a valid number
+        // Validate prix (must be a valid double)
         double prixValue;
         try {
             prixValue = Double.parseDouble(prix);
@@ -62,30 +67,112 @@ public class AddChambreController {
             return;
         }
 
-        // Validate if disponible is a valid boolean (true/false)
-        boolean disponibleValue;
-        if (!disponible.equalsIgnoreCase("true") && !disponible.equalsIgnoreCase("false")) {
-            showAlert("Erreur", "La disponibilité doit être 'true' ou 'false'.", Alert.AlertType.ERROR);
+        // Ensure a hotel is selected
+        if (selectedHotel == null) {
+            showAlert("Erreur", "Aucun hôtel sélectionné.", Alert.AlertType.ERROR);
             return;
         }
-        disponibleValue = Boolean.parseBoolean(disponible);
 
-        // Assuming you save the data here or do something with it
-        // Example: Save the data to the database or pass it to a service
+        // Set disponibilité to true by default
+        boolean disponibleValue = true;
 
-        showAlert("Succès", "Chambre ajoutée avec succès.", Alert.AlertType.INFORMATION);
+        // Create a new Chambres object
+        Chambres newChambre = new Chambres(0, selectedHotel.getHotel_id(), numero, type, prixValue, disponibleValue);
 
-        // Clear fields after adding
-        numeroField.clear();
-        typeField.clear();
-        prixField.clear();
-        disponibleField.clear();
+        try {
+            // Add the new chambre to the database
+            serviceChambre.add(newChambre);
+            showAlert("Succès", "Chambre ajoutée avec succès.", Alert.AlertType.INFORMATION);
+
+            // Navigate back to the Chambre.fxml page
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Chambre.fxml"));
+            Parent root = loader.load();
+
+            // Pass the selected hotel to the ChambreController
+            ChambreController controller = loader.getController();
+            controller.setSelectedHotel(selectedHotel);
+
+            // Switch to the Chambre.fxml scene
+            Stage stage = (Stage) numeroField.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (SQLException e) {
+            showAlert("Erreur", "Une erreur s'est produite lors de l'ajout de la chambre : " + e.getMessage(), Alert.AlertType.ERROR);
+        } catch (IOException e) {
+            showAlert("Erreur", "Une erreur s'est produite lors du chargement de la page.", Alert.AlertType.ERROR);
+        }
+    }
+
+    // Handle the "Annuler" button click
+    @FXML
+    private void handleCancel() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Chambre.fxml"));
+            Parent root = loader.load();
+
+            // Pass the selected hotel back to the ChambreController
+            ChambreController controller = loader.getController();
+            controller.setSelectedHotel(selectedHotel);
+
+            // Switch to the Chambre.fxml scene
+            Stage stage = (Stage) numeroField.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Show an alert dialog
+    private void showAlert(String title, String message, Alert.AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    // Navigation methods (unchanged)
+    @FXML
+    private void SwitchToAccueil(ActionEvent event) {
+        switchScene(event, SessionManager.getInstance().getCurrentUtilisateur().getRole() == 1 ? "/AccueilAdmin.fxml" : "/Accueil.fxml");
     }
 
     @FXML
-    private void handleCancel() {
-        // Fermer la fenêtre pop-up sans ajouter
-        Stage stage = (Stage) numeroField.getScene().getWindow();
-        stage.close();
+    private void SwitchToVoyages(ActionEvent event) {
+        switchScene(event, "/Voyages.fxml");
+    }
+
+    @FXML
+    private void SwitchToHotels(ActionEvent event) {
+        switchScene(event, "/Hotel.fxml");
+    }
+
+    @FXML
+    private void SwitchToPosts(ActionEvent event) {
+        switchScene(event, "/Posts.fxml");
+    }
+
+    @FXML
+    private void switchToProfile(ActionEvent event) {
+        switchScene(event, "/ProfileUtilisateur.fxml");
+    }
+
+    @FXML
+    private void deconnexion(ActionEvent event) {
+        switchScene(event, "/Connecter.fxml");
+    }
+
+    // Generic method to switch scenes
+    private void switchScene(ActionEvent event, String fxmlFile) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

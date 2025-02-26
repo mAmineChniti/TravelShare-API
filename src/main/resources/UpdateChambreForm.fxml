@@ -2,32 +2,61 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.stage.Stage?>
 
-<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.UpdateChambreController" spacing="10" alignment="CENTER" style="-fx-background-color: #f5f6fa; -fx-padding: 20;">
-    <Label text="Modifier la chambre" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
-    <VBox spacing="5">
-        <Label text="Numéro de chambre" />
-        <TextField fx:id="numeroField" />
-    </VBox>
-    <VBox spacing="5">
-        <Label text="Type de chambre" />
-        <TextField fx:id="typeField" />
-    </VBox>
-    <VBox spacing="5">
-        <Label text="Prix par nuit" />
-        <TextField fx:id="prixField" />
-    </VBox>
-    <VBox spacing="5">
-        <Label text="Disponibilité" />
-        <TextField fx:id="disponibleField" />
-    </VBox>
-    <HBox spacing="10" alignment="CENTER">
-        <Button text="Annuler" onAction="#handleCancel" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" />
-        <Button text="Enregistrer" onAction="#handleSave" style="-fx-background-color: #3498db; -fx-text-fill: white;" />
-    </HBox>
-</VBox>
+<AnchorPane prefHeight="550.0" prefWidth="850.0" styleClass="root" stylesheets="@css/Style.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.UpdateChambreController">
+    <children>
+        <!-- Barre de navigation -->
+        <VBox layoutX="-4.0" prefHeight="570.0" prefWidth="234.0" styleClass="vbox" stylesheets="@css/Style.css">
+            <Button mnemonicParsing="false" onAction="#SwitchToAccueil" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Accueil" />
+            <Button mnemonicParsing="false" onAction="#SwitchToVoyages" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Voyages">
+                <VBox.margin><Insets top="20.0" /></VBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#SwitchToHotels" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Hotels">
+                <VBox.margin><Insets top="20.0" /></VBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Excursions">
+                <VBox.margin><Insets top="20.0" /></VBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#SwitchToPosts" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Postes">
+                <VBox.margin><Insets top="20.0" /></VBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#switchToProfile" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Profile">
+                <VBox.margin><Insets top="20.0" /></VBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#deconnexion" prefHeight="50.0" prefWidth="230.0" styleClass="buttonDeconnexion" stylesheets="@css/Style.css" text="Déconnexion">
+                <VBox.margin><Insets top="20.0" /></VBox.margin>
+            </Button>
+        </VBox>
+
+        <!-- Formulaire de modification de chambre -->
+        <VBox layoutX="250.0" layoutY="20.0" prefHeight="500.0" prefWidth="580.0" spacing="10" alignment="CENTER" style="-fx-background-color: #f5f6fa; -fx-padding: 20;">
+            <Label text="Modifier la chambre" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+
+            <VBox spacing="5">
+                <Label text="Numéro de chambre" />
+                <TextField fx:id="numeroField" />
+            </VBox>
+
+            <VBox spacing="5">
+                <Label text="Type de chambre" />
+                <ComboBox fx:id="typeComboBox" />
+            </VBox>
+
+            <VBox spacing="5">
+                <Label text="Prix par nuit" />
+                <TextField fx:id="prixField" />
+            </VBox>
+
+            <HBox spacing="10" alignment="CENTER">
+                <Button text="Annuler" onAction="#handleCancel" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" />
+                <Button text="Enregistrer" onAction="#handleSave" style="-fx-background-color: #3498db; -fx-text-fill: white;" />
+            </HBox>
+        </VBox>
+    </children>
+</AnchorPane>
