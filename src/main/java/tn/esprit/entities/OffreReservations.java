@@ -8,6 +8,8 @@ public class OffreReservations {
     private int offre_id;
     private Date date_reserved;
     private boolean reserved;
+    private int nbr_place;
+    private double prix;
 
     public int getReservation_id() {
         return reservation_id;
@@ -47,5 +49,21 @@ public class OffreReservations {
 
     public void setReserved(boolean reserved) {
         this.reserved = reserved;
+    }
+
+    public int getNbr_place() {
+        return nbr_place;
+    }
+
+    public void setNbr_place(int nbr_place) {
+        this.nbr_place = nbr_place;
+    }
+
+    public double getPrix() {
+        return prix;
+    }
+
+    public void setPrix(double prix) {
+        this.prix = prix;
     }
 }

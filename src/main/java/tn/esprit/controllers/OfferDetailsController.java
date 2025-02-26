@@ -6,8 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import tn.esprit.entities.OffreReservations;
 import tn.esprit.entities.OffreVoyages;
@@ -21,34 +20,16 @@ import java.sql.SQLException;
 public class OfferDetailsController {
 
     @FXML
-    private Label titleLabel;
-
-    @FXML
-    private Label destinationLabel;
-
-    @FXML
-    private Label descriptionLabel;
-
-    @FXML
-    private Label departureDateLabel;
-
-    @FXML
-    private Label returnDateLabel;
-
-    @FXML
-    private Label priceLabel;
-
-    @FXML
-    private Label availableSeatsLabel;
+    private Label titleLabel, destinationLabel, descriptionLabel, departureDateLabel,
+            returnDateLabel, priceLabel, availableSeatsLabel, reservationStatusLabel;
 
     @FXML
     private Button reserveButton;
 
     @FXML
-    private Label reservationStatusLabel;
+    private Spinner<Integer> placesSpinner;
 
     private OffreVoyages currentOffer;
-
     @FXML
     public void SwitchToAccueil(ActionEvent actionEvent) {
         try {
@@ -125,6 +106,20 @@ public class OfferDetailsController {
         }
     }
 
+    @FXML
+    public void initialize() {
+        System.out.println("Initializing OfferDetailsController...");
+        System.out.println("placesSpinner: " + placesSpinner); // Debugging
+
+        if (placesSpinner == null) {
+            System.out.println("placesSpinner is null! Check FXML fx:id.");
+        } else {
+            SpinnerValueFactory.IntegerSpinnerValueFactory valueFactory =
+                    new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1, 1);
+            placesSpinner.setValueFactory(valueFactory);
+        }
+    }
+
     public void setOfferDetails(OffreVoyages offer) {
         this.currentOffer = offer;
         titleLabel.setText(offer.getTitre());
@@ -134,28 +129,63 @@ public class OfferDetailsController {
         returnDateLabel.setText("Return: " + offer.getDate_retour());
         priceLabel.setText("Price: " + offer.getPrix() + " $");
         availableSeatsLabel.setText("Seats: " + offer.getPlaces_disponibles());
+
+        // Update spinner max value based on available places
+        placesSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, offer.getPlaces_disponibles(), 1));
     }
 
     @FXML
     public void reserveOffer() {
-        if (currentOffer != null) {
+        System.out.println("Reserve button clicked!");
+        System.out.println("Current offer: " + currentOffer);
+        System.out.println("placesSpinner: " + placesSpinner);
+
+        if (placesSpinner == null) {
+            reservationStatusLabel.setText("Error: Spinner not initialized.");
+            reservationStatusLabel.setStyle("-fx-text-fill: red;");
+            return;
+        }
+
+        int nbr_places = placesSpinner.getValue(); // Possible issue here!
+        System.out.println("Selected places: " + nbr_places);
+
+        if (currentOffer == null) {
+            reservationStatusLabel.setText("Offer not found.");
+            reservationStatusLabel.setStyle("-fx-text-fill: red;");
+            return;
+        }
+
+        if (nbr_places > currentOffer.getPlaces_disponibles() || nbr_places < 1) {
+            reservationStatusLabel.setText("Invalid number of places.");
+            reservationStatusLabel.setStyle("-fx-text-fill: red;");
+            return;
+        }
+
+        try {
             OffreReservationService resOffre = new OffreReservationService();
             OffreReservations reservation = new OffreReservations();
-            try {
-                reservation.setOffre_id(currentOffer.getOffres_voyage_id());
-                reservation.setClient_id(SessionManager.getInstance().getCurrentUtilisateur().getUser_id());
-                reservation.setDate_reserved(new Date(new java.util.Date().getTime()));
-                reservation.setReserved(true);
-                resOffre.add(reservation);
-                reservationStatusLabel.setText("Reservation successful!");
-                reservationStatusLabel.setStyle("-fx-text-fill: green;");
-            } catch (SQLException e) {
-                e.printStackTrace();
-                reservationStatusLabel.setText("Reservation failed. Try again.");
-                reservationStatusLabel.setStyle("-fx-text-fill: red;");
-            }
-        } else {
-            reservationStatusLabel.setText("Offre null");
+
+            reservation.setOffre_id(currentOffer.getOffres_voyage_id());
+            reservation.setClient_id(SessionManager.getInstance().getCurrentUtilisateur().getUser_id());
+            reservation.setDate_reserved(new Date(new java.util.Date().getTime()));
+            reservation.setReserved(true);
+            reservation.setNbr_place(nbr_places);
+            reservation.setPrix(nbr_places * currentOffer.getPrix());
+
+            resOffre.add(reservation);
+
+            // Update available places
+            currentOffer.setPlaces_disponibles(currentOffer.getPlaces_disponibles() - nbr_places);
+            availableSeatsLabel.setText("Seats: " + currentOffer.getPlaces_disponibles());
+
+            placesSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(
+                    1, currentOffer.getPlaces_disponibles(), 1));
+
+            reservationStatusLabel.setText("Reservation successful!");
+            reservationStatusLabel.setStyle("-fx-text-fill: green;");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            reservationStatusLabel.setText("Reservation failed. Try again.");
             reservationStatusLabel.setStyle("-fx-text-fill: red;");
         }
     }

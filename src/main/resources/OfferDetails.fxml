@@ -6,65 +6,69 @@
 <?import javafx.scene.layout.*?>
 
 <AnchorPane prefHeight="550.0" prefWidth="850.0" styleClass="root" stylesheets="@css/Style.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.OfferDetailsController">
-<children>
-    <!-- Sidebar -->
-    <VBox layoutX="-4.0" prefHeight="570.0" prefWidth="234.0" styleClass="vbox" stylesheets="@css/Style.css">
-        <children>
-            <ImageView fitHeight="88.0" fitWidth="124.0" pickOnBounds="true" preserveRatio="true">
-                <VBox.margin>
-                    <Insets bottom="20.0" left="30.0" />
-                </VBox.margin>
-                <image>
-                    <Image url="@images/agence.png" />
-                </image>
-            </ImageView>
-            <Button mnemonicParsing="false" onAction="#SwitchToAccueil" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Accueil" />
-            <Button fx:id="Packages" mnemonicParsing="false" onAction="#switchToVoyages" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Voyages">
-                <VBox.margin>
-                    <Insets top="20.0" />
-                </VBox.margin>
-            </Button>
-            <Button mnemonicParsing="false" onAction="#SwitchToHotels" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Hotels">
-                <VBox.margin>
-                    <Insets top="20.0" />
-                </VBox.margin>
-            </Button>
-            <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Excursions">
-                <VBox.margin>
-                    <Insets top="20.0" />
-                </VBox.margin>
-            </Button>
-            <Button mnemonicParsing="false" onAction="#SwitchToPosts" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Postes">
-                <VBox.margin>
-                    <Insets top="20.0" />
-                </VBox.margin>
-            </Button>
-            <Button mnemonicParsing="false" onAction="#switchToProfile" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Profile">
-                <VBox.margin>
-                    <Insets top="20.0" />
-                </VBox.margin>
-            </Button>
-            <Button mnemonicParsing="false" onAction="#deconnexion" prefHeight="50.0" prefWidth="230.0" styleClass="buttonDeconnexion" stylesheets="@css/Style.css" text="Déconnexion">
-                <VBox.margin>
-                    <Insets top="20.0" />
-                </VBox.margin>
-            </Button>
-        </children>
-    </VBox>
+    <children>
+        <!-- Sidebar -->
+        <VBox layoutX="-4.0" prefHeight="570.0" prefWidth="234.0" styleClass="vbox" stylesheets="@css/Style.css">
+            <children>
+                <ImageView fitHeight="88.0" fitWidth="124.0" pickOnBounds="true" preserveRatio="true">
+                    <VBox.margin>
+                        <Insets bottom="20.0" left="30.0" />
+                    </VBox.margin>
+                    <image>
+                        <Image url="@images/agence.png" />
+                    </image>
+                </ImageView>
+                <Button mnemonicParsing="false" onAction="#SwitchToAccueil" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Accueil" />
+                <Button fx:id="Packages" mnemonicParsing="false" onAction="#switchToVoyages" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Voyages">
+                    <VBox.margin>
+                        <Insets top="20.0" />
+                    </VBox.margin>
+                </Button>
+                <Button mnemonicParsing="false" onAction="#SwitchToHotels" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Hotels">
+                    <VBox.margin>
+                        <Insets top="20.0" />
+                    </VBox.margin>
+                </Button>
+                <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Excursions">
+                    <VBox.margin>
+                        <Insets top="20.0" />
+                    </VBox.margin>
+                </Button>
+                <Button mnemonicParsing="false" onAction="#SwitchToPosts" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Postes">
+                    <VBox.margin>
+                        <Insets top="20.0" />
+                    </VBox.margin>
+                </Button>
+                <Button mnemonicParsing="false" onAction="#switchToProfile" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Profile">
+                    <VBox.margin>
+                        <Insets top="20.0" />
+                    </VBox.margin>
+                </Button>
+                <Button mnemonicParsing="false" onAction="#deconnexion" prefHeight="50.0" prefWidth="230.0" styleClass="buttonDeconnexion" stylesheets="@css/Style.css" text="Déconnexion">
+                    <VBox.margin>
+                        <Insets top="20.0" />
+                    </VBox.margin>
+                </Button>
+            </children>
+        </VBox>
 
-    <!-- Offer Details Section -->
-    <VBox alignment="CENTER" layoutX="250.0" layoutY="20.0" prefWidth="600.0" spacing="10" stylesheets="@css/Style.css">
-        <children>
-            <Label fx:id="titleLabel" style="-fx-font-size: 18; -fx-font-weight: bold;" />
-            <Label fx:id="destinationLabel" />
-            <Label fx:id="descriptionLabel" />
-            <Label fx:id="departureDateLabel" />
-            <Label fx:id="returnDateLabel" />
-            <Label fx:id="priceLabel" />
-            <Label fx:id="availableSeatsLabel" />
-            <Button fx:id="reserveButton" onAction="#reserveOffer" text="Reserve Now" />
-            <Label fx:id="reservationStatusLabel" style="-fx-text-fill: green;" text="" />
-        </children>
-    </VBox>
-</children>
+        <!-- Offer Details Section -->
+        <VBox alignment="CENTER" layoutX="250.0" layoutY="20.0" prefWidth="600.0" spacing="10" stylesheets="@css/Style.css">
+            <children>
+                <Label fx:id="titleLabel" style="-fx-font-size: 18; -fx-font-weight: bold;" />
+                <Label fx:id="destinationLabel" />
+                <Label fx:id="descriptionLabel" />
+                <Label fx:id="departureDateLabel" />
+                <Label fx:id="returnDateLabel" />
+                <Label fx:id="priceLabel" />
+                <Label fx:id="availableSeatsLabel" />
+                <HBox spacing="10" alignment="CENTER">
+                    <Label text="Number of Seats:" />
+                    <Spinner fx:id="placesSpinner" min="1" max="10" initialValue="1" />
+                </HBox>
+                <Button fx:id="reserveButton" onAction="#reserveOffer" text="Reserve Now" />
+                <Label fx:id="reservationStatusLabel" style="-fx-text-fill: green;" text="" />
+            </children>
+        </VBox>
+    </children>
 </AnchorPane>
