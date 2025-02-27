@@ -213,7 +213,7 @@ public class PostsController {
 
     private void loadMorePosts() {
         try {
-            List<Posts> posts = postsService.fetchPosts(currentPostCount, POSTS_BATCH_SIZE);
+            List<Posts> posts = postsService.fetchPosts(currentPostCount, POSTS_BATCH_SIZE, SessionManager.getInstance().getCurrentUtilisateur().getUser_id());
             for (Posts post : posts) {
                 addPostToContainer(post, false);
             }
