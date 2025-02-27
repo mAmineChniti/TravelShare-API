@@ -117,7 +117,7 @@ public class HotelController {
         }
     }
 
-    private void loadHotels() {
+    void loadHotels() {
         try {
             List<Hotels> hotels = serviceHotels.ListAll();
             hotelContainer.getChildren().clear();
@@ -204,25 +204,17 @@ public class HotelController {
 
     private void updateHotel(Hotels hotel) {
         try {
-            // Charger le fichier FXML du formulaire de mise à jour
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/UpdateHotelForm.fxml"));
             Parent root = loader.load();
 
-            // Récupérer le contrôleur et passer l'hôtel sélectionné
             UpdateHotelController controller = loader.getController();
             controller.setSelectedHotel(hotel);
 
-            // Créer une nouvelle scène et une nouvelle fenêtre (pop-up)
-            Stage stage = new Stage();
+            Stage stage = (Stage) hotelContainer.getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.setTitle("Modifier l'hôtel");
-            stage.showAndWait(); // Afficher la fenêtre et attendre sa fermeture
-
-            // Rafraîchir la liste des hôtels après la mise à jour
-            loadHotels();
+            stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            System.err.println("Erreur lors de l'ouverture du formulaire de mise à jour : " + e.getMessage());
         }
     }
 
@@ -243,21 +235,14 @@ public class HotelController {
 
     private void openAddHotelForm() {
         try {
-            // Charger le fichier FXML du formulaire d'ajout
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AddHotelForm.fxml"));
             Parent root = loader.load();
 
-            // Créer une nouvelle scène et une nouvelle fenêtre (pop-up)
-            Stage stage = new Stage();
+            Stage stage = (Stage) hotelContainer.getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.setTitle("Ajouter un hôtel");
-            stage.showAndWait(); // Afficher la fenêtre et attendre sa fermeture
-
-            // Rafraîchir la liste des hôtels après l'ajout
-            loadHotels();
+            stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            System.err.println("Erreur lors de l'ouverture du formulaire d'ajout : " + e.getMessage());
         }
     }
 }

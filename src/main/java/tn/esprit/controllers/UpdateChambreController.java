@@ -1,11 +1,20 @@
 package tn.esprit.controllers;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import tn.esprit.entities.Chambres;
+import tn.esprit.entities.Hotels;
+import tn.esprit.entities.SessionManager;
 import tn.esprit.services.ServiceChambre;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class UpdateChambreController {
@@ -14,54 +23,113 @@ public class UpdateChambreController {
     private TextField numeroField;
 
     @FXML
-    private TextField typeField;
+    private ComboBox<String> typeComboBox;
 
     @FXML
     private TextField prixField;
 
-    @FXML
-    private TextField disponibleField;
-
     private Chambres selectedChambre;
-    private ServiceChambre serviceChambre = new ServiceChambre();
+    private Hotels selectedHotel;
+    private final ServiceChambre serviceChambre = new ServiceChambre();
+
+    @FXML
+    public void initialize() {
+        typeComboBox.getItems().addAll("simple", "double", "suite");
+    }
 
     public void setSelectedChambre(Chambres chambre) {
         this.selectedChambre = chambre;
-        // Remplir les champs avec les données de la chambre sélectionnée
         numeroField.setText(chambre.getNumero_chambre());
-        typeField.setText(chambre.getType_enu());
+        typeComboBox.setValue(chambre.getType_enu());
         prixField.setText(String.valueOf(chambre.getPrix_par_nuit()));
-        disponibleField.setText(String.valueOf(chambre.isDisponible()));
+    }
+
+    public void setSelectedHotel(Hotels hotel) {
+        this.selectedHotel = hotel;
     }
 
     @FXML
     private void handleSave() {
         try {
-            // Mettre à jour les données de la chambre
             selectedChambre.setNumero_chambre(numeroField.getText());
-            selectedChambre.setType_enu(typeField.getText());
+            selectedChambre.setType_enu(typeComboBox.getValue());
             selectedChambre.setPrix_par_nuit(Double.parseDouble(prixField.getText()));
-            selectedChambre.setDisponible(Boolean.parseBoolean(disponibleField.getText()));
 
-            // Appeler la méthode de mise à jour du service
             serviceChambre.update(selectedChambre);
-            System.out.println("Chambre mise à jour avec succès !");
 
-            // Fermer la fenêtre pop-up
+            // Navigate back to Chambre.fxml and refresh data
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Chambre.fxml"));
+            Parent root = loader.load();
+
+            ChambreController controller = loader.getController();
+            controller.setSelectedHotel(selectedHotel); // Reload the hotel data
+
             Stage stage = (Stage) numeroField.getScene().getWindow();
-            stage.close();
-        } catch (NumberFormatException e) {
-            System.err.println("Erreur de format : Le prix doit être un nombre.");
-        } catch (SQLException e) {
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (NumberFormatException | SQLException | IOException e) {
             e.printStackTrace();
-            System.err.println("Erreur lors de la mise à jour de la chambre : " + e.getMessage());
         }
     }
 
     @FXML
     private void handleCancel() {
-        // Fermer la fenêtre pop-up sans sauvegarder
-        Stage stage = (Stage) numeroField.getScene().getWindow();
-        stage.close();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Chambre.fxml"));
+            Parent root = loader.load();
+
+            ChambreController controller = loader.getController();
+            controller.setSelectedHotel(selectedHotel); // Reload the hotel data
+
+            Stage stage = (Stage) numeroField.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Navigation methods (same as before)
+    @FXML
+    private void SwitchToAccueil(ActionEvent event) {
+        switchScene(event, SessionManager.getInstance().getCurrentUtilisateur().getRole() == 1 ? "/AccueilAdmin.fxml" : "/Accueil.fxml");
+    }
+
+    @FXML
+    private void SwitchToVoyages(ActionEvent event) {
+        switchScene(event, "/Voyages.fxml");
+    }
+
+    @FXML
+    private void SwitchToHotels(ActionEvent event) {
+        switchScene(event, "/Hotel.fxml");
+    }
+
+    @FXML
+    private void SwitchToPosts(ActionEvent event) {
+        switchScene(event, "/Posts.fxml");
+    }
+
+    @FXML
+    private void switchToProfile(ActionEvent event) {
+        switchScene(event, "/ProfileUtilisateur.fxml");
+    }
+
+    @FXML
+    private void deconnexion(ActionEvent event) {
+        switchScene(event, "/Connecter.fxml");
+    }
+
+    private void switchScene(ActionEvent event, String fxmlFile) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

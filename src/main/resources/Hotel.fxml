@@ -1,49 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
 
 <AnchorPane prefHeight="550.0" prefWidth="850.0" styleClass="root" stylesheets="@css/Style.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.HotelController">
     <children>
+        <!-- Navigation Bar (Left Side) -->
         <VBox layoutX="-4.0" prefHeight="570.0" prefWidth="234.0" styleClass="vbox" stylesheets="@css/Style.css">
             <Button mnemonicParsing="false" onAction="#SwitchToAccueil" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Accueil" />
             <Button mnemonicParsing="false" onAction="#SwitchToVoyages" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Voyages">
-                <VBox.margin>
-                    <Insets top="20.0" />
-                </VBox.margin>
+                <VBox.margin><Insets top="20.0" /></VBox.margin>
             </Button>
             <Button mnemonicParsing="false" onAction="#SwitchToHotels" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Hotels">
-                <VBox.margin>
-                    <Insets top="20.0" />
-                </VBox.margin>
+                <VBox.margin><Insets top="20.0" /></VBox.margin>
             </Button>
             <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Excursions">
-                <VBox.margin>
-                    <Insets top="20.0" />
-                </VBox.margin>
+                <VBox.margin><Insets top="20.0" /></VBox.margin>
             </Button>
             <Button mnemonicParsing="false" onAction="#SwitchToPosts" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Postes">
-                <VBox.margin>
-                    <Insets top="20.0" />
-                </VBox.margin>
+                <VBox.margin><Insets top="20.0" /></VBox.margin>
             </Button>
             <Button mnemonicParsing="false" onAction="#switchToProfile" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Profile">
-                <VBox.margin>
-                    <Insets top="20.0" />
-                </VBox.margin>
+                <VBox.margin><Insets top="20.0" /></VBox.margin>
             </Button>
             <Button mnemonicParsing="false" onAction="#deconnexion" prefHeight="50.0" prefWidth="230.0" styleClass="buttonDeconnexion" stylesheets="@css/Style.css" text="Déconnexion">
-                <VBox.margin>
-                    <Insets top="20.0" />
-                </VBox.margin>
+                <VBox.margin><Insets top="20.0" /></VBox.margin>
             </Button>
         </VBox>
 
-        <!-- Button for adding hotels (only visible for admin users) -->
-        <Button fx:id="addHotelButton" layoutX="250.0" layoutY="10.0" style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold;" text="Ajouter un hôtel" visible="false" />
+        <!-- Main Content Area (Right Side) -->
+        <VBox layoutX="250.0" layoutY="10.0" prefWidth="580.0" spacing="10">
+            <!-- Add Hotel Button -->
+            <Button fx:id="addHotelButton" style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold;" text="Ajouter un hôtel" visible="false" />
 
-        <!-- Conteneur pour afficher les hôtels dynamiquement -->
-        <VBox fx:id="hotelContainer" layoutX="250.0" layoutY="50.0" prefHeight="500.0" prefWidth="580.0" style="-fx-padding: 10px; -fx-spacing: 10px;" />
+            <!-- Scrollable Hotel List -->
+            <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" prefHeight="490.0" vbarPolicy="AS_NEEDED">
+                <content>
+                    <VBox fx:id="hotelContainer" style="-fx-padding: 10px; -fx-spacing: 10px;" />
+                </content>
+            </ScrollPane>
+        </VBox>
     </children>
 </AnchorPane>
