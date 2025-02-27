@@ -15,13 +15,15 @@ public class dbCon {
 
     private dbCon() {
         try {
+            //gestionnaire de pilotes JDBC : gérer la connexion
             con = DriverManager.getConnection(URL, USER, PASS);
             System.out.println("Connected to the database!");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
-
+//static : je peux appele n'importe ou a travers le nom de la class
+    // singleton : me permet de faire une instance unique
     public static dbCon getInstance() {
         if (instance == null) {
             instance = new dbCon();
