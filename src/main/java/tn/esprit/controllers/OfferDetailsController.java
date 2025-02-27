@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import okhttp3.*;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import tn.esprit.entities.OffreReservations;
 import tn.esprit.entities.OffreVoyages;
@@ -35,8 +36,8 @@ public class OfferDetailsController {
     private Spinner<Integer> placesSpinner;
 
     private OffreVoyages currentOffer;
-    public static final String API_URL = "https://api.openai.com/v1/chat/completions";
-    public static final String OPENAI_API_KEY = Dotenv.load().get("OPENAI_API_KEY");
+    public static final String API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=";
+    public static final String GEMINI_API_KEY = Dotenv.load().get("GEMINI_API_KEY");
 
 
     @FXML
@@ -140,27 +141,34 @@ public class OfferDetailsController {
         availableSeatsLabel.setText("Seats: " + offer.getPlaces_disponibles());
 
         // Update spinner max value based on available places
-        placesSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, offer.getPlaces_disponibles(), 1));
+        placesSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, offer.getPlaces_disponibles(), 1));
         try {
             String activities = getActivitiesbyCountry(offer.getDestination());
-            activitiesLabel.setText("Activities: " + activities);
+            activitiesLabel.setText(activities);
         } catch (IOException e) {
             activitiesLabel.setText("Could not fetch activities.");
         }
     }
+
     public String getActivitiesbyCountry(String country) throws IOException {
         JSONObject request = new JSONObject();
-        request.put("model", "gpt-3.5-turbo");
-        request.put("store", true);
-        request.put("messages", new Object[]{new JSONObject().put("role", "user").put("content", "Describe to me in 500 characters maximum " + country + " and what are some activities I can do in " + country)});
+        JSONArray contents = new JSONArray();
+        JSONObject contentObject = new JSONObject();
+        JSONArray parts = new JSONArray();
+        JSONObject textPart = new JSONObject();
+
+        textPart.put("text", "Describe to me in 500 characters maximum " + country + " and what are some activities I can do in " + country);
+        parts.put(textPart);
+        contentObject.put("parts", parts);
+        contents.put(contentObject);
+        request.put("contents", contents);
 
         OkHttpClient client = new OkHttpClient();
         RequestBody body = RequestBody.create(request.toString(), MediaType.parse("application/json"));
         Request fetcher = new Request.Builder()
-                .url(API_URL)
+                .url(API_URL+GEMINI_API_KEY)
                 .post(body)
                 .addHeader("Content-Type", "application/json")
-                .addHeader("Authorization", "Bearer " + OPENAI_API_KEY)
                 .build();
 
         try (Response response = client.newCall(fetcher).execute()) {
@@ -177,13 +185,17 @@ public class OfferDetailsController {
             System.out.println("API Response: " + responseBody);
 
             JSONObject responseObject = new JSONObject(responseBody);
-            return responseObject.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
+            JSONArray candidates = responseObject.getJSONArray("candidates");
+            contentObject = candidates.getJSONObject(0).getJSONObject("content");
+            JSONArray partsArray = contentObject.getJSONArray("parts");
+            return partsArray.getJSONObject(0).getString("text");
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
             e.printStackTrace();
             return "Error fetching activities: " + e.getMessage();
         }
     }
+
     @FXML
     public void reserveOffer() {
         System.out.println("Reserve button clicked!");
@@ -229,7 +241,7 @@ public class OfferDetailsController {
             availableSeatsLabel.setText("Seats: " + currentOffer.getPlaces_disponibles());
 
             placesSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(
-                    1, currentOffer.getPlaces_disponibles(), 1));
+                    0, currentOffer.getPlaces_disponibles(), 1));
 
             reservationStatusLabel.setText("Reservation successful!");
             reservationStatusLabel.setStyle("-fx-text-fill: green;");
