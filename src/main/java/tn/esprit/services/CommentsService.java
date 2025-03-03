@@ -29,14 +29,11 @@ public class CommentsService implements IService<Comments> {
 
     @Override
     public void update(Comments comment) throws SQLException {
-        String req = "UPDATE comments SET post_id=?, commenter_id=?, comment=?, commented_at=?, updated_at=? WHERE comment_id=?";
+        String req = "UPDATE comments SET comment=?, updated_at=? WHERE comment_id=?";
         try (PreparedStatement ps = connection.prepareStatement(req)) {
-            ps.setInt(1, comment.getPost_id());
-            ps.setInt(2, comment.getCommenter_id());
-            ps.setString(3, comment.getComment());
-            ps.setDate(4, comment.getCommented_at());
-            ps.setDate(5, comment.getUpdated_at());
-            ps.setInt(6, comment.getComment_id());
+            ps.setString(1, comment.getComment());
+            ps.setDate(2, comment.getUpdated_at());
+            ps.setInt(3, comment.getComment_id());
             ps.executeUpdate();
         }
     }
