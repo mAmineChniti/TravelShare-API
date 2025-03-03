@@ -316,6 +316,7 @@ public class OfferDetailsController {
             if (pdfFile.exists()) {
                 Desktop.getDesktop().open(pdfFile);
             }
+            // catch
         } catch (Exception e) {
             e.printStackTrace();
         }
