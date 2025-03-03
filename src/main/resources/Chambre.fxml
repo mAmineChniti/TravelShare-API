@@ -5,6 +5,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -13,40 +15,47 @@
     <children>
         <!-- Barre de navigation -->
         <VBox layoutX="-4.0" prefHeight="570.0" prefWidth="234.0" styleClass="vbox" stylesheets="@css/Style.css">
-            <Button mnemonicParsing="false" onAction="#SwitchToAccueil" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Accueil" />
-            <Button mnemonicParsing="false" onAction="#SwitchToVoyages" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Voyages">
-                <VBox.margin><Insets top="20.0" /></VBox.margin>
-            </Button>
-            <Button mnemonicParsing="false" onAction="#SwitchToHotels" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Hotels">
-                <VBox.margin><Insets top="20.0" /></VBox.margin>
-            </Button>
-            <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Excursions">
-                <VBox.margin><Insets top="20.0" /></VBox.margin>
-            </Button>
-            <Button mnemonicParsing="false" onAction="#SwitchToPosts" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Postes">
-                <VBox.margin><Insets top="20.0" /></VBox.margin>
-            </Button>
-            <Button mnemonicParsing="false" onAction="#switchToProfile" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Profile">
-                <VBox.margin><Insets top="20.0" /></VBox.margin>
-            </Button>
-            <Button mnemonicParsing="false" onAction="#deconnexion" prefHeight="50.0" prefWidth="230.0" styleClass="buttonDeconnexion" stylesheets="@css/Style.css" text="Déconnexion">
-                <VBox.margin><Insets top="20.0" /></VBox.margin>
-            </Button>
+            <children>
+                <ImageView fitHeight="88.0" fitWidth="124.0" pickOnBounds="true" preserveRatio="true">
+                    <VBox.margin>
+                        <Insets bottom="20.0" left="30.0" />
+                    </VBox.margin>
+                    <image>
+                        <Image url="@images/agence.png" />
+                    </image>
+                </ImageView>
+                <Button mnemonicParsing="false" onAction="#SwitchToAccueil" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Accueil" />
+                <Button mnemonicParsing="false" onAction="#SwitchToVoyages" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Voyages">
+                    <VBox.margin><Insets top="20.0" /></VBox.margin>
+                </Button>
+                <Button mnemonicParsing="false" onAction="#SwitchToHotels" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Hotels">
+                    <VBox.margin><Insets top="20.0" /></VBox.margin>
+                </Button>
+                <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Excursions">
+                    <VBox.margin><Insets top="20.0" /></VBox.margin>
+                </Button>
+                <Button mnemonicParsing="false" onAction="#SwitchToPosts" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Postes">
+                    <VBox.margin><Insets top="20.0" /></VBox.margin>
+                </Button>
+                <Button mnemonicParsing="false" onAction="#switchToProfile" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Profile">
+                    <VBox.margin><Insets top="20.0" /></VBox.margin>
+                </Button>
+                <Button mnemonicParsing="false" onAction="#deconnexion" prefHeight="50.0" prefWidth="230.0" styleClass="buttonDeconnexion" stylesheets="@css/Style.css" text="Déconnexion">
+                    <VBox.margin><Insets top="20.0" /></VBox.margin>
+                </Button>
+            </children>
         </VBox>
 
         <!-- Conteneur principal des chambres -->
         <VBox layoutX="250.0" layoutY="20.0" prefHeight="500.0" prefWidth="580.0" style="-fx-padding: 10px; -fx-spacing: 10px;">
-
             <!-- Bouton pour ajouter une chambre (affiché uniquement si admin) -->
             <Button fx:id="btnAdd" onAction="#handleAddChambre" style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8px 20px;" text="Ajouter Chambre" visible="false" />
-
             <!-- Conteneur pour afficher les chambres dynamiquement (wrapped in a ScrollPane) -->
             <ScrollPane fx:id="chambreScrollPane" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="ALWAYS">
                 <content>
                     <VBox fx:id="chambreContainer" style="-fx-padding: 10px; -fx-spacing: 10px;" />
                 </content>
             </ScrollPane>
-
         </VBox>
     </children>
 </AnchorPane>
