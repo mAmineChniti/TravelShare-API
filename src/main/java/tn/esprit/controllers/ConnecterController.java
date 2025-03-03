@@ -7,6 +7,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -26,26 +27,55 @@ public class ConnecterController {
     private TextField passwordField1;
 
     @FXML
+    private Label emailError;
+
+    @FXML
+    private Label passwordError;
+
+    @FXML
     private Label u1;
 
     @FXML
     private Label u2;
 
+    @FXML
+    private Hyperlink forgetpassword;
+
     private final ServiceUtilisateur serviceUtilisateur = new ServiceUtilisateur();
+
 
     @FXML
     void btnsignin(ActionEvent event) {
         String email = emailField1.getText();
         String password = passwordField1.getText();
 
+        // Masquer les erreurs au début
+        emailError.setVisible(false);
+        passwordError.setVisible(false);
+
+        // Réinitialiser la bordure des champs
+        emailField1.getStyleClass().remove("text-field-error");
+        passwordField1.getStyleClass().remove("text-field-error");
+
         // Vérification des champs vides
-        if (email.isEmpty() || password.isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Champs manquants");
-            alert.setHeaderText("Tous les champs doivent être remplis !");
-            alert.setContentText("Veuillez remplir tous les champs avant de vous connecter.");
-            alert.showAndWait();
-            return; // Arrêter l'exécution si des champs sont vides
+        if (email.isEmpty() && password.isEmpty()) {
+            emailError.setText("Email requis.");
+            passwordError.setText("Mot de passe requis.");
+            emailError.setVisible(true); // Affiche l'erreur
+            passwordError.setVisible(true); // Affiche l'erreur
+            emailField1.getStyleClass().add("text-field-error"); // Ajoute la classe d'erreur
+            passwordField1.getStyleClass().add("text-field-error"); // Ajoute la classe d'erreur
+            return;
+        } else if (email.isEmpty()) {
+            emailError.setText("Email requis.");
+            emailError.setVisible(true); // Affiche l'erreur
+            emailField1.getStyleClass().add("text-field-error"); // Ajoute la classe d'erreur
+            return;
+        } else if (password.isEmpty()) {
+            passwordError.setText("Mot de passe requis.");
+            passwordError.setVisible(true); // Affiche l'erreur
+            passwordField1.getStyleClass().add("text-field-error"); // Ajoute la classe d'erreur
+            return;
         }
 
         try {
@@ -80,19 +110,12 @@ public class ConnecterController {
                 stage.setScene(new Scene(root));
                 stage.show();
 
-                // Afficher un message de bienvenue
-                /*Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Connexion réussie");
-                alert.setHeaderText("Bienvenue, " + utilisateur.getName() + " !");
-                alert.setContentText("Vous êtes maintenant connecté.");
-                alert.showAndWait();*/
-
             } else {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Échec de connexion");
-                alert.setHeaderText("Email ou mot de passe incorrect !");
-                alert.setContentText("Veuillez vérifier vos informations et réessayer.");
-                alert.showAndWait();
+                // Si l'authentification échoue
+                emailError.setText("Email ou mot de passe incorrect !");
+                emailError.setVisible(true); // Affiche l'erreur
+                passwordError.setText("Email ou mot de passe incorrect !");
+                passwordError.setVisible(true); // Affiche l'erreur
                 return;
             }
 
@@ -104,6 +127,20 @@ public class ConnecterController {
             alert.setContentText("Veuillez réessayer plus tard.");
             alert.showAndWait();
         }
+    }
+
+    @FXML
+    void forgetpassword(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ForgetPassword.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
 

@@ -9,22 +9,37 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import tn.esprit.entities.Reclamation;
 import tn.esprit.entities.SessionManager;
 import tn.esprit.entities.Utilisateur;
 import tn.esprit.services.ServiceUtilisateur;
 import tn.esprit.services.ServiceReclamation;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class ProfileUtilisateurController {
 
     @FXML
-    private TextField addressField;
+    private ComboBox<String> countryComboBox;
 
     @FXML
     private TextArea descriptionField;
@@ -42,22 +57,34 @@ public class ProfileUtilisateurController {
     private TextArea objetField;
 
     @FXML
-    private TextField passwordField;
+    private PasswordField passwordField;
+
+    @FXML
+    private PasswordField confirmedPasswordField;
 
     @FXML
     private TextField phoneField;
 
     @FXML
+    private Label passwordError;
+
+    @FXML
+    private Label confirmedPasswordError;
+
+    @FXML
     private Hyperlink deleteProfileLink;
 
     @FXML
-    private ImageView showPasswordIcon;
+    private ImageView profileImageView;
 
     @FXML
     private Button saveButton;
 
     @FXML
     private Hyperlink listeRec;
+
+    @FXML
+    private Button changerPhoto;
 
     private final ServiceUtilisateur serviceUtilisateur = new ServiceUtilisateur();
     private Utilisateur utilisateur;
@@ -115,54 +142,98 @@ public class ProfileUtilisateurController {
 
     @FXML
     void updateProfile(ActionEvent event) {
-        // Récupérer les valeurs des champs
-        String name = nameField.getText();
-        String last_name = lastnameField.getText();
-        String email = emailField.getText();
-        String password = passwordField.getText();
-        String phone = phoneField.getText();
-        String address = addressField.getText();
+        // Récupérer l'utilisateur connecté
+        SessionManager session = SessionManager.getInstance();
+        Utilisateur currentUser = session.getCurrentUtilisateur();
+        int user_id = currentUser.getUser_id();
 
-        // Valider les champs (vérification de base)
-        if (name.isEmpty() || last_name.isEmpty() || email.isEmpty() || password.isEmpty()
-                || phone.isEmpty() || address.isEmpty()) {
-            // Afficher une alerte si un champ est vide
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Erreur de validation");
-            alert.setHeaderText("Tous les champs doivent être remplis.");
-            alert.showAndWait();
-            return;
+        // Masquer les erreurs et réinitialiser les styles au début
+        passwordError.setVisible(false);
+        confirmedPasswordError.setVisible(false);
+        passwordField.getStyleClass().remove("text-field-error");
+        confirmedPasswordField.getStyleClass().remove("text-field-error");
+
+        // Récupérer les valeurs des champs (laisser ceux qui ne sont pas modifiés vides)
+        String name = nameField.getText().isEmpty() ? currentUser.getName() : nameField.getText();
+        String last_name = lastnameField.getText().isEmpty() ? currentUser.getLast_name() : lastnameField.getText();
+        String email = emailField.getText().isEmpty() ? currentUser.getEmail() : emailField.getText();
+        String password = passwordField.getText();
+        String confirmedPassword = confirmedPasswordField.getText();
+        String phone = phoneField.getText().isEmpty() ? String.valueOf(currentUser.getPhone_num()) : phoneField.getText();
+        String address = countryComboBox.getValue().isEmpty() ? currentUser.getAddress() : countryComboBox.getValue();
+
+        boolean hasError = false;
+
+        // Vérification des champs de mot de passe et de confirmation
+        if (!password.isEmpty() || !confirmedPassword.isEmpty()) {
+            if (password.isEmpty()) {
+                passwordError.setText("Mot de passe requis.");
+                passwordError.setVisible(true);
+                passwordField.getStyleClass().add("text-field-error");
+                hasError = true;
+            }
+            if (confirmedPassword.isEmpty()) {
+                confirmedPasswordError.setText("Confirmation du mot de passe requise.");
+                confirmedPasswordError.setVisible(true);
+                confirmedPasswordField.getStyleClass().add("text-field-error");
+                hasError = true;
+            }
+            if (!password.equals(confirmedPassword)) {
+                passwordError.setText("Les mots de passe ne correspondent pas !");
+                passwordError.setVisible(true);
+                passwordField.getStyleClass().add("text-field-error");
+                confirmedPasswordField.getStyleClass().add("text-field-error");
+                hasError = true;
+            }
         }
 
-        // Récupérer l'utilisateur connecté et son ID
-        SessionManager session = SessionManager.getInstance();
-        Utilisateur currentUser = session.getCurrentUtilisateur(); // Correction ici
-        int user_id = currentUser.getUser_id(); // Extraire l'ID
-
-        // Créer un utilisateur avec les nouvelles données
+        // Créer un objet utilisateur avec les nouvelles valeurs
         Utilisateur utilisateur = new Utilisateur(user_id, name, last_name, email, password, Integer.parseInt(phone), address);
 
-        // Appeler la méthode update de ServiceUtilisateur pour enregistrer les modifications dans la base
-        try {
-            serviceUtilisateur.update(utilisateur);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        // Si des erreurs existent, ne pas envoyer les données
+        if (hasError) {
+            return; // Ne pas continuer l'exécution si des erreurs sont présentes
         }
 
-        // Après la mise à jour, rediriger l'utilisateur vers la page de profil avec les nouvelles informations
+        // Mettre à jour l'utilisateur dans la base de données
         try {
-            // Charger la page de profil avec les informations mises à jour
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Accueil.fxml"));
-            Parent root = loader.load();
+            serviceUtilisateur.update(utilisateur);
 
-            // Rediriger vers la page de profil
-            Stage stage = (Stage) saveButton.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            // Mettre à jour les informations dans l'interface
+            currentUser.setName(name);
+            currentUser.setLast_name(last_name);
+            currentUser.setPhone_num(Integer.parseInt(phone));
+            currentUser.setAddress(address);
 
-        } catch (Exception e) {
+            // Mettre à jour les champs affichés
+            nameField.setText(name);
+            lastnameField.setText(last_name);
+            phoneField.setText(phone);
+            countryComboBox.setValue(address);
+
+            // Redirection selon le cas
+            if (!password.isEmpty()) {
+                redirectTo("Connecter.fxml"); // Redirection vers connexion si le mot de passe a changé
+            } else {
+                redirectTo("ProfileUtilisateur.fxml"); // Rester sur la page profil sinon
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
+    // Méthode pour changer de scène
+    private void redirectTo(String fxmlFile) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/" + fxmlFile));
+            Parent root = loader.load();
+            Stage stage = (Stage) saveButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @FXML
     void envoyerReclamation(ActionEvent event) {
@@ -200,7 +271,7 @@ public class ProfileUtilisateurController {
                     serviceReclamation.add(reclamation);  // Méthode pour ajouter la réclamation
 
                     // Rediriger vers la page d'accueil après envoi
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/Accueil.fxml"));
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListReclamations.fxml"));
                     Parent root = loader.load();
                     Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();  // Récupérer la fenêtre actuelle
                     stage.setScene(new Scene(root));  // Charger la nouvelle scène
@@ -228,9 +299,12 @@ public class ProfileUtilisateurController {
 
     }
 
+
     @FXML
     void initialize() {
         try {
+            loadCountries(); // Charger la liste des pays
+            loadUserProfile();
             SessionManager session = SessionManager.getInstance();
             utilisateur = session.getCurrentUtilisateur(); // Récupérer l'utilisateur connecté
 
@@ -238,9 +312,20 @@ public class ProfileUtilisateurController {
                 nameField.setText(utilisateur.getName());
                 lastnameField.setText(utilisateur.getLast_name());
                 emailField.setText(utilisateur.getEmail());
-                passwordField.setText(utilisateur.getPassword());
                 phoneField.setText(String.valueOf(utilisateur.getPhone_num()));
-                addressField.setText(utilisateur.getAddress());
+                countryComboBox.setValue(utilisateur.getAddress());
+
+                // Récupérer et afficher la photo de profil
+                byte[] photoData = utilisateur.getPhoto();
+                if (photoData != null && photoData.length > 0) {
+                    // Convertir le tableau d'octets en Image
+                    Image profileImage = new Image(new ByteArrayInputStream(photoData));
+                    profileImageView.setImage(profileImage);
+                } else {
+                    // Charger l’image par défaut depuis les ressources
+                    Image defaultImage = new Image(getClass().getResource("/images/default_photo.png").toExternalForm());
+                    profileImageView.setImage(defaultImage);
+                }
             } else {
                 System.out.println("Utilisateur non trouvé.");
             }
@@ -248,6 +333,121 @@ public class ProfileUtilisateurController {
             System.out.println("Erreur lors du chargement de l'utilisateur : " + e.getMessage());
         }
     }
+
+
+    private void loadCountries() {
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            HttpGet request = new HttpGet("https://restcountries.com/v3.1/all");
+
+            // Exécuter la requête
+            CloseableHttpResponse response = client.execute(request);
+
+            // Vérifier le code de statut de la réponse (HttpResponse.getCode())
+            if (response.getCode() == 200) {
+                // Si la requête réussie (200 OK), parser la réponse
+                String jsonResponse = null;
+                try {
+                    jsonResponse = EntityUtils.toString(response.getEntity());
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
+
+                // Traiter les données JSON
+                JSONArray countriesArray = new JSONArray(jsonResponse);
+                List<String> countryNames = new ArrayList<>();
+
+                for (int i = 0; i < countriesArray.length(); i++) {
+                    JSONObject countryObject = countriesArray.getJSONObject(i);
+                    JSONObject nameObject = countryObject.getJSONObject("name");
+                    String countryName = nameObject.getString("common"); // Nom du pays
+                    countryNames.add(countryName);
+                }
+
+                // Trier la liste des pays par ordre alphabétique
+                countryNames.sort(String::compareTo);
+
+                // Ajouter les pays à ton ComboBox
+                countryComboBox.getItems().addAll(countryNames);
+            } else {
+                // Gérer une erreur si le statut n'est pas OK
+                System.out.println("Erreur lors de la récupération des pays. Code d'erreur: " + response.getCode());
+            }
+        } catch (IOException e) {
+            // Gestion des exceptions d'IO
+            e.printStackTrace();
+        }
+    }
+
+
+    @FXML
+    void changerPhoto(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        SessionManager session = SessionManager.getInstance();
+        Utilisateur currentUtilisateur = session.getCurrentUtilisateur();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg"));
+
+        File selectedFile = fileChooser.showOpenDialog(null);
+        if (selectedFile != null) {
+            try {
+                // Lire le fichier et le convertir en byte[]
+                byte[] photoData = Files.readAllBytes(selectedFile.toPath());
+
+                // Afficher l'image à partir du chemin local (facultatif, juste pour la prévisualisation)
+                Image newImage = new Image(new FileInputStream(selectedFile));
+                profileImageView.setImage(newImage);  // Afficher l'image à partir du chemin local
+
+                // Mettre à jour la photo dans la base de données
+                ServiceUtilisateur serviceUtilisateur = new ServiceUtilisateur();
+                serviceUtilisateur.updatePhoto(currentUtilisateur.getUser_id(), photoData);  // Mettre à jour la BDD avec le tableau d'octets
+
+                // Mettre à jour l'image dans l'objet utilisateur
+                currentUtilisateur.setPhoto(photoData);  // Mettez à jour l'image dans l'objet utilisateur
+
+                showAlert(Alert.AlertType.INFORMATION, "Succès", "Photo de profil mise à jour avec succès !");
+            } catch (IOException e) {
+                e.printStackTrace();
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de lire le fichier image.");
+            } catch (SQLException e) {
+                e.printStackTrace();
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de mettre à jour la photo.");
+            }
+        }
+    }
+
+    private void loadUserProfile() {
+        // Vérifier si un utilisateur est connecté
+        SessionManager session = SessionManager.getInstance();
+        Utilisateur user = session.getCurrentUtilisateur();
+
+        if (user != null) {
+            // Vérifier si la photo n'est pas nulle ou vide
+            if (user.getPhoto() != null && user.getPhoto().length > 0) {
+                try {
+                    // Créer un flux d'entrée à partir du tableau d'octets pour charger l'image
+                    Image userImage = new Image(new ByteArrayInputStream(user.getPhoto()));
+                    profileImageView.setImage(userImage);
+                } catch (Exception e) {
+                    System.out.println("Erreur lors du chargement de l'image de profil : " + e.getMessage());
+                }
+            } else {
+                // Si aucune photo n'est enregistrée, utiliser une image par défaut
+                // Définir une URL par défaut pour l'image si vous n'avez pas DEFAULT_PHOTO_URL
+                String defaultPhotoUrl = "https://cdn-icons-png.flaticon.com/512/9187/9187604.png"; // Exemple d'URL par défaut
+                profileImageView.setImage(new Image(defaultPhotoUrl));
+            }
+        }
+    }
+
+
+    // Méthode pour afficher les alertes
+    private void showAlert(Alert.AlertType type, String titre, String message) {
+        Alert alert = new Alert(type);
+        alert.setTitle(titre);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
 
     @FXML
     void deconnexion(ActionEvent event) {
@@ -275,8 +475,54 @@ public class ProfileUtilisateurController {
         }
     }
 
+    public void SwitchToPosts(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Posts.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @FXML
-    void togglePasswordVisibility(MouseEvent event) {
+    public void SwitchToVoyages(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Voyages.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void SwitchToHotels(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Hotel.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void SwitchToExcursion(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListExcursionGuide.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

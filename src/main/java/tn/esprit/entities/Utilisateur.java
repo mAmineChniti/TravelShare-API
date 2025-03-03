@@ -1,11 +1,17 @@
 package tn.esprit.entities;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
 
 public class Utilisateur {
     private int user_id, phone_num;
     private String name, last_name, email, password, address;
     private byte role;
+    private byte[] photo;
 
     // Relation OneToMany avec Reclamation
     // Relation bidirectionnelle avec Reclamation
@@ -14,6 +20,7 @@ public class Utilisateur {
     // Constructeur par défaut
     public Utilisateur() {
         this.role = 0;
+        this.photo = loadDefaultPhoto(); // Charger l'image par défaut au lieu de null
     }
 
     // Constructeur paramétré (y compris l'ID)
@@ -26,6 +33,7 @@ public class Utilisateur {
         this.phone_num = phone_num;
         this.address = address;
         this.role = 0;
+        this.photo = loadDefaultPhoto(); // Charger l'image par défaut au lieu de null
     }
 
     // Constructeur paramétré (sans l'ID)
@@ -37,6 +45,7 @@ public class Utilisateur {
         this.phone_num = phone_num;
         this.address = address;
         this.role = 0;
+        this.photo = loadDefaultPhoto();
     }
 
     // Getters et Setters
@@ -76,6 +85,15 @@ public class Utilisateur {
 
     public void setRole(byte role) { this.role = role; }
 
+    public byte[] getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(byte[] photo) {
+        this.photo = photo; // Permet de stocker `null` si aucune photo n'est définie
+    }
+
+
     // Constructeurs, getters et setters (inclure reclamations)
     public List<Reclamation> getReclamations() { return reclamations; }
 
@@ -93,7 +111,33 @@ public class Utilisateur {
                 ", phone_num=" + phone_num + '\'' +
                 ", address='" + address + '\'' +
                 ", role=" + role +
+                ", photo=" + photo +
                 '}';
     }
+
+    // Charger l'image par défaut en byte[]
+    private byte[] loadDefaultPhoto() {
+        // Utiliser un chemin relatif basé sur les ressources du classpath
+        String defaultPhotoPath = "images/default_photo.png"; // Répertoire de l'image dans resources
+
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(defaultPhotoPath);
+             ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            if (inputStream == null) {
+                System.err.println("Erreur : l'image par défaut n'a pas été trouvée !");
+                return null;
+            }
+
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                baos.write(buffer, 0, bytesRead);
+            }
+            return baos.toByteArray(); // Retourner l'image en byte[]
+        } catch (IOException e) {
+            System.err.println("Erreur lors du chargement de l'image par défaut : " + e.getMessage());
+            return null;
+        }
+    }
+
 }
 

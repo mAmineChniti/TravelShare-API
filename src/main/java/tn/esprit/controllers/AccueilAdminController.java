@@ -8,7 +8,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import tn.esprit.entities.Utilisateur;
 import tn.esprit.services.ServiceUtilisateur;
@@ -20,7 +23,7 @@ import java.util.List;
 public class AccueilAdminController {
 
     @FXML
-    private ListView<String> listuser;
+    private ListView<Utilisateur> listuser;
 
     private final ServiceUtilisateur serviceUtilisateur = new ServiceUtilisateur();
 
@@ -30,28 +33,45 @@ public class AccueilAdminController {
             // Récupérer la liste des utilisateurs depuis le service
             List<Utilisateur> utilisateurs = serviceUtilisateur.ListAll();
 
-            // Créer une liste observable pour la ListView en format String (excluant user_id et role)
-            ObservableList<String> observableList = FXCollections.observableArrayList();
+            // Créer une ObservableList avec les utilisateurs
+            ObservableList<Utilisateur> observableList = FXCollections.observableArrayList(utilisateurs);
 
-            for (Utilisateur utilisateur : utilisateurs) {
-                // Créer une chaîne représentant chaque utilisateur sans user_id et role
-                String userDisplay = "Nom: " + utilisateur.getName() +
-                        ", Prénom: " + utilisateur.getLast_name() +
-                        ", Email: " + utilisateur.getEmail() +
-                        ", Téléphone: " + utilisateur.getPhone_num() +
-                        ", Adresse: " + utilisateur.getAddress();
+            // Personnaliser l'affichage dans la ListView
+            listuser.setCellFactory(lv -> new ListCell<Utilisateur>() {
+                @Override
+                protected void updateItem(Utilisateur utilisateur, boolean empty) {
+                    super.updateItem(utilisateur, empty);
 
-                // Ajouter l'utilisateur sous forme de chaîne dans la liste observable
-                observableList.add(userDisplay);
-            }
+                    if (empty || utilisateur == null) {
+                        setText(null);
+                        setGraphic(null);
+                    } else {
+                        // Créer un HBox pour simuler des colonnes
+                        HBox hbox = new HBox(10);
 
-            // Affecter la liste observable à la ListView
+                        // Créer des Labels pour chaque colonne
+                        Label labelNom = new Label(utilisateur.getName());
+                        Label labelPrenom = new Label(utilisateur.getLast_name());
+                        Label labelEmail = new Label(utilisateur.getEmail());
+                        Label labelTelephone = new Label(String.valueOf(utilisateur.getPhone_num()));
+                        Label labelAdresse = new Label(utilisateur.getAddress());
+
+                        // Ajouter les Labels au HBox
+                        hbox.getChildren().addAll(labelNom, labelPrenom, labelEmail, labelTelephone, labelAdresse);
+
+                        // Ajouter le HBox au ListCell
+                        setGraphic(hbox);
+                    }
+                }
+            });
+
+            // Affecter l'ObservableList à la ListView
             listuser.setItems(observableList);
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
     @FXML
     public void SwitchToVoyages(ActionEvent actionEvent) {
         try {

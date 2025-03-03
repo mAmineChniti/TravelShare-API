@@ -23,6 +23,12 @@
     -fx-font-size: 13px;
 }
 
+.text-field-error {
+    -fx-border-color: red;
+    -fx-border-width: 1px;
+    -fx-border-radius: 3px;
+}
+
 .imageAccueil {
     -fx-background-image: url("../images/image1.jpg");
     -fx-background-size: cover;
@@ -80,3 +86,69 @@
     -fx-text-fill: #0598ff;
     -fx-font-size: 13px;
 }
+
+/* Style pour la ListView */
+.list-view {
+    -fx-background-color: white;
+    -fx-border-color: #87CEEB; /* Bordure grise */
+    -fx-border-width: 2px; /* Épaisseur de la bordure */
+}
+
+/* Style des cellules */
+.list-view .cell {
+    -fx-background-color: white; /* Fond blanc */
+    -fx-border-color: #ddd; /* Bordure légère entre les cellules */
+    -fx-border-width: 0 0 1px 0; /* Ligne seulement en bas */
+    -fx-padding: 10px;
+    -fx-text-fill: white; /* Texte noir */
+
+}
+
+/* Cellule sélectionnée */
+.list-view .cell:selected {
+    -fx-background-color: #87CEEB; /* Bleu ciel */
+    -fx-text-fill: white; /* Texte blanc */
+    -fx-font-weight: bold;
+}
+
+/* Focus sur la cellule sélectionnée */
+.list-view .cell:focused {
+    -fx-background-color: #87CEEB; /* Bleu plus foncé */
+    -fx-text-fill: white;
+}
+
+/* Style du scrollbar (curseur de défilement) */
+.list-view .scroll-bar:vertical .thumb {
+    -fx-background-color: #87CEEB; /* Curseur en bleu ciel */
+}
+
+.list-view .scroll-bar:vertical .track {
+    -fx-background-color: #f0f0f0; /* Fond du scrollbar */
+}
+
+/* Activer le scroll horizontal */
+.list-view {
+    -fx-hbar-policy: always; /* Toujours afficher la barre de défilement horizontale */
+}
+
+/* Style du scrollbar horizontal */
+.list-view .scroll-bar:horizontal .thumb {
+    -fx-background-color: #87CEEB; /* Curseur horizontal en bleu ciel */
+}
+
+.list-view .scroll-bar:horizontal .track {
+    -fx-background-color: #f0f0f0; /* Fond du scrollbar */
+}
+
+/* Flèches du scrollbar */
+.list-view .scroll-bar:horizontal .increment-button,
+.list-view .scroll-bar:horizontal .decrement-button {
+    -fx-background-color: #87CEEB;
+}
+
+.list-view .scroll-bar:horizontal .increment-arrow,
+.list-view .scroll-bar:horizontal .decrement-arrow {
+    -fx-background-color: white; /* Flèches blanches */
+}
+
+

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
@@ -25,12 +26,12 @@
                                 <Font size="13.0" />
                             </font>
                         </TextField>
-                        <TextField fx:id="passwordField1" layoutX="196.0" layoutY="288.0" promptText="Password" styleClass="text-field" stylesheets="@css/Style.css" AnchorPane.bottomAnchor="250.0" AnchorPane.leftAnchor="180.0">
+                        <TextField fx:id="passwordField1" layoutX="180.0" layoutY="284.0" promptText="Password" styleClass="text-field" stylesheets="@css/Style.css" AnchorPane.bottomAnchor="235.2" AnchorPane.leftAnchor="180.0">
                             <font>
                                 <Font size="13.0" />
                             </font>
                         </TextField>
-                        <Button layoutX="192.0" layoutY="343.0" mnemonicParsing="false" onAction="#btnsignin" prefHeight="30.0" prefWidth="115.0" stylesheets="@css/Style.css" text="Se Connecter" textFill="WHITE">
+                        <Button layoutX="192.0" layoutY="364.0" mnemonicParsing="false" onAction="#btnsignin" prefHeight="30.0" prefWidth="115.0" stylesheets="@css/Style.css" text="Se Connecter" textFill="WHITE">
                             <font>
                                 <Font size="15.0" />
                             </font></Button>
@@ -39,7 +40,7 @@
                                 <Image url="@images/email.png" />
                             </image>
                         </ImageView>
-                        <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="133.0" layoutY="268.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="250.0" AnchorPane.leftAnchor="125.0">
+                        <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="125.0" layoutY="285.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="235.39999999999998" AnchorPane.leftAnchor="125.0">
                             <image>
                                 <Image url="@images/verrouillage.png" />
                             </image>
@@ -49,6 +50,13 @@
                         <Image url="@images/utilisateurs.png" />
                      </image>
                   </ImageView>
+                  <Label fx:id="emailError" layoutX="180.0" layoutY="257.0" text="Label" textFill="#e12c29" visible="false" AnchorPane.bottomAnchor="275.79999999999995" AnchorPane.leftAnchor="180.0" />
+                  <Label fx:id="passwordError" layoutX="180.0" layoutY="324.0" text="Label" textFill="#e12c29" visible="false" AnchorPane.bottomAnchor="208.79999999999995" AnchorPane.leftAnchor="180.0" />
+                  <Hyperlink fx:id="forgetpassword" layoutX="174.0" layoutY="428.0" onAction="#forgetpassword" text="Mot de passe oublié?" textFill="#0598ff">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Hyperlink>
                     </children>
                 </AnchorPane>
                 <AnchorPane fx:id="layer2" layoutY="-27.0" prefHeight="577.0" prefWidth="362.0" styleClass="imageAccueil" stylesheets="@css/Style.css">

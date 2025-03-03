@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
@@ -17,80 +17,88 @@
             <children>
                 <AnchorPane fx:id="layer1" layoutX="352.0" prefHeight="550.0" prefWidth="500.0" styleClass="root" stylesheets="@css/Style.css">
                     <children>
-                  <Label layoutX="52.0" layoutY="39.0" text="Créez votre compte dès maintenant !" textFill="#0598ff" AnchorPane.leftAnchor="52.0" AnchorPane.topAnchor="40.0">
+                  <Label layoutX="52.0" layoutY="22.0" text="Créez votre compte dès maintenant !" textFill="#0598ff" AnchorPane.leftAnchor="52.0" AnchorPane.topAnchor="22.0">
                      <font>
                         <Font size="25.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="nameField" layoutX="181.0" layoutY="142.0" promptText="Name" stylesheets="@css/Style.css" AnchorPane.bottomAnchor="400.0" AnchorPane.leftAnchor="180.0">
+                  <TextField fx:id="nameField" layoutX="178.0" layoutY="69.0" promptText="Name" stylesheets="@css/Style.css" AnchorPane.bottomAnchor="450.2" AnchorPane.leftAnchor="180.0">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </TextField>
-                  <TextField fx:id="emailField" layoutX="196.0" layoutY="238.0" promptText="Email" styleClass="text-field" stylesheets="@css/Style.css" AnchorPane.bottomAnchor="300.0" AnchorPane.leftAnchor="180.0">
+                  <TextField fx:id="emailField" layoutX="180.0" layoutY="189.0" promptText="Email" styleClass="text-field" stylesheets="@css/Style.css" AnchorPane.bottomAnchor="330.2" AnchorPane.leftAnchor="180.0">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </TextField>
-                  <TextField fx:id="phoneField" layoutX="359.0" layoutY="259.0" promptText="Phone" styleClass="text-field" stylesheets="@css/Style.css" AnchorPane.bottomAnchor="200.0" AnchorPane.leftAnchor="180.0">
+                  <TextField fx:id="phoneField" layoutX="180.0" layoutY="380.0" promptText="Phone" styleClass="text-field" stylesheets="@css/Style.css" AnchorPane.bottomAnchor="139.2" AnchorPane.leftAnchor="180.0">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </TextField>
-                  <PasswordField fx:id="passwordField" promptText="Password" styleClass="text-field" stylesheets="@css/Style.css" AnchorPane.bottomAnchor="250.0" AnchorPane.leftAnchor="180.0">
+                  <PasswordField fx:id="passwordField" layoutX="180.0" layoutY="252.0" promptText="Password" styleClass="text-field" stylesheets="@css/Style.css" AnchorPane.bottomAnchor="267.2" AnchorPane.leftAnchor="180.0">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </PasswordField>
-                  <TextField fx:id="addressField" layoutX="203.0" layoutY="375.0" promptText="Address" styleClass="text-field" stylesheets="@css/Style.css" AnchorPane.bottomAnchor="150.0" AnchorPane.leftAnchor="180.0">
-                     <font>
-                        <Font size="13.0" />
-                     </font>
-                  </TextField>
-                        <Button layoutX="210.0" layoutY="433.0" mnemonicParsing="false" onAction="#sinscrire" prefHeight="30.0" prefWidth="80.0" stylesheets="@css/Style.css" text="S'inscrire" textFill="WHITE">
+                        <Button layoutX="218.0" layoutY="504.0" mnemonicParsing="false" onAction="#sinscrire" prefHeight="30.0" prefWidth="80.0" stylesheets="@css/Style.css" text="S'inscrire" textFill="WHITE">
                      <font>
                         <Font size="15.0" />
                      </font></Button>
-                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="127.0" layoutY="121.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="400.0" AnchorPane.leftAnchor="125.0">
+                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="125.0" layoutY="71.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="449.4" AnchorPane.leftAnchor="125.0">
                      <image>
                         <Image url="@images/utilisateur.png" />
                      </image>
                   </ImageView>
-                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="127.0" layoutY="172.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="350.0" AnchorPane.leftAnchor="125.0">
+                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="125.0" layoutY="129.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="391.4" AnchorPane.leftAnchor="125.0">
                      <image>
                         <Image url="@images/groupe-dutilisateurs.png" />
                      </image>
                   </ImageView>
-                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="114.0" layoutY="227.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="300.0" AnchorPane.leftAnchor="125.0">
+                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="125.0" layoutY="189.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="331.4" AnchorPane.leftAnchor="125.0">
                      <image>
                         <Image url="@images/email.png" />
                      </image>
                   </ImageView>
-                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="133.0" layoutY="268.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="250.0" AnchorPane.leftAnchor="125.0">
+                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="125.0" layoutY="253.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="267.4" AnchorPane.leftAnchor="125.0">
                      <image>
                         <Image url="@images/verrouillage.png" />
                      </image>
                   </ImageView>
-                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="125.0" layoutY="328.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="200.0" AnchorPane.leftAnchor="125.0">
+                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="125.0" layoutY="381.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="139.39999999999998" AnchorPane.leftAnchor="125.0">
                      <image>
                         <Image url="@images/appel.png" />
                      </image>
                   </ImageView>
-                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="103.0" layoutY="285.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="150.0" AnchorPane.leftAnchor="125.0">
+                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="125.0" layoutY="444.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="76.39999999999998" AnchorPane.leftAnchor="125.0">
                      <image>
                         <Image url="@images/international.png" />
                      </image>
                   </ImageView>
-                  <Hyperlink layoutX="180.0" layoutY="488.0" text="Mot de passe oublié?" textFill="#0598ff">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                  </Hyperlink>
-                  <TextField fx:id="lastnameField" layoutX="234.0" layoutY="176.0" promptText="LastName" stylesheets="@css/Style.css" AnchorPane.bottomAnchor="350.0" AnchorPane.leftAnchor="180.0">
+                  <TextField fx:id="lastnameField" layoutX="178.0" layoutY="129.0" promptText="LastName" stylesheets="@css/Style.css" AnchorPane.bottomAnchor="390.2" AnchorPane.leftAnchor="180.0">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </TextField>
+                  <Label fx:id="nameError" layoutX="180.0" layoutY="100.0" text="Label" textFill="#e12c29" visible="false" AnchorPane.leftAnchor="180.0" />
+                  <Label fx:id="lastNameError" layoutX="180.0" layoutY="160.0" text="Label" textFill="#e12c29" visible="false" AnchorPane.leftAnchor="180.0" />
+                  <Label fx:id="emailError" layoutX="180.0" layoutY="219.0" text="Label" textFill="#e12c29" visible="false" AnchorPane.leftAnchor="180.0" />
+                  <Label fx:id="passwordError" layoutX="180.0" layoutY="282.0" text="Label" textFill="#e12c29" visible="false" AnchorPane.leftAnchor="180.0" />
+                  <PasswordField fx:id="confirmedPasswordField" layoutX="180.0" layoutY="314.0" promptText="Confirmed Password" styleClass="text-field" stylesheets="@css/Style.css" AnchorPane.leftAnchor="180.0">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </PasswordField>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="125.0" layoutY="315.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@images/verrouillage.png" />
+                     </image>
+                  </ImageView>
+                  <Label fx:id="confirmedPasswordError" layoutX="180.0" layoutY="345.0" text="Label" textFill="#e12c29" visible="false" AnchorPane.leftAnchor="180.0" />
+                  <Label fx:id="phoneError" layoutX="180.0" layoutY="411.0" text="Label" textFill="#e12c29" visible="false" AnchorPane.leftAnchor="180.0" />
+                  <Label fx:id="addressError" layoutX="180.0" layoutY="474.0" text="Label" textFill="#e12c29" visible="false" AnchorPane.leftAnchor="180.0" />
+                  <ComboBox fx:id="countryComboBox" layoutX="183.0" layoutY="446.0" prefWidth="150.0" promptText="Address" styleClass="reclamation" visibleRowCount="3" AnchorPane.leftAnchor="180.0" />
                     </children>
                 </AnchorPane>
                 <AnchorPane fx:id="layer2" layoutY="-27.0" prefHeight="577.0" prefWidth="362.0" styleClass="imageAccueil" stylesheets="@css/Style.css">
