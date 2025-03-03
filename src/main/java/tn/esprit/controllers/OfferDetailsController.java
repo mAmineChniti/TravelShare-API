@@ -1,5 +1,13 @@
 package tn.esprit.controllers;
 
+import com.itextpdf.io.image.ImageData;
+import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Image;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.properties.TextAlignment;
 import io.github.cdimascio.dotenv.Dotenv;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -7,7 +15,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.stage.Stage;
 import okhttp3.*;
 import org.json.JSONArray;
@@ -17,28 +28,28 @@ import tn.esprit.entities.OffreVoyages;
 import tn.esprit.entities.SessionManager;
 import tn.esprit.services.OffreReservationService;
 
+import java.awt.*;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Date;
 import java.sql.SQLException;
 
 public class OfferDetailsController {
 
+    public static final String API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=";
+    public static final String GEMINI_API_KEY = Dotenv.load().get("GEMINI_API_KEY");
     @FXML
     private Label titleLabel, destinationLabel, descriptionLabel, departureDateLabel,
             returnDateLabel, priceLabel, availableSeatsLabel, reservationStatusLabel;
     @FXML
     private Label activitiesLabel;
-
     @FXML
     private Button reserveButton;
-
     @FXML
     private Spinner<Integer> placesSpinner;
-
     private OffreVoyages currentOffer;
-    public static final String API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=";
-    public static final String GEMINI_API_KEY = Dotenv.load().get("GEMINI_API_KEY");
-
 
     @FXML
     public void SwitchToAccueil(ActionEvent actionEvent) {
@@ -53,6 +64,7 @@ public class OfferDetailsController {
             e.printStackTrace();
         }
     }
+
     @FXML
     void switchToVoyages(ActionEvent event) {
         try {
@@ -65,6 +77,7 @@ public class OfferDetailsController {
             e.printStackTrace();
         }
     }
+
     @FXML
     void SwitchToHotels(ActionEvent event) {
         try {
@@ -166,14 +179,14 @@ public class OfferDetailsController {
         OkHttpClient client = new OkHttpClient();
         RequestBody body = RequestBody.create(request.toString(), MediaType.parse("application/json"));
         Request fetcher = new Request.Builder()
-                .url(API_URL+GEMINI_API_KEY)
+                .url(API_URL + GEMINI_API_KEY)
                 .post(body)
                 .addHeader("Content-Type", "application/json")
                 .build();
 
         try (Response response = client.newCall(fetcher).execute()) {
-            System.out.println("Request sent to API.");
-            System.out.println("Response code: " + response.code());
+            //System.out.println("Request sent to API.");
+            //System.out.println("Response code: " + response.code());
 
             if (!response.isSuccessful()) {
                 System.out.println("Request failed: " + response.message());
@@ -182,7 +195,7 @@ public class OfferDetailsController {
             }
 
             String responseBody = response.body().string();
-            System.out.println("API Response: " + responseBody);
+            //System.out.println("API Response: " + responseBody);
 
             JSONObject responseObject = new JSONObject(responseBody);
             JSONArray candidates = responseObject.getJSONArray("candidates");
@@ -192,15 +205,13 @@ public class OfferDetailsController {
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
             e.printStackTrace();
-            return "Error fetching activities: " + e.getMessage();
+            return "Error fetching activities: "; // + e.getMessage();
         }
     }
 
     @FXML
     public void reserveOffer() {
         System.out.println("Reserve button clicked!");
-        System.out.println("Current offer: " + currentOffer);
-        System.out.println("placesSpinner: " + placesSpinner);
 
         if (placesSpinner == null) {
             reservationStatusLabel.setText("Error: Spinner not initialized.");
@@ -208,9 +219,7 @@ public class OfferDetailsController {
             return;
         }
 
-        int nbr_places = placesSpinner.getValue(); // Possible issue here!
-        System.out.println("Selected places: " + nbr_places);
-
+        int nbr_places = placesSpinner.getValue();
         if (currentOffer == null) {
             reservationStatusLabel.setText("Offer not found.");
             reservationStatusLabel.setStyle("-fx-text-fill: red;");
@@ -226,7 +235,6 @@ public class OfferDetailsController {
         try {
             OffreReservationService resOffre = new OffreReservationService();
             OffreReservations reservation = new OffreReservations();
-
             reservation.setOffre_id(currentOffer.getOffres_voyage_id());
             reservation.setClient_id(SessionManager.getInstance().getCurrentUtilisateur().getUser_id());
             reservation.setDate_reserved(new Date(new java.util.Date().getTime()));
@@ -236,19 +244,80 @@ public class OfferDetailsController {
 
             resOffre.add(reservation);
 
-            // Update available places
+            // Update available seats
             currentOffer.setPlaces_disponibles(currentOffer.getPlaces_disponibles() - nbr_places);
             availableSeatsLabel.setText("Seats: " + currentOffer.getPlaces_disponibles());
 
             placesSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(
                     0, currentOffer.getPlaces_disponibles(), 1));
 
-            reservationStatusLabel.setText("Reservation successful!");
+            // Generate PDF receipt
+            generatePDF(reservation);
+
+            reservationStatusLabel.setText("Reservation successful! PDF generated.");
             reservationStatusLabel.setStyle("-fx-text-fill: green;");
         } catch (SQLException e) {
             e.printStackTrace();
             reservationStatusLabel.setText("Reservation failed. Try again.");
             reservationStatusLabel.setStyle("-fx-text-fill: red;");
+        }
+    }
+
+    private void generatePDF(OffreReservations reservation) {
+        String pdfPath = "reservation_" + reservation.getOffre_id() + ".pdf";
+        try {
+            PdfWriter writer = new PdfWriter(new FileOutputStream(pdfPath));
+            PdfDocument pdfDoc = new PdfDocument(writer);
+            Document document = new Document(pdfDoc);
+
+            // Add Logo
+            // Chargement de l'image depuis le classpath
+            InputStream imageStream = getClass().getResourceAsStream("/images/agence.png");
+
+            if (imageStream != null) {
+                byte[] imageBytes = imageStream.readAllBytes();
+                ImageData imageData = ImageDataFactory.create(imageBytes);
+                Image logo = new Image(imageData);
+                logo.setWidth(100).setHeight(100);
+                document.add(logo);
+            } else {
+                System.out.println("Logo file not found in resources!");
+            }
+
+            // Title
+            document.add(new Paragraph("Reservation Confirmation")
+                    .setFontSize(18)
+                    .setTextAlignment(TextAlignment.CENTER));
+
+            document.add(new Paragraph(" "));
+
+            // Reservation Details
+            document.add(new Paragraph("Reservation ID: " + reservation.getOffre_id()));
+            document.add(new Paragraph("Client ID: " + reservation.getClient_id()));
+            document.add(new Paragraph("Date Reserved: " + reservation.getDate_reserved().toString()));
+            document.add(new Paragraph("Number of Places: " + reservation.getNbr_place()));
+            document.add(new Paragraph("Total Price: " + reservation.getPrix() + " €"));
+            document.add(new Paragraph(" "));
+
+            // Offer Details
+            document.add(new Paragraph("Offer Details")
+                    .setFontSize(14));
+
+            document.add(new Paragraph("Destination: " + currentOffer.getDestination()));
+            document.add(new Paragraph("Departure Date: " + currentOffer.getDate_depart()));
+            document.add(new Paragraph("Available Seats After Booking: " + currentOffer.getPlaces_disponibles()));
+
+            document.close();
+
+            System.out.println("PDF generated: " + pdfPath);
+
+            // Automatically download the PDF
+            File pdfFile = new File(pdfPath);
+            if (pdfFile.exists()) {
+                Desktop.getDesktop().open(pdfFile);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
