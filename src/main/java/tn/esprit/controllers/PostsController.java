@@ -22,10 +22,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import okhttp3.*;
 import org.json.JSONObject;
-import tn.esprit.entities.FlaggedContent;
-import tn.esprit.entities.Likes;
-import tn.esprit.entities.Posts;
-import tn.esprit.entities.SessionManager;
+import tn.esprit.entities.*;
+import tn.esprit.services.CommentsService;
 import tn.esprit.services.FlaggedContentService;
 import tn.esprit.services.LikesService;
 import tn.esprit.services.PostsService;
@@ -213,7 +211,7 @@ public class PostsController {
 
     private void loadMorePosts() {
         try {
-            List<Posts> posts = postsService.fetchPosts(currentPostCount, POSTS_BATCH_SIZE);
+            List<Posts> posts = postsService.fetchPosts(currentPostCount, POSTS_BATCH_SIZE, SessionManager.getInstance().getCurrentUtilisateur().getUser_id());
             for (Posts post : posts) {
                 addPostToContainer(post, false);
             }
@@ -352,7 +350,41 @@ public class PostsController {
             buttonBox.getChildren().addAll(editButton, deleteButton);
         }
 
-        postBox.getChildren().addAll(headerBox, postContent, buttonBox);
+        VBox commentSection = new VBox(5);
+        commentSection.setPadding(new Insets(10, 0, 0, 0));
+        commentSection.setVisible(true);
+        commentSection.setPrefHeight(Region.USE_COMPUTED_SIZE);
+
+        TextArea commentInput = new TextArea();
+        commentInput.setPromptText("Write a comment...");
+        commentInput.setWrapText(true);
+        commentInput.setMaxHeight(50);
+        commentInput.setStyle("-fx-background-color: white; -fx-border-color: #ddd; -fx-border-radius: 5;");
+
+        Button submitCommentButton = new Button("Comment");
+        submitCommentButton.setStyle("-fx-background-color: #007bff; -fx-text-fill: white; -fx-border-radius: 5; -fx-background-radius: 5;");
+
+        submitCommentButton.setOnAction(e -> {
+            String commentText = commentInput.getText().trim();
+            if (commentText != null && !commentText.isEmpty()) {
+                checkForProfanity(commentText, (isProfane) -> {
+                    if (isProfane) {
+                        Platform.runLater(() -> System.out.println("The comment contains bad words and cannot be posted."));
+                        commentInput.clear();
+                    } else {
+                        Platform.runLater(() -> addComment(post.getPost_id(), commentText, commentSection));
+                    }
+                });
+            }
+        });
+
+        HBox commentBox = new HBox(10, commentInput, submitCommentButton);
+        commentBox.setAlignment(Pos.CENTER_LEFT);
+
+        commentSection.getChildren().add(commentBox);
+        loadComments(post.getPost_id(), commentSection);
+        postBox.getChildren().addAll(headerBox, postContent, buttonBox, commentSection);
+        //Platform.runLater(() -> postsContainer.layout());
         if (addToTop) {
             postsContainer.getChildren().add(0, postBox);
         } else {
@@ -385,6 +417,146 @@ public class PostsController {
         try {
             postsService.delete(post.getPost_id());
             postsContainer.getChildren().remove(postBox);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadComments(int postId, VBox commentSection) {
+        CommentsService commentsService = new CommentsService();
+
+        try {
+            List<Comments> comments = commentsService.fetchById(postId);
+            // System.out.println("Loaded " + comments.size() + " comments for post ID: " + postId);
+
+            Platform.runLater(() -> {
+                //commentSection.getChildren().clear();
+
+                for (Comments comment : comments) {
+                    addCommentToSection(comment, commentSection);
+                }
+            });
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void addCommentToSection(Comments comment, VBox commentSection) {
+        VBox commentBox = new VBox(5);
+        commentBox.setAlignment(Pos.TOP_LEFT);
+        commentBox.setPadding(new Insets(5, 0, 5, 0));
+        commentBox.setStyle("-fx-background-color: #f8f9fa; -fx-border-radius: 8; -fx-background-radius: 8;");
+        commentBox.setMaxWidth(500);
+
+        Label commenterName = new Label(comment.getCommenter_name() + " " + comment.getCommenter_lastname());
+        commenterName.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 0 0 5px 0;");
+        commenterName.setMaxWidth(500);
+
+        TextArea commentContent = new TextArea(comment.getComment());
+        commentContent.setWrapText(true);
+        commentContent.setEditable(false);
+        commentContent.setStyle("-fx-background-color: transparent; -fx-border-width: 0; -fx-font-size: 13px;");
+        commentContent.setPrefWidth(500);
+        commentContent.setPrefRowCount(1);
+        commentContent.setMinHeight(Region.USE_COMPUTED_SIZE);
+
+        HBox buttonBox = new HBox(5);
+        buttonBox.setAlignment(Pos.CENTER_LEFT);
+
+        SessionManager session = SessionManager.getInstance();
+        int currentUserId = session.getCurrentUtilisateur().getUser_id();
+        int userRole = session.getCurrentUtilisateur().getRole();
+
+        if (currentUserId == comment.getCommenter_id() || userRole == 1) {
+            Button editButton = new Button("✏");
+            Button deleteButton = new Button("🗑");
+
+            editButton.setStyle("-fx-background-color: #007bff; -fx-text-fill: white; -fx-border-radius: 5; -fx-background-radius: 5;");
+            editButton.setOnMouseEntered(e -> editButton.setStyle("-fx-background-color: #0056b3; -fx-text-fill: white;"));
+            editButton.setOnMouseExited(e -> editButton.setStyle("-fx-background-color: #007bff; -fx-text-fill: white;"));
+
+            deleteButton.setStyle("-fx-background-color: #dc3545; -fx-text-fill: white; -fx-border-radius: 5; -fx-background-radius: 5;");
+            deleteButton.setOnMouseEntered(e -> deleteButton.setStyle("-fx-background-color: #b02a37; -fx-text-fill: white;"));
+            deleteButton.setOnMouseExited(e -> deleteButton.setStyle("-fx-background-color: #dc3545; -fx-text-fill: white;"));
+            editButton.setOnAction(e -> {
+                if (editButton.getText().equals("✏")) {
+                    commentContent.setEditable(true);
+                    commentContent.setStyle("-fx-background-color: white; -fx-border-color: #ddd;");
+                    editButton.setText("💾");
+                } else {
+                    commentContent.setEditable(false);
+                    commentContent.setStyle("-fx-background-color: transparent; -fx-border-width: 0;");
+                    editButton.setText("✏");
+
+                    String updatedComment = commentContent.getText();
+                    if (updatedComment != null && !updatedComment.trim().isEmpty()) {
+                        checkForProfanity(updatedComment, (isProfane) -> {
+                            if (isProfane) {
+                                Platform.runLater(() -> {
+                                    System.out.println("The comment contains bad words. Reverting to original text.");
+                                    commentContent.setText(comment.getComment());
+                                });
+                            } else {
+                                Platform.runLater(() -> {
+                                    updateComment(comment.getComment_id(), updatedComment);
+                                });
+                            }
+                        });
+                    } else {
+                        commentContent.setText(comment.getComment());
+                    }
+                }
+            });
+
+            deleteButton.setOnAction(e -> deleteComment(comment.getComment_id(), commentBox, commentSection));
+
+            buttonBox.getChildren().addAll(editButton, deleteButton);
+        }
+
+        commentBox.getChildren().addAll(commenterName, commentContent, buttonBox);
+
+        commentSection.getChildren().add(commentBox);
+    }
+
+    private void addComment(int postId, String commentText, VBox commentSection) {
+        CommentsService commentsService = new CommentsService();
+        SessionManager session = SessionManager.getInstance();
+        int currentUserId = session.getCurrentUtilisateur().getUser_id();
+
+        Comments newComment = new Comments();
+        newComment.setPost_id(postId);
+        newComment.setCommenter_id(currentUserId);
+        newComment.setCommenter_name(session.getCurrentUtilisateur().getName());
+        newComment.setCommenter_lastname(session.getCurrentUtilisateur().getLast_name());
+        newComment.setComment(commentText);
+        newComment.setCommented_at(new Date(System.currentTimeMillis()));
+        newComment.setUpdated_at(new Date(System.currentTimeMillis()));
+
+        try {
+            commentsService.add(newComment);
+            addCommentToSection(newComment, commentSection);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    private void updateComment(int commentId, String updatedComment) {
+        CommentsService commentsService = new CommentsService();
+        try {
+            Comments comment = new Comments();
+            comment.setComment_id(commentId);
+            comment.setComment(updatedComment);
+            comment.setUpdated_at(new Date(System.currentTimeMillis()));
+            commentsService.update(comment);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    private void deleteComment(int commentId, VBox commentBox, VBox commentSection) {
+        CommentsService commentsService = new CommentsService();
+        try {
+            commentsService.delete(commentId);
+            commentSection.getChildren().remove(commentBox);
         } catch (SQLException e) {
             e.printStackTrace();
         }

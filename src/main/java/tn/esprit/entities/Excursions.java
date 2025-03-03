@@ -6,30 +6,51 @@ import java.sql.Date;
 
 
 public class Excursions {
-    private int excursion_id, duration;
-    private String title, description;
-    private Date date_excursion;
+    private int excursion_id;
+    private String title, description , image;
+    private Date date_excursion , date_fin;
+    private double prix;
     private int guide_id;
 
     public Excursions() {
 
     }
 
-    public Excursions(int excursion_id, int duration, String title, String description, Date date_excursion, int guide_id) {
+    public Excursions(int excursion_id, Date date_fin, String title,String description, Date date_excursion, int guide_id,String image, double prix) {
         this.excursion_id = excursion_id;
-        this.duration = duration;
+        this.date_fin = date_fin;
         this.title = title;
         this.description = description;
         this.date_excursion = date_excursion;
         this.guide_id = guide_id;
+        this.image = image;
+        this.prix = prix;
     }
 
-    public Excursions(int duration, String title, String description, Date date_excursion, int guide_id) {
-        this.duration = duration;
+    public Excursions(Date date_fin , String title,String description, Date date_excursion, int guide_id,String image, double prix) {
+        this.date_fin = date_fin;
         this.title = title;
         this.description = description;
         this.date_excursion = date_excursion;
         this.guide_id = guide_id;
+        this.image = image;
+        this.prix = prix;
+    }
+
+    public double getPrix() {
+        return prix;
+    }
+
+    public void setPrix(double prix) {
+        this.prix = prix;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public int getGuide_id() {
@@ -48,12 +69,12 @@ public class Excursions {
         this.excursion_id = id_excursion;
     }
 
-    public int getDuration() {
-        return duration;
+    public Date getDate_fin() {
+        return date_fin;
     }
 
-    public void setDuration(int duration) {
-        this.duration = duration;
+    public void setDate_fin(Date date_fin) {
+        this.date_fin = date_fin;
     }
 
     public String getTitle() {
@@ -79,6 +100,7 @@ public class Excursions {
     public void setDate_excursion(Date date_excursion) {
         this.date_excursion = date_excursion;
     }
+
     public static LocalDate convertStringToLocalDate(String dateStr) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         return LocalDate.parse(dateStr, formatter); // Conversion String -> LocalDate
@@ -89,10 +111,12 @@ public class Excursions {
         return "Excursions{" +
                 "excursion_id=" + excursion_id +
                 "id_guide=" + guide_id +
-                ", duration=" + duration +
+                ", date_fin=" + date_fin +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", date_excursion=" + date_excursion +
+                ", image='" + image + '\'' +
+                ", prix='" + prix + '\'' +
                 '}';
     }
 }

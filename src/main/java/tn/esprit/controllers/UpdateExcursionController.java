@@ -1,42 +1,50 @@
 package tn.esprit.controllers;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import tn.esprit.entities.Excursions;
+import tn.esprit.entities.Guides;
 import tn.esprit.services.ServiceExcursion;
+import tn.esprit.services.ServiceGuide;
 
 public class UpdateExcursionController {
 
     @FXML
-    private ChoiceBox<?> choiceBoxGuide;
-
-    @FXML
-    private DatePicker datePicker;
+    private TextField titleTF;
 
     @FXML
     private TextArea descriptionTA;
 
     @FXML
-    private TextField durationTF;
+    private DatePicker datePicker;
 
     @FXML
-    private TextField titleTF;
+    private DatePicker datePicker2;
+
+    @FXML
+    private ChoiceBox<String> choiceBoxGuide;
+
+    @FXML
+    private TextField priceTF;
+
+    @FXML
+    private Label imagePathLabel;
 
     // Instance de ServiceExcursion pour gérer les opérations de la base de données
     private ServiceExcursion serviceExcursion = new ServiceExcursion();
     private Excursions excursionToEdit;
+    private List<Guides> guidesList; // Liste des guides
 
     // Méthode pour recevoir l'excursion à modifier depuis un autre contrôleur
     public void setExcursionToEdit(Excursions excursion) {
@@ -45,20 +53,55 @@ public class UpdateExcursionController {
         // Pré-remplir les champs avec les données de l'excursion à modifier
         titleTF.setText(excursion.getTitle());
         descriptionTA.setText(excursion.getDescription());
-        durationTF.setText(String.valueOf(excursion.getDuration()));
         datePicker.setValue(excursion.getDate_excursion().toLocalDate());
+        datePicker2.setValue(excursion.getDate_fin().toLocalDate());
+        priceTF.setText(String.valueOf(excursion.getPrix()));
 
-        // Ici, vous pouvez également peupler le ChoiceBox avec les guides disponibles
-      //   choiceBoxGuide.getItems().addAll(listOfGuides);
-      //   choiceBoxGuide.setValue(excursion.getGuide());
+
+        loadGuides();
+
+        // Sélectionner automatiquement le guide correspondant
+        if (excursion.getGuide_id() != 0) {
+            // Trouver le nom du guide correspondant à l'ID
+            for (Guides guide : guidesList) {
+                if (guide.getGuide_id() == excursion.getGuide_id()) {
+                    choiceBoxGuide.setValue(guide.getName());
+                    break;
+                }
+            }
+        }
+    }
+
+    // Charger la liste des guides disponibles
+    private void loadGuides() {
+        try {
+            ServiceGuide serviceGuide = new ServiceGuide();
+            guidesList = serviceGuide.ListAll(); // Récupérer la liste des guides
+            guidesList.forEach(guide -> choiceBoxGuide.getItems().add(guide.getName())); // Ajouter les noms des guides au ChoiceBox
+            System.out.println("Guides loaded successfully.");
+        } catch (SQLException e) {
+            System.err.println("Error loading guides: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    void chooseImage(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.jpg", "*.png", "*.jpeg"));
+        File selectedFile = fileChooser.showOpenDialog(null); // Ouvrir la fenêtre de sélection de fichier
+
+        if (selectedFile != null) {
+            // Mettre à jour le Label avec le chemin du fichier sélectionné
+            imagePathLabel.setText(selectedFile.getAbsolutePath());
+        }
     }
 
     @FXML
     void updateExcursion(ActionEvent event) {
         // Vérification des champs
         if (titleTF.getText().isEmpty() || descriptionTA.getText().isEmpty() ||
-                durationTF.getText().isEmpty() || datePicker.getValue() == null ||
-                choiceBoxGuide.getValue() == null) {
+                datePicker.getValue() == null || datePicker2.getValue() == null || priceTF.getText().isEmpty() ||
+                choiceBoxGuide.getValue() == null || imagePathLabel.getText().isEmpty()) {
 
             // Alerte si des champs sont vides
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -72,9 +115,18 @@ public class UpdateExcursionController {
         // Mise à jour de l'excursion avec les nouvelles informations
         excursionToEdit.setTitle(titleTF.getText());
         excursionToEdit.setDescription(descriptionTA.getText());
-        excursionToEdit.setDuration(Integer.parseInt(durationTF.getText()));
         excursionToEdit.setDate_excursion(Date.valueOf(datePicker.getValue()));
-    //    excursionToEdit.setGuide_id((Guides) choiceBoxGuide.getValue()); // Assuming Guide is the type of object in choiceBox
+        excursionToEdit.setDate_fin(Date.valueOf(datePicker2.getValue()));
+        excursionToEdit.setImage(imagePathLabel.getText());
+        excursionToEdit.setPrix(Double.parseDouble(priceTF.getText()));
+
+        // Trouver l'ID du guide sélectionné
+        for (Guides guide : guidesList) {
+            if (guide.getName().equals(choiceBoxGuide.getValue())) {
+                excursionToEdit.setGuide_id(guide.getGuide_id());
+                break;
+            }
+        }
 
         try {
             serviceExcursion.update(excursionToEdit);

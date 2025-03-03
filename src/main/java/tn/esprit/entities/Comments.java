@@ -9,6 +9,8 @@ public class Comments {
     private String comment;
     private Date commented_at;
     private Date updated_at;
+    private String commenter_name;
+    private String commenter_lastname;
 
     public Comments() {
     }
@@ -71,5 +73,27 @@ public class Comments {
 
     public void setUpdated_at(Date updated_at) {
         this.updated_at = updated_at;
+    }
+
+    public String getCommenter_name() {
+        return commenter_name;
+    }
+
+    public void setCommenter_name(String commenter_name) {
+        if (commenter_name == null || commenter_name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Commenter name cannot be an empty string");
+        }
+        this.commenter_name = commenter_name;
+    }
+
+    public String getCommenter_lastname() {
+        return commenter_lastname;
+    }
+
+    public void setCommenter_lastname(String commenter_lastname) {
+        if (commenter_lastname == null || commenter_lastname.trim().isEmpty()) {
+            throw new IllegalArgumentException("Commenter lastname cannot be an empty string");
+        }
+        this.commenter_lastname = commenter_lastname;
     }
 }
