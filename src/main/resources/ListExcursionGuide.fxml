@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -11,10 +12,19 @@
 
 <AnchorPane prefHeight="550.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.ListExcursionGuideController">
    <children>
-      <!-- Sidebar -->
-      <VBox layoutX="-1.0" prefHeight="570.0" prefWidth="218.0" style="-fx-background-color: linear-gradient(to bottom, #2C3E50, #4C5B70);                    -fx-padding: 30px;                    -fx-background-radius: 0 30 30 0;                    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 15, 0, 5, 0);">
+
+      <!-- Zone d'affichage des excursions avec défilement -->
+      <ScrollPane layoutX="244.0" layoutY="74.0" prefHeight="458.0" prefWidth="586.0">
+         <content>
+            <VBox fx:id="excursionContainer" prefHeight="1.0" prefWidth="600.0" spacing="10.0" style="-fx-padding: 10;" />
+         </content>
+      </ScrollPane>
+      <Label layoutX="243.0" layoutY="22.0" style="-fx-font-family: 'Verdana'; -fx-font-size: 28px; -fx-text-fill: #2C3E50;" text="List of Excursions" />
+      <TextField fx:id="searchField" layoutX="539.0" layoutY="27.0" onKeyReleased="#onSearch" prefHeight="29.0" prefWidth="150.0" promptText="Rechercher une excursion" />
+      <Button layoutX="743.0" layoutY="27.0" mnemonicParsing="false" onAction="#goToFavorisPage" text="ListFavoris" />
+      <VBox layoutX="-1.0" prefHeight="570.0" prefWidth="234.0" style="-fx-background-color: linear-gradient(to bottom, #87CEEB, #4C5B70);     -fx-padding: 30px;     -fx-background-radius: 0 30 30 0;     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 15, 0, 5, 0);">
          <children>
-            <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-radius: 50px;                               -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 4);">
+            <ImageView fitHeight="88.0" fitWidth="124.0" pickOnBounds="true" preserveRatio="true">
                <VBox.margin>
                   <Insets bottom="20.0" left="30.0" />
                </VBox.margin>
@@ -22,51 +32,39 @@
                   <Image url="@images/agence.png" />
                </image>
             </ImageView>
-            <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" style="-fx-background-color: transparent;                            -fx-text-fill: #c0c9d6;                            -fx-font-size: 18px;                            -fx-font-family: 'Segoe UI';                            -fx-font-weight: bold;                            -fx-alignment: CENTER_LEFT;                            -fx-background-radius: 15px;                            -fx-padding: 0 0 0 20px;                            -fx-border-color: transparent;                            -fx-border-width: 2px;                            -fx-cursor: hand;" text="Home">
+            <Button mnemonicParsing="false" onAction="#SwitchToAcceuil" prefHeight="50.0" prefWidth="230.0" style=" -fx-background-color: transparent;     -fx-text-fill: white;     -fx-font-size: 18px;     -fx-font-family: 'Segoe UI';     -fx-font-weight: bold;     -fx-alignment: CENTER_LEFT;     -fx-background-radius: 15px;     -fx-padding: 0 0 0 20px;     -fx-border-color: transparent;     -fx-border-width: 2px;     -fx-cursor: hand;" text="Accueil" />
+            <Button fx:id="Voyages" mnemonicParsing="false" onAction="#SwitchToVoyages" prefHeight="50.0" prefWidth="230.0" style=" -fx-background-color: transparent;     -fx-text-fill: white;     -fx-font-size: 18px;     -fx-font-family: 'Segoe UI';     -fx-font-weight: bold;     -fx-alignment: CENTER_LEFT;     -fx-background-radius: 15px;     -fx-padding: 0 0 0 20px;     -fx-border-color: transparent;     -fx-border-width: 2px;     -fx-cursor: hand;" text="Voyages">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" style="-fx-background-color: transparent;                            -fx-text-fill: #c0c9d6;                            -fx-font-size: 18px;                            -fx-font-family: 'Segoe UI';                            -fx-font-weight: bold;                            -fx-alignment: CENTER_LEFT;                            -fx-background-radius: 15px;                            -fx-padding: 0 0 0 20px;                            -fx-border-color: transparent;                            -fx-border-width: 2px;                            -fx-cursor: hand;" text="Hotels">
+            <Button fx:id="Hotels" mnemonicParsing="false" onAction="#SwitchToHotels" prefHeight="50.0" prefWidth="230.0" style=" -fx-background-color: transparent;     -fx-text-fill: white;     -fx-font-size: 18px;     -fx-font-family: 'Segoe UI';     -fx-font-weight: bold;     -fx-alignment: CENTER_LEFT;     -fx-background-radius: 15px;     -fx-padding: 0 0 0 20px;     -fx-border-color: transparent;     -fx-border-width: 2px;     -fx-cursor: hand;" text="Hotels">
                <VBox.margin>
-                  <Insets top="20.0" />
+                  <Insets top="10.0" />
                </VBox.margin>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" style="-fx-background-color: transparent;                            -fx-text-fill: #c0c9d6;                            -fx-font-size: 18px;                            -fx-font-family: 'Segoe UI';                            -fx-font-weight: bold;                            -fx-alignment: CENTER_LEFT;                            -fx-background-radius: 15px;                            -fx-padding: 0 0 0 20px;                            -fx-border-color: transparent;                            -fx-border-width: 2px;                            -fx-cursor: hand;" text="Packages">
+            <Button mnemonicParsing="false" onAction="#SwitchToExcursions" prefHeight="50.0" prefWidth="230.0" style=" -fx-background-color: transparent;     -fx-text-fill: white;     -fx-font-size: 18px;     -fx-font-family: 'Segoe UI';     -fx-font-weight: bold;     -fx-alignment: CENTER_LEFT;     -fx-background-radius: 15px;     -fx-padding: 0 0 0 20px;     -fx-border-color: transparent;     -fx-border-width: 2px;     -fx-cursor: hand;" text="Excursions">
                <VBox.margin>
-                  <Insets top="20.0" />
+                  <Insets top="10.0" />
                </VBox.margin>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" style="-fx-background-color: transparent;                            -fx-text-fill: #c0c9d6;                            -fx-font-size: 18px;                            -fx-font-family: 'Segoe UI';                            -fx-font-weight: bold;                            -fx-alignment: CENTER_LEFT;                            -fx-background-radius: 15px;                            -fx-padding: 0 0 0 20px;                            -fx-border-color: transparent;                            -fx-border-width: 2px;                            -fx-cursor: hand;" text="Excursions">
+            <Button fx:id="PostsButton" mnemonicParsing="false" onAction="#SwitchToPosts" prefHeight="50.0" prefWidth="230.0" style=" -fx-background-color: transparent;     -fx-text-fill: white;     -fx-font-size: 18px;     -fx-font-family: 'Segoe UI';     -fx-font-weight: bold;     -fx-alignment: CENTER_LEFT;     -fx-background-radius: 15px;     -fx-padding: 0 0 0 20px;     -fx-border-color: transparent;     -fx-border-width: 2px;     -fx-cursor: hand;" text="Postes">
                <VBox.margin>
-                  <Insets top="20.0" />
+                  <Insets top="10.0" />
                </VBox.margin>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" style="-fx-background-color: transparent;                            -fx-text-fill: #c0c9d6;                            -fx-font-size: 18px;                            -fx-font-family: 'Segoe UI';                            -fx-font-weight: bold;                            -fx-alignment: CENTER_LEFT;                            -fx-background-radius: 15px;                            -fx-padding: 0 0 0 20px;                            -fx-border-color: transparent;                            -fx-border-width: 2px;                            -fx-cursor: hand;" text="Posts">
+            <Button mnemonicParsing="false" onAction="#SwitchToProfile" prefHeight="50.0" prefWidth="230.0" style=" -fx-background-color: transparent;     -fx-text-fill: white;     -fx-font-size: 18px;     -fx-font-family: 'Segoe UI';     -fx-font-weight: bold;     -fx-alignment: CENTER_LEFT;     -fx-background-radius: 15px;     -fx-padding: 0 0 0 20px;     -fx-border-color: transparent;     -fx-border-width: 2px;     -fx-cursor: hand;" text="Profile">
                <VBox.margin>
-                  <Insets top="20.0" />
+                  <Insets top="10.0" />
                </VBox.margin>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" style="-fx-background-color: transparent;                            -fx-text-fill: #c0c9d6;                            -fx-font-size: 18px;                            -fx-font-family: 'Segoe UI';                            -fx-font-weight: bold;                            -fx-alignment: CENTER_LEFT;                            -fx-background-radius: 15px;                            -fx-padding: 0 0 0 20px;                            -fx-border-color: transparent;                            -fx-border-width: 2px;                            -fx-cursor: hand;" text="Profile">
+            <Button mnemonicParsing="false" onAction="#déconnexion" prefHeight="50.0" prefWidth="230.0" style="-fx-background-color: #F1895C;     -fx-text-fill: white;     -fx-font-size: 18px;     -fx-font-family: 'Segoe UI';     -fx-font-weight: bold;     -fx-background-radius: 25px;     -fx-border-radius: 25px;     -fx-alignment: CENTER;     -fx-cursor: hand;     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 8, 0, 0, 4);" text="Déconnexion">
                <VBox.margin>
                   <Insets top="20.0" />
-               </VBox.margin>
-            </Button>
-            <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" style="-fx-background-color: #F1895C;                            -fx-text-fill: white;                            -fx-font-size: 18px;                            -fx-font-family: 'Segoe UI';                            -fx-font-weight: bold;                            -fx-background-radius: 25px;                            -fx-border-radius: 25px;                            -fx-alignment: CENTER;                            -fx-cursor: hand;                            -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 8, 0, 0, 4);" text="Logout">
-               <VBox.margin>
-                  <Insets top="40.0" />
                </VBox.margin>
             </Button>
          </children>
       </VBox>
 
-      <!-- Zone d'affichage des excursions avec défilement -->
-      <ScrollPane layoutX="230.0" layoutY="64.0" prefHeight="467.0" prefWidth="600.0">
-         <content>
-            <VBox fx:id="excursionContainer" prefWidth="600.0" spacing="10.0" style="-fx-padding: 10;">
-            </VBox>
-         </content>
-      </ScrollPane>
-      <Label layoutX="243.0" layoutY="22.0" style="-fx-font-family: 'Verdana'; -fx-font-size: 28px; -fx-text-fill: #2C3E50;" text="List of Excursions" />
    </children>
 </AnchorPane>

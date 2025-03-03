@@ -22,22 +22,25 @@ import java.util.regex.Pattern;
 public class AddGuideController {
 
     @FXML
-    private ComboBox<String> languageCB;
+    private ComboBox<String> languageCB, experienceTF;  // Ajout du ComboBox pour l'expérience
     @FXML
-    private TextField emailTF, experienceTF, lastnameTF, nameTF, phoneTF;
+    private TextField emailTF, lastnameTF, nameTF, phoneTF;  // Le champ experienceTF est supprimé
     @FXML
     private Label nameError, lastnameError, emailError, phoneError, languageError, experienceError;
 
     @FXML
     public void initialize() {
         fetchLanguages();
+        populateExperienceComboBox();  // Remplir le ComboBox avec les options d'expérience
     }
 
+    // Fonction pour valider l'email
     private boolean isValidEmail(String email) {
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
         return Pattern.matches(emailRegex, email);
     }
 
+    // Fonction pour ajouter un guide
     @FXML
     void addGuide(ActionEvent event) {
         clearErrors();
@@ -46,8 +49,8 @@ public class AddGuideController {
         String lastname = lastnameTF.getText().trim();
         String email = emailTF.getText().trim();
         String phone = phoneTF.getText().trim();
-        String language = languageCB.getValue(); // Récupérer la valeur sélectionnée
-        String experienceText = experienceTF.getText().trim();
+        String language = languageCB.getValue();  // Récupérer la valeur sélectionnée pour la langue
+        String experienceText = experienceTF.getValue();  // Récupérer la valeur sélectionnée pour l'expérience
 
         boolean hasError = false;
 
@@ -59,10 +62,15 @@ public class AddGuideController {
         if (language == null || language.isEmpty()) { languageError.setText("Please select a language"); hasError = true; }
 
         int experience = 0;
-        if (experienceText.isEmpty()) { experienceError.setText("Please enter a valid experience"); hasError = true; }
+        if (experienceText == null || experienceText.isEmpty()) { experienceError.setText("Please select an experience level"); hasError = true; }
         else {
-            try { experience = Integer.parseInt(experienceText); }
-            catch (NumberFormatException e) { experienceError.setText("Must be a number"); hasError = true; }
+            try {
+                // Extraire la valeur numérique (par exemple, 2 à partir de "+2")
+                experience = Integer.parseInt(experienceText.substring(1));  // Retirer le "+" et convertir en entier
+            } catch (NumberFormatException e) {
+                experienceError.setText("Invalid experience value");
+                hasError = true;
+            }
         }
 
         if (hasError) return;
@@ -71,12 +79,14 @@ public class AddGuideController {
         ServiceGuide serviceGuide = new ServiceGuide();
         try {
             serviceGuide.add(guide);
-            showAlert("Succes", "Guide added successfully", Alert.AlertType.INFORMATION);
+            showAlert("Success", "Guide added successfully", Alert.AlertType.INFORMATION);
             clearFields();
         } catch (Exception e) {
             showAlert("Error", "Error while adding: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
+
+
 
     private void fetchLanguages() {
         new Thread(() -> {
@@ -114,6 +124,13 @@ public class AddGuideController {
         }).start();
     }
 
+
+    // Remplir le ComboBox de l'expérience avec les options prédéfinies
+    private void populateExperienceComboBox() {
+        experienceTF.getItems().addAll("+2", "+5", "+10", "+15", "+20");
+    }
+
+    // Fonction pour afficher une alerte
     private void showAlert(String title, String message, Alert.AlertType alertType) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
@@ -122,6 +139,7 @@ public class AddGuideController {
         alert.showAndWait();
     }
 
+    // Fonction pour réinitialiser les messages d'erreur
     private void clearErrors() {
         nameError.setText("");
         lastnameError.setText("");
@@ -131,15 +149,17 @@ public class AddGuideController {
         experienceError.setText("");
     }
 
+    // Fonction pour réinitialiser les champs du formulaire
     private void clearFields() {
         nameTF.clear();
         lastnameTF.clear();
         emailTF.clear();
         phoneTF.clear();
-        experienceTF.clear();
+        experienceTF.setValue(null);
         languageCB.setValue(null);
     }
 
+    // Fonction pour revenir à la page précédente
     @FXML
     void goBack(ActionEvent event) {
         try {

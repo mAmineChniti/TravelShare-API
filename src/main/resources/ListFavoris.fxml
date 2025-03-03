@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="550.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.ListFavorisController">
+
+    <children>
+
+        <!-- The container where your favorites list will appear -->
+        <VBox fx:id="favorisContainer" layoutX="230.0" layoutY="86.0" prefHeight="400.0" prefWidth="598.0" spacing="10" style="-fx-padding: 10px;" />
+
+        <Label layoutX="253.0" layoutY="32.0" style="-fx-font-family: 'Verdana'; -fx-font-size: 28px; -fx-text-fill: #2C3E50;" text="List Favoris" />
+        <VBox layoutX="-1.0" prefHeight="570.0" prefWidth="234.0" style="-fx-background-color: linear-gradient(to bottom, #87CEEB, #4C5B70);     -fx-padding: 30px;     -fx-background-radius: 0 30 30 0;     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 15, 0, 5, 0);">
+            <children>
+                <ImageView fitHeight="88.0" fitWidth="124.0" pickOnBounds="true" preserveRatio="true">
+                    <VBox.margin>
+                        <Insets bottom="20.0" left="30.0" />
+                    </VBox.margin>
+                    <image>
+                        <Image url="@images/agence.png" />
+                    </image>
+                </ImageView>
+                <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" style=" -fx-background-color: transparent;     -fx-text-fill: white;     -fx-font-size: 18px;     -fx-font-family: 'Segoe UI';     -fx-font-weight: bold;     -fx-alignment: CENTER_LEFT;     -fx-background-radius: 15px;     -fx-padding: 0 0 0 20px;     -fx-border-color: transparent;     -fx-border-width: 2px;     -fx-cursor: hand;" text="Accueil" />
+                <Button fx:id="Voyages" mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" style=" -fx-background-color: transparent;     -fx-text-fill: white;     -fx-font-size: 18px;     -fx-font-family: 'Segoe UI';     -fx-font-weight: bold;     -fx-alignment: CENTER_LEFT;     -fx-background-radius: 15px;     -fx-padding: 0 0 0 20px;     -fx-border-color: transparent;     -fx-border-width: 2px;     -fx-cursor: hand;" text="Voyages">
+                    <VBox.margin>
+                        <Insets top="10.0" />
+                    </VBox.margin>
+                </Button>
+                <Button fx:id="Hotels" mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" style=" -fx-background-color: transparent;     -fx-text-fill: white;     -fx-font-size: 18px;     -fx-font-family: 'Segoe UI';     -fx-font-weight: bold;     -fx-alignment: CENTER_LEFT;     -fx-background-radius: 15px;     -fx-padding: 0 0 0 20px;     -fx-border-color: transparent;     -fx-border-width: 2px;     -fx-cursor: hand;" text="Hotels">
+                    <VBox.margin>
+                        <Insets top="10.0" />
+                    </VBox.margin>
+                </Button>
+                <Button mnemonicParsing="false"  prefHeight="50.0" prefWidth="230.0" style=" -fx-background-color: transparent;     -fx-text-fill: white;     -fx-font-size: 18px;     -fx-font-family: 'Segoe UI';     -fx-font-weight: bold;     -fx-alignment: CENTER_LEFT;     -fx-background-radius: 15px;     -fx-padding: 0 0 0 20px;     -fx-border-color: transparent;     -fx-border-width: 2px;     -fx-cursor: hand;" text="Excursions">
+                    <VBox.margin>
+                        <Insets top="10.0" />
+                    </VBox.margin>
+                </Button>
+                <Button fx:id="PostsButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" style=" -fx-background-color: transparent;     -fx-text-fill: white;     -fx-font-size: 18px;     -fx-font-family: 'Segoe UI';     -fx-font-weight: bold;     -fx-alignment: CENTER_LEFT;     -fx-background-radius: 15px;     -fx-padding: 0 0 0 20px;     -fx-border-color: transparent;     -fx-border-width: 2px;     -fx-cursor: hand;" text="Postes">
+                    <VBox.margin>
+                        <Insets top="10.0" />
+                    </VBox.margin>
+                </Button>
+                <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" style=" -fx-background-color: transparent;     -fx-text-fill: white;     -fx-font-size: 18px;     -fx-font-family: 'Segoe UI';     -fx-font-weight: bold;     -fx-alignment: CENTER_LEFT;     -fx-background-radius: 15px;     -fx-padding: 0 0 0 20px;     -fx-border-color: transparent;     -fx-border-width: 2px;     -fx-cursor: hand;" text="Profile">
+                    <VBox.margin>
+                        <Insets top="10.0" />
+                    </VBox.margin>
+                </Button>
+                <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" style="-fx-background-color: #F1895C;     -fx-text-fill: white;     -fx-font-size: 18px;     -fx-font-family: 'Segoe UI';     -fx-font-weight: bold;     -fx-background-radius: 25px;     -fx-border-radius: 25px;     -fx-alignment: CENTER;     -fx-cursor: hand;     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 8, 0, 0, 4);" text="Déconnexion">
+                    <VBox.margin>
+                        <Insets top="20.0" />
+                    </VBox.margin>
+                </Button>
+            </children>
+        </VBox>
+
+    </children>
+
+</AnchorPane>

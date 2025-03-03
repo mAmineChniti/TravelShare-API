@@ -16,9 +16,7 @@ public  class ServiceGuide implements IService <Guides>{
 
     @Override
     public void add(Guides guides) throws SQLException {
-
         String checkQuery = "SELECT COUNT(*) FROM guides WHERE email = ? OR phone_num = ?";
-
         try (PreparedStatement checkStmt = connection.prepareStatement(checkQuery)) {
             checkStmt.setString(1, guides.getEmail());
             checkStmt.setString(2, guides.getPhone_num());
@@ -30,10 +28,9 @@ public  class ServiceGuide implements IService <Guides>{
                 }
             }
         }
-        String req = "INSERT INTO guides (experience, name, last_name, email, phone_num, language) " +
-                "VALUES (?, ?, ?, ?, ?, ?)";
 
-        try (java.sql.PreparedStatement statement = connection.prepareStatement(req)) {
+        String req = "INSERT INTO guides (experience, name, last_name, email, phone_num, language) VALUES (?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement statement = connection.prepareStatement(req)) {
             statement.setInt(1, guides.getExperience());
             statement.setString(2, guides.getName());
             statement.setString(3, guides.getLastname());
@@ -45,6 +42,7 @@ public  class ServiceGuide implements IService <Guides>{
             System.out.println("Guide ajouté avec succès !");
         }
     }
+
 
     @Override
     public void update(Guides guides) throws SQLException {
@@ -102,12 +100,13 @@ public  class ServiceGuide implements IService <Guides>{
     }
 
 
+
     public Guides getGuideByName(String name) throws SQLException {
         Guides guide = null;
-        String query = "SELECT * FROM guides WHERE name = ?";
+        String query = "SELECT * FROM guides WHERE LOWER(name) = LOWER(?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setString(1, name);
+            stmt.setString(1, name.trim());
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
@@ -119,6 +118,10 @@ public  class ServiceGuide implements IService <Guides>{
                 guide.setPhone_num(rs.getString("phone_num"));
                 guide.setLanguage(rs.getString("language"));
                 guide.setExperience(rs.getInt("experience"));
+
+                System.out.println("Guide trouvé : " + guide.getName() + " (ID: " + guide.getGuide_id() + ")");
+            } else {
+                System.err.println("Aucun guide trouvé avec le nom : " + name);
             }
         }
         return guide;
@@ -154,6 +157,7 @@ public  class ServiceGuide implements IService <Guides>{
             pst.executeUpdate();
         }
     }
+
 
 
 }

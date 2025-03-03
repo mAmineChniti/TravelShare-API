@@ -88,25 +88,54 @@ public class ServiceExcursion implements IService<Excursions> {
     public List<Excursions> ListAll() throws SQLException {
         List<Excursions> excursionsList = new ArrayList<>();
         String req = "SELECT * FROM excursions";
-
-        try (Statement statement = connection.createStatement();
-             ResultSet rs = statement.executeQuery(req)) {
-
+        try (Statement statement = connection.createStatement(); ResultSet rs = statement.executeQuery(req)) {
             while (rs.next()) {
                 Excursions excursion = new Excursions();
                 excursion.setExcursion_id(rs.getInt("excursion_id"));
-                excursion.setGuide_id(rs.getInt("guide_id"));
                 excursion.setTitle(rs.getString("title"));
                 excursion.setDescription(rs.getString("description"));
-                excursion.setDate_fin(rs.getDate("date_fin"));
                 excursion.setDate_excursion(rs.getDate("date_excursion"));
+                excursion.setDate_fin(rs.getDate("date_fin"));
                 excursion.setImage(rs.getString("image"));
                 excursion.setPrix(rs.getDouble("prix"));
-
                 excursionsList.add(excursion);
+            }
+        }
+        return excursionsList;
+    }
+
+
+    public List<Excursions> search(String searchQuery) throws SQLException {
+        List<Excursions> excursionsList = new ArrayList<>();
+
+        // Préparer la requête SQL avec des paramètres de recherche dans le titre ou la description
+        String req = "SELECT * FROM excursions WHERE title LIKE ? OR description LIKE ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(req)) {
+            // Remplacer les ? par le critère de recherche
+            String searchPattern = "%" + searchQuery + "%";
+            statement.setString(1, searchPattern);
+            statement.setString(2, searchPattern);
+
+            // Exécuter la requête et traiter le résultat
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    Excursions excursion = new Excursions();
+                    excursion.setExcursion_id(rs.getInt("excursion_id"));
+                    excursion.setGuide_id(rs.getInt("guide_id"));
+                    excursion.setTitle(rs.getString("title"));
+                    excursion.setDescription(rs.getString("description"));
+                    excursion.setDate_fin(rs.getDate("date_fin"));
+                    excursion.setDate_excursion(rs.getDate("date_excursion"));
+                    excursion.setImage(rs.getString("image"));
+                    excursion.setPrix(rs.getDouble("prix"));
+
+                    excursionsList.add(excursion);
+                }
             }
         }
 
         return excursionsList;
     }
+
 }

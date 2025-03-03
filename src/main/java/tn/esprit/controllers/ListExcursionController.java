@@ -14,7 +14,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import tn.esprit.entities.Excursions;
-import tn.esprit.entities.Guides;
 import tn.esprit.services.ServiceExcursion;
 import tn.esprit.services.ServiceGuide;
 
@@ -87,39 +86,38 @@ public class ListExcursionController {
             dateFLabel.setLayoutX(100);
             dateFLabel.setLayoutY(85);
 
-            Label prixLabel = new Label("Price : " + excursion.getPrix() +"TND");
+            Label prixLabel = new Label("Prix : " + excursion.getPrix() +" TND");
             prixLabel.setLayoutX(10);
             prixLabel.setLayoutY(110);
+
 
             // Ajouter un bouton "Supprimer" et "Mettre à jour"
             Button btnDelete = new Button("Delete");
             btnDelete.setOnAction(event -> deleteExcursion(event, excursion));
+            btnDelete.setStyle("-fx-background-color: #E63946;" // Rouge corail
+                    + "-fx-text-fill: white;"
+                    + "-fx-font-weight: bold;"
+                    + "-fx-border-radius: 5px;");
             btnDelete.setLayoutX(130);
             btnDelete.setLayoutY(120);
 
             Button btnUpdate = new Button("Update");
             btnUpdate.setOnAction(event -> updateExcursion(event, excursion));
+            btnUpdate.setStyle("-fx-background-color: #457B9D;" // Bleu acier
+                    + "-fx-text-fill: white;"
+                    + "-fx-font-weight: bold;"
+                    + "-fx-border-radius: 5px;");
             btnUpdate.setLayoutX(200);
             btnUpdate.setLayoutY(120);
 
-            // Récupérer le guide associé à l'excursion
-            Guides guide = null;
-            try {
-                guide = serviceGuide.getGuideById(excursion.getGuide_id());
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-            Label guideLabel = new Label("Guide : " + (guide != null ? guide.getName() : "Non assigné"));
-            guideLabel.setLayoutX(10);
-            guideLabel.setLayoutY(135);
+            // Ajouter les éléments à l'AnchorPane
+            excursionItemPane.getChildren().addAll(titleLabel, descriptionLabel, dateDLabel, dateFLabel, prixLabel, btnDelete, btnUpdate);
 
-            // Ajouter tous les éléments au panneau de l'excursion
-            excursionItemPane.getChildren().addAll(titleLabel, descriptionLabel, dateDLabel, dateFLabel,prixLabel, btnDelete, btnUpdate, guideLabel);
-
-            // Ajouter le panneau à la VBox
+            // Ajouter l'AnchorPane dans le conteneur principal
             excursionContainer.getChildren().add(excursionItemPane);
         }
     }
+
 
     private void deleteExcursion(ActionEvent event, Excursions excursion) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -174,9 +172,99 @@ public class ListExcursionController {
         }
     }
 
-    // Navigation vers la liste des guides
+
+
     @FXML
-    void goToGuide(ActionEvent event) {
+    public void SwitchToAcceuil(ActionEvent actionEvent){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AcceuilAdmin.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    public void SwitchToVoyages(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Voyages.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void SwitchToHotels(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Hotel.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void SwitchToPosts(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Posts.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void SwitchToReclamations(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ReponseAdmin.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void déconnexion(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Connecter.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void SwitchToExcursions(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListExcursion.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void SwitchToGuides(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListGuide.fxml"));
             Parent root = loader.load();
@@ -184,7 +272,6 @@ public class ListExcursionController {
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
-            System.err.println("Page loading error FXML: " + e.getMessage());
             e.printStackTrace();
         }
     }

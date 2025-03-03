@@ -8,7 +8,7 @@ import java.sql.SQLException;
 public class dbCon {
     private static dbCon instance;
     private static final Dotenv dotenv = Dotenv.load();
-    private static final String URL = "jdbc:mysql://localhost:3306/travelshare";
+    private static final String URL = "jdbc:mysql://localhost:3306/travelshare1";
     private static final String USER = dotenv.get("DB_USER");
     private static final String PASS = dotenv.get("DB_PASS");
     private final Connection con;

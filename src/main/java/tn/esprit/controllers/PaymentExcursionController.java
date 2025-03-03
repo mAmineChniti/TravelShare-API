@@ -1,73 +1,78 @@
 package tn.esprit.controllers;
 
+import tn.esprit.entities.Excursions;
+import tn.esprit.services.PaymentService;
+import com.stripe.model.PaymentIntent;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-import tn.esprit.entities.Excursions;
 
-import java.io.IOException;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 
 public class PaymentExcursionController {
 
-    @FXML
-    private Label lblExcursionName;
-    @FXML
-    private Label lblExcursionDescription;
-    @FXML
-    private Label lblExcursionPrice;
-    @FXML
-    private TextField cardNumberField;
-    @FXML
-    private TextField cardHolderField;
-    @FXML
-    private TextField cardCvcField;
+
     @FXML
     private Button btnPayer;
+    @FXML
+    private WebView webView; // Déclarez un WebView dans votre fichier FXML
 
-    private Excursions excursion;
-
-    public void setExcursionData(Excursions excursion) {
-        this.excursion = excursion;
-        lblExcursionName.setText(excursion.getTitle());
-        lblExcursionDescription.setText(excursion.getDescription());
-        lblExcursionPrice.setText(String.valueOf(excursion.getPrix()));
-    }
+    private final PaymentService paymentService = new PaymentService();
+    private Excursions excursion; // L'excursion passée depuis la page précédente
 
     @FXML
     public void initialize() {
-        btnPayer.setOnAction(event -> handlePayment());
+        // Charger la page HTML dans le WebView
+        WebEngine webEngine = webView.getEngine();
+        try {
+            webEngine.load(getClass().getResource("/payment_form.html").toExternalForm()); // Charger le fichier HTML
+        } catch (Exception e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur de chargement");
+            alert.setHeaderText("Le fichier HTML n'a pas pu être chargé");
+            alert.setContentText("Détails de l'erreur: " + e.getMessage());
+            alert.showAndWait();
+        }
     }
 
-    private void handlePayment() {
-        // Logique pour simuler un paiement (par exemple, un appel API ou une logique de validation)
-        System.out.println("Paiement effectué pour : " + excursion.getTitle());
-        System.out.println("Numéro de carte : " + cardNumberField.getText());
-        System.out.println("Titulaire : " + cardHolderField.getText());
-        System.out.println("CVC : " + cardCvcField.getText());
-
-        // Ajouter la logique pour traiter les paiements (par exemple, via une API ou une base de données)
-        // Afficher un message ou effectuer une redirection vers une confirmation de paiement, etc.
+    public void setExcursion(Excursions excursion) {
+        this.excursion = excursion;
     }
 
     @FXML
-    private void handleBack(ActionEvent event) {
+    public void onPayButtonClick(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListExcursionGuide.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            System.err.println("Page loading error FXML: " + e.getMessage());
-            e.printStackTrace();
+            // Montant de l'excursion (en centimes)
+            long amount = (long) (excursion.getPrix() * 100); // Convertir en centimes (si le prix est en TND)
+
+            // Créer PaymentIntent
+            PaymentIntent paymentIntent = paymentService.createPaymentIntent(amount);
+
+            // Passer le client_secret au frontend via JavaScript
+            String clientSecret = paymentIntent.getClientSecret();
+
+            // Charger le client secret dans le WebView pour que le paiement se fasse
+            WebEngine webEngine = webView.getEngine();
+            webEngine.executeScript("window.clientSecret = '" + clientSecret + "';");
+
+            // Afficher une alerte de confirmation
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Paiement Initié");
+            alert.setHeaderText("Votre paiement a été initié avec succès !");
+            alert.setContentText("ID de paiement: " + paymentIntent.getId());
+            alert.showAndWait();
+        } catch (Exception e) {
+            // Afficher une alerte d'erreur
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Erreur de Paiement");
+            alert.setHeaderText("Une erreur est survenue");
+            alert.setContentText("Détails de l'erreur: " + e.getMessage());
+            alert.showAndWait();
         }
     }
+
 }

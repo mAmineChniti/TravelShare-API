@@ -72,17 +72,20 @@ public class UpdateExcursionController {
         }
     }
 
-    // Charger la liste des guides disponibles
     private void loadGuides() {
         try {
             ServiceGuide serviceGuide = new ServiceGuide();
-            guidesList = serviceGuide.ListAll(); // Récupérer la liste des guides
-            guidesList.forEach(guide -> choiceBoxGuide.getItems().add(guide.getName())); // Ajouter les noms des guides au ChoiceBox
+            guidesList = serviceGuide.ListAll();
+            if (guidesList.isEmpty()) {
+                System.out.println("No guides found.");
+            }
+            guidesList.forEach(guide -> choiceBoxGuide.getItems().add(guide.getName()));
             System.out.println("Guides loaded successfully.");
         } catch (SQLException e) {
             System.err.println("Error loading guides: " + e.getMessage());
         }
     }
+
 
     @FXML
     void chooseImage(ActionEvent event) {
@@ -120,13 +123,21 @@ public class UpdateExcursionController {
         excursionToEdit.setImage(imagePathLabel.getText());
         excursionToEdit.setPrix(Double.parseDouble(priceTF.getText()));
 
-        // Trouver l'ID du guide sélectionné
-        for (Guides guide : guidesList) {
-            if (guide.getName().equals(choiceBoxGuide.getValue())) {
-                excursionToEdit.setGuide_id(guide.getGuide_id());
-                break;
+        String selectedGuideName = choiceBoxGuide.getValue(); // Récupérer le nom du guide sélectionné
+        if (selectedGuideName != null) {
+            for (Guides guide : guidesList) {
+                if (guide.getName().equals(selectedGuideName)) {
+                    excursionToEdit.setGuide_id(guide.getGuide_id()); // Mettre à jour le guide_id
+                    break;
+                }
             }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Guide Selection Error");
+            alert.setContentText("Please select a guide.");
+            alert.showAndWait();
         }
+
 
         try {
             serviceExcursion.update(excursionToEdit);

@@ -31,10 +31,9 @@
       <Label fx:id="phoneError" layoutX="460.0" layoutY="260.0" textFill="RED" />
 
       <!-- Language and Experience Fields -->
-      <TextField fx:id="languageTF" layoutX="40.0" layoutY="300.0" prefWidth="350.0" style="-fx-background-color: white;                         -fx-background-radius: 20px;                         -fx-padding: 10px;                         -fx-border-color: #3498db;                         -fx-border-radius: 20px;                         -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 4);" />
       <Label fx:id="languageError" layoutX="40.0" layoutY="350.0" textFill="RED" />
 
-      <TextField fx:id="experienceTF" layoutX="460.0" layoutY="300.0" prefWidth="350.0" style="-fx-background-color: white;                         -fx-background-radius: 20px;                         -fx-padding: 10px;                         -fx-border-color: #3498db;                         -fx-border-radius: 20px;                         -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 4);" />
+      <ComboBox fx:id="experienceTF" layoutX="460.0" layoutY="300.0" prefWidth="350.0" style="-fx-background-color: white;                         -fx-background-radius: 20px;                         -fx-padding: 10px;                         -fx-border-color: #3498db;                         -fx-border-radius: 20px;                         -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 4);" />
       <Label fx:id="experienceError" layoutX="460.0" layoutY="350.0" textFill="RED" />
 
       <!-- Add Button -->
@@ -48,12 +47,7 @@
       <Label layoutX="473.0" layoutY="188.0" style="-fx-font-size: 14px;               -fx-font-weight: bold;               -fx-text-fill: #2c3e50;" text="Phone Number" />
       <Label layoutX="53.0" layoutY="278.0" style="-fx-font-size: 14px;               -fx-font-weight: bold;               -fx-text-fill: #2c3e50;" text="Language" />
       <Label layoutX="473.0" layoutY="278.0" style="-fx-font-size: 14px;               -fx-font-weight: bold;               -fx-text-fill: #2c3e50;" text="Experience" />
-      <ComboBox fx:id="languageCB" layoutX="40.0" layoutY="300.0" prefWidth="350.0"
-                style="-fx-background-color: white;
-                 -fx-background-radius: 20px;
-                 -fx-border-color: #3498db;
-                 -fx-border-radius: 20px;
-                 -fx-padding: 10px;" />
+      <ComboBox fx:id="languageCB" layoutX="40.0" layoutY="300.0" prefWidth="350.0" style="-fx-background-color: white;                  -fx-background-radius: 20px;                  -fx-border-color: #3498db;                  -fx-border-radius: 20px;                  -fx-padding: 10px;" />
 
 
    </children>
