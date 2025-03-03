@@ -29,6 +29,10 @@ public class AddHotelController {
     @FXML
     private TextField telephoneField;
     @FXML
+
+
+
+
     private TextField capaciteField;
 
     private byte[] imageBytes;
