@@ -31,5 +31,7 @@
       <TextField fx:id="priceTF" layoutX="470.0" layoutY="430.0" prefWidth="350.0" style="-fx-background-color: white; -fx-background-radius: 20px; -fx-padding: 10px; -fx-border-color: #3498db; -fx-border-radius: 20px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 4);" />
       <Button layoutX="50.0" layoutY="400.0" mnemonicParsing="false" onAction="#chooseImage" style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-size: 16px; -fx-background-radius: 20px; -fx-padding: 10px; -fx-cursor: hand;" text="Upload Image" />
       <Label fx:id="imagePathLabel" layoutX="200.0" layoutY="415.0" style="-fx-font-size: 14px; -fx-text-fill: #2c3e50;" />
+      <Label layoutX="60.0" layoutY="286.0" style="-fx-font-size: 14px;               -fx-font-weight: bold;               -fx-text-fill: #2c3e50;" text="Guide" />
+      <Label fx:id="imagePathLabel1" layoutX="185.0" layoutY="412.0" style="-fx-font-size: 14px; -fx-text-fill: #2c3e50;" text="No file selected" />
    </children>
 </AnchorPane>

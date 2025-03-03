@@ -1,0 +1,63 @@
+<!-- payment_form.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paiement Stripe</title>
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+<div id="payment-form">
+    <h2>Payer pour l'Excursion</h2>
+    <form id="payment-form-stripe">
+        <div id="card-element"></div>
+        <button type="submit" id="payButton">Payer</button>
+    </form>
+    <div id="payment-message"></div>
+</div>
+
+<script>
+    const stripe = Stripe('pk_test_51QxCbhKN3zE00jsYj3mJKxQ3ZjxdrNRhKq0uGwj7GsCmDpxyHCxbHnHgugVCpYiVVto5lo7jzKiL4AoA1cE1jHza00uvrl5DcE'); // Remplace par TA CLÉ PUBLIQUE Stripe
+    const elements = stripe.elements();
+    const card = elements.create('card');
+    card.mount('#card-element');
+
+    const form = document.getElementById("payment-form-stripe");
+    const paymentMessage = document.getElementById("payment-message");
+
+    form.addEventListener("submit", async function(event) {
+        event.preventDefault();
+
+        const { paymentMethod, error } = await stripe.createPaymentMethod({
+            type: 'card',
+            card: card
+        });
+
+        if (error) {
+            paymentMessage.textContent = "Erreur : " + error.message;
+            return;
+        }
+
+        // Envoi du token au serveur
+        fetch('/api/payment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ paymentMethodId: paymentMethod.id })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    paymentMessage.textContent = "Paiement réussi !";
+                } else {
+                    paymentMessage.textContent = "Échec du paiement : " + data.message;
+                }
+            })
+            .catch(error => {
+                console.error("Erreur:", error);
+                paymentMessage.textContent = "Le paiement a échoué.";
+            });
+    });
+</script>
+</body>
+</html>

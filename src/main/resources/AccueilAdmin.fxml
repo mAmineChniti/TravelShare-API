@@ -37,12 +37,12 @@
                         <Insets top="10.0" />
                     </VBox.margin>
                 </Button>
-                <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Excursions">
+                <Button mnemonicParsing="false" onAction="#SwitchToExcursions" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Excursions">
                     <VBox.margin>
                         <Insets top="10.0" />
                     </VBox.margin>
                 </Button>
-            <Button fx:id="GuidesButton" mnemonicParsing="false" onAction="#SwitchToGuide" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Guides">
+            <Button fx:id="GuidesButton" mnemonicParsing="false" onAction="#SwitchToGuides" prefHeight="50.0" prefWidth="230.0" styleClass="buttonNavigation" stylesheets="@css/Style.css" text="Guides">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>

@@ -29,7 +29,7 @@ public class AddExcursionController {
     @FXML private DatePicker datePicker;
     @FXML private DatePicker datePicker2;
     @FXML private ChoiceBox<String> choiceBoxGuide;
-    @FXML private Label errorTitle, errorDescription, errorDateDebut, errorDateFin, errorGuide, imagePathLabel,errorPrice;
+    @FXML private Label errorTitle, errorDescription, errorDateDebut, errorDateFin, errorGuide, imagePathLabel, errorPrice;
     @FXML private TextField priceTF;
 
     private File selectedFile;
@@ -44,13 +44,22 @@ public class AddExcursionController {
         try {
             ServiceGuide serviceGuide = new ServiceGuide();
             List<Guides> guides = serviceGuide.ListAll();
-            guides.forEach(guide -> choiceBoxGuide.getItems().add(guide.getName()));
-            System.out.println("Guides loaded successfully.");
+
+            // Vérification du contenu
+            System.out.println("Guides récupérés depuis la BD : " + guides);
+
+            for (Guides guide : guides) {
+                choiceBoxGuide.getItems().add(guide.getName());
+            }
+
+            System.out.println("Guides affichés dans ChoiceBox : " + choiceBoxGuide.getItems());
         } catch (SQLException e) {
-            System.err.println("Error loading guides: " + e.getMessage());
+            System.err.println("Erreur chargement guides: " + e.getMessage());
         }
     }
 
+
+    // Configurer les DatePickers
     private void configureDatePickers() {
         datePicker.setDayCellFactory(picker -> new javafx.scene.control.DateCell() {
             @Override
@@ -90,19 +99,23 @@ public class AddExcursionController {
 
             // Renommer le fichier si nécessaire
             String destinationPath = "images/" + selectedFile.getName();
-            try {
-                Files.copy(selectedFile.toPath(), new File(destinationPath).toPath(), StandardCopyOption.REPLACE_EXISTING);
-                imagePathLabel.setText(selectedFile.getName());
-                System.out.println("Selected file: " + selectedFile.getName());
-            } catch (IOException e) {
-                imagePathLabel.setText("Error copying file: " + e.getMessage());
-                System.err.println("Error copying file: " + e.getMessage());
+            File destinationFile = new File(destinationPath);
+            if (destinationFile.exists()) {
+                imagePathLabel.setText("File already exists, choosing a different name.");
+            } else {
+                try {
+                    Files.copy(selectedFile.toPath(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    imagePathLabel.setText(selectedFile.getName());
+                    System.out.println("Selected file: " + selectedFile.getName());
+                } catch (IOException e) {
+                    imagePathLabel.setText("Error copying file: " + e.getMessage());
+                    System.err.println("Error copying file: " + e.getMessage());
+                }
             }
         } else {
             imagePathLabel.setText("No file selected");
         }
     }
-
 
     @FXML
     void addExcursion(ActionEvent event) {
@@ -115,40 +128,59 @@ public class AddExcursionController {
             excursion.setDescription(descriptionTA.getText().trim());
             excursion.setDate_excursion(Date.valueOf(datePicker.getValue()));
             excursion.setDate_fin(Date.valueOf(datePicker2.getValue()));
-            excursion.setPrix(Double.parseDouble(priceTF.getText().trim()));
-            String selectedGuide = choiceBoxGuide.getValue();
 
-            ServiceGuide serviceGuide = new ServiceGuide();
-            Guides guide = serviceGuide.getGuideByName(selectedGuide);
-            if (guide != null) {
-                excursion.setGuide_id(guide.getGuide_id());
-            } else {
-                showError("Guide selection is invalid.");
+            // Vérification et conversion du prix
+            try {
+                excursion.setPrix(Double.parseDouble(priceTF.getText().trim()));
+            } catch (NumberFormatException e) {
+                errorPrice.setText("Format du prix invalide.");
+                errorPrice.setVisible(true);
                 return;
             }
 
+            // Vérification du guide
+            String selectedGuide = choiceBoxGuide.getValue();
+            if (selectedGuide == null) {
+                showError("Veuillez sélectionner un guide.");
+                return;
+            }
+
+            ServiceGuide serviceGuide = new ServiceGuide();
+            Guides guide = serviceGuide.getGuideByName(selectedGuide);
+            if (guide == null) {
+                showError("Aucun guide trouvé avec ce nom.");
+                return;
+            }
+
+            excursion.setGuide_id(guide.getGuide_id());
+
+            // Gestion de l'image sélectionnée
             if (selectedFile != null) {
                 String destinationPath = "images/" + selectedFile.getName();
                 Files.copy(selectedFile.toPath(), new File(destinationPath).toPath(), StandardCopyOption.REPLACE_EXISTING);
                 excursion.setImage(destinationPath);
             }
 
+            // Ajouter l'excursion
             ServiceExcursion serviceExcursion = new ServiceExcursion();
             serviceExcursion.add(excursion);
 
-            showConfirmation("Excursion added successfully!");
-
-            // Optionally, navigate to another scene after adding the excursion
-            // navigateToSomeOtherScene(event);
-
+            showConfirmation("Excursion ajoutée avec succès !");
+            resetFields();
         } catch (SQLException | IOException e) {
-            showError("Error adding excursion: " + e.getMessage());
+            showError("Erreur lors de l'ajout : " + e.getMessage());
         }
     }
 
+
+
+
+
+
+
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
+        alert.setTitle("Erreur");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
@@ -156,7 +188,7 @@ public class AddExcursionController {
 
     private void showConfirmation(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Success");
+        alert.setTitle("Succès");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
@@ -166,37 +198,49 @@ public class AddExcursionController {
         boolean isValid = true;
 
         if (titleTF.getText().trim().isEmpty()) {
-            errorTitle.setText("Title is required.");
+            errorTitle.setText("Le titre est obligatoire.");
             errorTitle.setVisible(true);
             isValid = false;
         }
         if (descriptionTA.getText().trim().isEmpty()) {
-            errorDescription.setText("Description is required.");
+            errorDescription.setText("La description est obligatoire.");
             errorDescription.setVisible(true);
             isValid = false;
         }
         if (datePicker.getValue() == null) {
-            errorDateDebut.setText("Start date is required.");
+            errorDateDebut.setText("Date de début requise.");
             errorDateDebut.setVisible(true);
             isValid = false;
         }
         if (datePicker2.getValue() == null) {
-            errorDateFin.setText("End date is required.");
+            errorDateFin.setText("Date de fin requise.");
             errorDateFin.setVisible(true);
             isValid = false;
         }
         if (choiceBoxGuide.getValue() == null) {
-            errorGuide.setText("Guide is required.");
+            errorGuide.setText("Guide requis.");
             errorGuide.setVisible(true);
             isValid = false;
         }
         if (priceTF.getText().trim().isEmpty()) {
-            errorPrice.setText("Price is required.");
+            errorPrice.setText("Prix requis.");
             errorPrice.setVisible(true);
             isValid = false;
         }
 
         return isValid;
+    }
+
+    private void resetFields() {
+        titleTF.clear();
+        descriptionTA.clear();
+        datePicker.setValue(null);
+        datePicker2.setValue(null);
+        choiceBoxGuide.getSelectionModel().clearSelection();
+        priceTF.clear();
+        imagePathLabel.setText("Aucune image sélectionnée");
+        selectedFile = null;
+        resetErrorMessages();
     }
 
     private void resetErrorMessages() {

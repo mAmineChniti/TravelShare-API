@@ -91,9 +91,9 @@ public class AccueilAdminController {
     }
 
     @FXML
-    void switchToProfile(ActionEvent event) {
+    void SwitchToExcursions(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ProfileUtilisateur.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListExcursion.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -130,7 +130,7 @@ public class AccueilAdminController {
     }
 
     @FXML
-    void SwitchToGuide(ActionEvent event) {
+    void SwitchToGuides(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListGuide.fxml"));
             Parent root = loader.load();
