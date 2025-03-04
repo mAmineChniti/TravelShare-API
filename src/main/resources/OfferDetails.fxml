@@ -67,6 +67,13 @@
                     <Spinner fx:id="placesSpinner" min="1" max="10" initialValue="1" />
                 </HBox>
                 <Button fx:id="reserveButton" onAction="#reserveOffer" text="Reserve Now" />
+                <HBox spacing="10" alignment="CENTER">
+                    <TextField fx:id="amountField" promptText="Amount" />
+                    <ComboBox fx:id="fromCurrencyBox" promptText="From" />
+                    <ComboBox fx:id="toCurrencyBox" promptText="To" />
+                    <Button text="Convert" onAction="#convertCurrency" />
+                    <Label fx:id="convertedAmountLabel" />
+                </HBox>
                 <Label fx:id="reservationStatusLabel" style="-fx-text-fill: green;" text="" />
                 <Label fx:id="activitiesLabel" wrapText="true" maxWidth="500" />
             </children>
