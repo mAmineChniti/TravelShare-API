@@ -29,6 +29,8 @@ import tn.esprit.services.LikesService;
 import tn.esprit.services.PostsService;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
@@ -36,6 +38,10 @@ import java.util.List;
 public class PostsController {
 
     private static final int POSTS_BATCH_SIZE = 10;
+    private static final String PROFANITY_API_URL = " https://neutrinoapi.net/bad-word-filter";
+    private static final Dotenv dotenv = Dotenv.load();
+    private static final String USER_ID = dotenv.get("PROFANITY_USER_ID");
+    private static final String API_KEY = dotenv.get("PROFANITY_API_KEY");
     private final PostsService postsService = new PostsService();
     private final ObservableList<Posts> postsObservableList = FXCollections.observableArrayList();
     @FXML
@@ -45,9 +51,7 @@ public class PostsController {
     @FXML
     private Button postButton;
     private int currentPostCount = 0;
-    private static final String PROFANITY_API_URL = " https://neutrinoapi.net/bad-word-filter";
-    private static final String USER_ID = Dotenv.load().get("PROFANITY_USER_ID");
-    private static final String API_KEY = Dotenv.load().get("PROFANITY_API_KEY");
+
     @FXML
     public void SwitchToAccueil(ActionEvent actionEvent) {
         try {
@@ -79,6 +83,19 @@ public class PostsController {
     void SwitchToHotels(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Hotel.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    @FXML
+    void SwitchToExcursions(ActionEvent event) {
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListExcursionGuide.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -155,6 +172,7 @@ public class PostsController {
             }
         });
     }
+
     private void addPost(String content) {
         Posts newPost = new Posts();
         SessionManager session = SessionManager.getInstance();
@@ -246,7 +264,7 @@ public class PostsController {
                 SessionManager session = SessionManager.getInstance();
                 int currentUserId = session.getCurrentUtilisateur().getUser_id();
 
-                FlaggedContent flaggedContent = new FlaggedContent(post.getPost_id(), currentUserId,new Date(System.currentTimeMillis()));
+                FlaggedContent flaggedContent = new FlaggedContent(post.getPost_id(), currentUserId, new Date(System.currentTimeMillis()));
                 flaggedContentService.add(flaggedContent);
 
                 postsContainer.getChildren().remove(postBox);
@@ -373,6 +391,7 @@ public class PostsController {
                         commentInput.clear();
                     } else {
                         Platform.runLater(() -> addComment(post.getPost_id(), commentText, commentSection));
+                        commentInput.clear();
                     }
                 });
             }
@@ -383,6 +402,16 @@ public class PostsController {
 
         commentSection.getChildren().add(commentBox);
         loadComments(post.getPost_id(), commentSection);
+        if (post.getOwner_id() == SessionManager.getInstance().getCurrentUtilisateur().getUser_id()) {
+            Button shareButton = new Button("Share");
+            shareButton.setStyle("-fx-background-color: #007bff; -fx-text-fill: white; -fx-border-radius: 5; -fx-background-radius: 5;");
+            shareButton.setOnAction(e -> {
+                String encodedContent = URLEncoder.encode(post.getText_content(), StandardCharsets.UTF_8);
+                String shareURL = "https://www.x.com/intent/tweet?text=" + encodedContent;
+                openURL(shareURL);
+            });
+            buttonBox.getChildren().add(0,shareButton);
+        }
         postBox.getChildren().addAll(headerBox, postContent, buttonBox, commentSection);
         //Platform.runLater(() -> postsContainer.layout());
         if (addToTop) {
@@ -391,7 +420,22 @@ public class PostsController {
             postsContainer.getChildren().add(postBox);
         }
     }
-
+    private static void openURL(String url) {
+        Platform.runLater(() -> {
+            try {
+                    String os = System.getProperty("os.name").toLowerCase();
+                    if (os.contains("win")) {
+                        new ProcessBuilder("cmd", "/c", "start", url).start();
+                    } else if (os.contains("mac")) {
+                        new ProcessBuilder("open", url).start();
+                    } else {
+                        new ProcessBuilder("xdg-open", url).start();
+                    }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
     private void updateLikeButtonStyle(Button likeButton, boolean isLiked) {
         if (isLiked) {
             likeButton.setStyle("-fx-background-color: #007bff; -fx-text-fill: white; -fx-border-radius: 5; -fx-background-radius: 5;");
@@ -540,6 +584,7 @@ public class PostsController {
             e.printStackTrace();
         }
     }
+
     private void updateComment(int commentId, String updatedComment) {
         CommentsService commentsService = new CommentsService();
         try {
@@ -552,6 +597,7 @@ public class PostsController {
             e.printStackTrace();
         }
     }
+
     private void deleteComment(int commentId, VBox commentBox, VBox commentSection) {
         CommentsService commentsService = new CommentsService();
         try {
