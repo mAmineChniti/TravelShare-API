@@ -36,8 +36,8 @@ public class ServiceUtilisateur implements IService<Utilisateur> {
         utilisateur.setRole((byte) 0);
 
         // Requête d'insertion incluant la photo par défaut
-        String req = "INSERT INTO users (name, last_name, email, password, phone_num, address, role, photo) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String req = "INSERT INTO users (name, last_name, email, password, phone_num, address, role, photo, compte) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         // Hashage du mot de passe
         String hashedPassword = BCrypt.withDefaults().hashToString(12, utilisateur.getPassword().toCharArray());
@@ -51,6 +51,7 @@ public class ServiceUtilisateur implements IService<Utilisateur> {
             statement.setString(6, utilisateur.getAddress());
             statement.setByte(7, utilisateur.getRole());
             statement.setBytes(8, utilisateur.getPhoto());  // Insertion automatique de la photo par défaut
+            statement.setByte(9, utilisateur.getRole());
 
             // Exécuter la requête
             statement.executeUpdate();
@@ -166,6 +167,7 @@ public class ServiceUtilisateur implements IService<Utilisateur> {
             utilisateur.setPhone_num(rs.getInt("phone_num"));
             utilisateur.setAddress(rs.getString("address"));
             utilisateur.setRole(rs.getByte("role")); // Récupération du rôle
+            utilisateur.setCompte(rs.getByte("compte")); // Récupération de l'état du compte
 
             // Récupérer la photo sous forme de byte[] et l'assigner à l'utilisateur
             byte[] photo = rs.getBytes("photo"); // Récupérer la photo en tant que tableau d'octets
@@ -187,6 +189,14 @@ public class ServiceUtilisateur implements IService<Utilisateur> {
 
             try (ResultSet rs = preparedStatement.executeQuery()) {
                 if (rs.next()) {
+                    // Vérifier si le compte est bloqué avant de vérifier le mot de passe
+                    if (rs.getByte("compte") == 1) {
+                        // Le compte est bloqué, retourner un utilisateur avec un champ spécifique indiquant le blocage
+                        Utilisateur blockedUser = new Utilisateur();
+                        blockedUser.setCompte((byte) 1); // Indicateur que le compte est bloqué
+                        return blockedUser;
+                    }
+
                     // Récupérer le mot de passe haché stocké dans la base de données
                     String storedHashedPassword = rs.getString("password");
 
@@ -202,6 +212,7 @@ public class ServiceUtilisateur implements IService<Utilisateur> {
                         utilisateur.setPhone_num(rs.getInt("phone_num"));
                         utilisateur.setAddress(rs.getString("address"));
                         utilisateur.setRole(rs.getByte("role"));
+                        utilisateur.setCompte(rs.getByte("compte")); // Récupération de l'état du compte
 
                         // Récupérer la photo sous forme de byte[] et l'affecter à l'utilisateur
                         byte[] photo = rs.getBytes("photo");
@@ -281,6 +292,20 @@ public class ServiceUtilisateur implements IService<Utilisateur> {
                 System.out.println("⚠️ La mise à jour de la photo a échoué.");
             }
         }
+    }
+
+    public void bloquerUtilisateur(int user_id) throws SQLException {
+        String req = "UPDATE users SET compte = 1 WHERE user_id = ?";
+        PreparedStatement ps = con.prepareStatement(req);
+        ps.setInt(1, user_id);
+        ps.executeUpdate();
+    }
+
+    public void debloquerUtilisateur(int user_id) throws SQLException {
+        String req = "UPDATE users SET compte = 0 WHERE user_id = ?";
+        PreparedStatement ps = con.prepareStatement(req);
+        ps.setInt(1, user_id);
+        ps.executeUpdate();
     }
 
 }

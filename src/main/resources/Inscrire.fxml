@@ -74,6 +74,7 @@
                   <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="125.0" layoutY="444.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="76.39999999999998" AnchorPane.leftAnchor="125.0">
                      <image>
                         <Image url="@images/international.png" />
+                        <Image url="@images/international.png" />
                      </image>
                   </ImageView>
                   <TextField fx:id="lastnameField" layoutX="178.0" layoutY="129.0" promptText="LastName" stylesheets="@css/Style.css" AnchorPane.bottomAnchor="390.2" AnchorPane.leftAnchor="180.0">
@@ -98,7 +99,7 @@
                   <Label fx:id="confirmedPasswordError" layoutX="180.0" layoutY="345.0" text="Label" textFill="#e12c29" visible="false" AnchorPane.leftAnchor="180.0" />
                   <Label fx:id="phoneError" layoutX="180.0" layoutY="411.0" text="Label" textFill="#e12c29" visible="false" AnchorPane.leftAnchor="180.0" />
                   <Label fx:id="addressError" layoutX="180.0" layoutY="474.0" text="Label" textFill="#e12c29" visible="false" AnchorPane.leftAnchor="180.0" />
-                  <ComboBox fx:id="countryComboBox" layoutX="183.0" layoutY="446.0" prefWidth="150.0" promptText="Address" styleClass="reclamation" visibleRowCount="3" AnchorPane.leftAnchor="180.0" />
+                  <ComboBox fx:id="countryComboBox" layoutX="183.0" layoutY="446.0" prefWidth="150.0" promptText="Address" styleClass="reclamation" stylesheets="@css/Style.css" visibleRowCount="3" AnchorPane.leftAnchor="180.0" />
                     </children>
                 </AnchorPane>
                 <AnchorPane fx:id="layer2" layoutY="-27.0" prefHeight="577.0" prefWidth="362.0" styleClass="imageAccueil" stylesheets="@css/Style.css">

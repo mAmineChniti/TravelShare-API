@@ -20,7 +20,9 @@ import org.json.JSONObject;
 import tn.esprit.entities.Utilisateur;
 import tn.esprit.services.ServiceUtilisateur;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLException;
@@ -229,12 +231,14 @@ public class InscrireController {
 
             // Ajouter un chemin de photo par défaut
             try {
-                // Charger l'image par défaut en tant que tableau d'octets
-                byte[] defaultPhotoPath = Files.readAllBytes(Paths.get("/images/default_photo.png"));
-                utilisateur.setPhoto(defaultPhotoPath);
-            } catch (IOException e) {
+                byte[] defaultPhoto = loadDefaultPhoto(); // Utiliser la méthode loadDefaultPhoto
+                if (defaultPhoto != null) {
+                    utilisateur.setPhoto(defaultPhoto);
+                }
+            } catch (Exception e) {
                 System.out.println("Erreur lors du chargement de l'image par défaut : " + e.getMessage());
             }
+
 
             // Ajouter l'utilisateur à la base de données
             serviceUtilisateur.add(utilisateur);
@@ -249,6 +253,29 @@ public class InscrireController {
         } catch (SQLException | IOException e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Erreur", "Une erreur est survenue. Veuillez réessayer plus tard.");
+        }
+    }
+
+    // Méthode pour charger l'image par défaut
+    private byte[] loadDefaultPhoto() {
+        String defaultPhotoPath = "images/default_photo.png"; // Assurez-vous que l'image est dans le dossier resources/images
+
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(defaultPhotoPath);
+             ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            if (inputStream == null) {
+                System.err.println("Erreur : l'image par défaut n'a pas été trouvée !");
+                return null;
+            }
+
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                baos.write(buffer, 0, bytesRead);
+            }
+            return baos.toByteArray(); // Retourner l'image en byte[]
+        } catch (IOException e) {
+            System.err.println("Erreur lors du chargement de l'image par défaut : " + e.getMessage());
+            return null;
         }
     }
 

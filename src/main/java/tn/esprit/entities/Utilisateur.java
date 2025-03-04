@@ -12,6 +12,8 @@ public class Utilisateur {
     private String name, last_name, email, password, address;
     private byte role;
     private byte[] photo;
+    private byte compte; // 0 = actif, 1 = bloqué
+
 
     // Relation OneToMany avec Reclamation
     // Relation bidirectionnelle avec Reclamation
@@ -21,6 +23,7 @@ public class Utilisateur {
     public Utilisateur() {
         this.role = 0;
         this.photo = loadDefaultPhoto(); // Charger l'image par défaut au lieu de null
+        this.compte = 0; // Par défaut, l'utilisateur n'est pas bloqué
     }
 
     // Constructeur paramétré (y compris l'ID)
@@ -34,6 +37,7 @@ public class Utilisateur {
         this.address = address;
         this.role = 0;
         this.photo = loadDefaultPhoto(); // Charger l'image par défaut au lieu de null
+        this.compte = 0; // Par défaut, le compte est actif
     }
 
     // Constructeur paramétré (sans l'ID)
@@ -93,6 +97,14 @@ public class Utilisateur {
         this.photo = photo; // Permet de stocker `null` si aucune photo n'est définie
     }
 
+    public byte getCompte() {
+        return compte;
+    }
+
+    public void setCompte(byte compte) {
+        this.compte = compte;
+    }
+
 
     // Constructeurs, getters et setters (inclure reclamations)
     public List<Reclamation> getReclamations() { return reclamations; }
@@ -110,15 +122,15 @@ public class Utilisateur {
                 ", password='" + password + '\'' +
                 ", phone_num=" + phone_num + '\'' +
                 ", address='" + address + '\'' +
-                ", role=" + role +
-                ", photo=" + photo +
+                ", role=" + role + '\'' +
+                ", photo=" + photo + '\'' +
+                ", compte=" + compte +
                 '}';
     }
 
     // Charger l'image par défaut en byte[]
     private byte[] loadDefaultPhoto() {
-        // Utiliser un chemin relatif basé sur les ressources du classpath
-        String defaultPhotoPath = "images/default_photo.png"; // Répertoire de l'image dans resources
+        String defaultPhotoPath = "images/default_photo.png"; // Assurez-vous que l'image est dans le dossier resources/images
 
         try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(defaultPhotoPath);
              ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
@@ -138,6 +150,7 @@ public class Utilisateur {
             return null;
         }
     }
+
 
 }
 

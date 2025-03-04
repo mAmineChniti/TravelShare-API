@@ -33,6 +33,9 @@ public class ConnecterController {
     private Label passwordError;
 
     @FXML
+    private Label bloquageerror;
+
+    @FXML
     private Label u1;
 
     @FXML
@@ -61,20 +64,20 @@ public class ConnecterController {
         if (email.isEmpty() && password.isEmpty()) {
             emailError.setText("Email requis.");
             passwordError.setText("Mot de passe requis.");
-            emailError.setVisible(true); // Affiche l'erreur
-            passwordError.setVisible(true); // Affiche l'erreur
-            emailField1.getStyleClass().add("text-field-error"); // Ajoute la classe d'erreur
-            passwordField1.getStyleClass().add("text-field-error"); // Ajoute la classe d'erreur
+            emailError.setVisible(true);
+            passwordError.setVisible(true);
+            emailField1.getStyleClass().add("text-field-error");
+            passwordField1.getStyleClass().add("text-field-error");
             return;
         } else if (email.isEmpty()) {
             emailError.setText("Email requis.");
             emailError.setVisible(true); // Affiche l'erreur
-            emailField1.getStyleClass().add("text-field-error"); // Ajoute la classe d'erreur
+            emailField1.getStyleClass().add("text-field-error");
             return;
         } else if (password.isEmpty()) {
             passwordError.setText("Mot de passe requis.");
             passwordError.setVisible(true); // Affiche l'erreur
-            passwordField1.getStyleClass().add("text-field-error"); // Ajoute la classe d'erreur
+            passwordField1.getStyleClass().add("text-field-error");
             return;
         }
 
@@ -82,8 +85,17 @@ public class ConnecterController {
             // Authentification de l'utilisateur
             Utilisateur utilisateur = serviceUtilisateur.authenticate(email, password);
 
+            // Vérifier si l'utilisateur est trouvé
             if (utilisateur != null) {
-                // Si l'utilisateur est trouvé, on le sauvegarde dans la session
+                // Vérifier si le compte est bloqué
+                if (utilisateur.getCompte() == 1) { // Si le compte est bloqué
+                    // Afficher le message "Votre compte est bloqué" dans le Label bloquageerror
+                    bloquageerror.setText("Votre compte est bloqué. Veuillez contacter l'administrateur.");
+                    bloquageerror.setVisible(true); // Affiche le message
+                    return; // Ne pas continuer si le compte est bloqué
+                }
+
+                // Si l'utilisateur est trouvé et que le compte n'est pas bloqué, on le sauvegarde dans la session
                 SessionManager.getInstance().setCurrentUtilisateur(utilisateur);
 
                 // Vérification du rôle de l'utilisateur
@@ -111,12 +123,11 @@ public class ConnecterController {
                 stage.show();
 
             } else {
-                // Si l'authentification échoue
+                // Si l'authentification échoue (email ou mot de passe incorrect)
                 emailError.setText("Email ou mot de passe incorrect !");
                 emailError.setVisible(true); // Affiche l'erreur
                 passwordError.setText("Email ou mot de passe incorrect !");
                 passwordError.setVisible(true); // Affiche l'erreur
-                return;
             }
 
         } catch (SQLException | IOException e) {
@@ -128,6 +139,7 @@ public class ConnecterController {
             alert.showAndWait();
         }
     }
+
 
     @FXML
     void forgetpassword(ActionEvent event) {

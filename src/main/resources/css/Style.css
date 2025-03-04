@@ -78,6 +78,7 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 5, 0, 0, 2);
 }
 
+/* Style spécifique pour le ComboBox */
 .reclamation {
     -fx-background-color: transparent;
     -fx-border-color: #0598ff;
@@ -87,20 +88,51 @@
     -fx-font-size: 13px;
 }
 
-/* Style pour la ListView */
-.list-view {
-    -fx-background-color: white;
-    -fx-border-color: #87CEEB; /* Bordure grise */
-    -fx-border-width: 2px; /* Épaisseur de la bordure */
+/* Style des cellules du ComboBox */
+.reclamation .combo-box-list-cell {
+    -fx-background-color: white; /* Fond blanc */
+    -fx-border-color: #e0e0e0; /* Bordure légère entre les cellules */
+    -fx-border-width: 0 0 1px 0; /* Ligne seulement en bas */
+    -fx-padding: 10px;
+    -fx-text-fill: black; /* Texte noir */
 }
+
+/* Cellule sélectionnée du ComboBox */
+.reclamation .combo-box-list-cell:selected {
+    -fx-background-color: #87CEEB; /* Bleu ciel */
+    -fx-text-fill: white; /* Texte blanc */
+    -fx-font-weight: bold;
+}
+
+/* Focus sur la cellule sélectionnée */
+.reclamation .combo-box-list-cell:focused {
+    -fx-background-color: #87CEEB; /* Bleu plus foncé */
+    -fx-text-fill: white;
+}
+
+/* Style pour la ListView */
+
+.list-view {
+    -fx-background-color: #f7f7f7;  /* Fond clair */
+    -fx-border-color: #87CEEB;      /* Bordure bleue */
+    -fx-border-width: 2px;          /* Épaisseur de la bordure */
+    -fx-border-radius: 5px;         /* Coins arrondis */
+    -fx-padding: 10px;
+    -fx-spacing: 0px;
+    -fx-font-size: 14px;
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
 
 /* Style des cellules */
 .list-view .cell {
     -fx-background-color: white; /* Fond blanc */
-    -fx-border-color: #ddd; /* Bordure légère entre les cellules */
+    -fx-border-color: #e0e0e0; /* Bordure légère entre les cellules */
     -fx-border-width: 0 0 1px 0; /* Ligne seulement en bas */
     -fx-padding: 10px;
-    -fx-text-fill: white; /* Texte noir */
+    -fx-text-fill: #000000; /* Texte noir */
+    -fx-background-radius: 5px;     /* Bords arrondis */
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);
 
 }
 

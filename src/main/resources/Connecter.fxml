@@ -57,6 +57,11 @@
                         <Font size="15.0" />
                      </font>
                   </Hyperlink>
+                  <Label fx:id="bloquageerror" layoutX="180.0" layoutY="257.0" text="Label" textFill="#e12c29" visible="false">
+                     <font>
+                        <Font size="10.0" />
+                     </font>
+                  </Label>
                     </children>
                 </AnchorPane>
                 <AnchorPane fx:id="layer2" layoutY="-27.0" prefHeight="577.0" prefWidth="362.0" styleClass="imageAccueil" stylesheets="@css/Style.css">
