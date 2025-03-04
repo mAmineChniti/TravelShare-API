@@ -74,7 +74,10 @@ public class ServiceChambre implements IService<Chambres> {
     // New method to filter rooms by hotel ID
     public List<Chambres> ListByHotelId(int hotelId) throws SQLException {
         List<Chambres> chambres = new ArrayList<>();
-        String req = "SELECT * FROM chambres WHERE hotel_id = ?";
+        String req = "SELECT c.*, h.adress AS hotel_adresse " +
+                "FROM chambres c " +
+                "JOIN hotels h ON c.hotel_id = h.hotel_id " +
+                "WHERE c.hotel_id = ?";
         try (PreparedStatement ps = connection.prepareStatement(req)) {
             ps.setInt(1, hotelId);
             ResultSet rs = ps.executeQuery();
@@ -87,6 +90,8 @@ public class ServiceChambre implements IService<Chambres> {
                         rs.getDouble("prix_par_nuit"),
                         rs.getBoolean("disponible")
                 );
+                // Set the hotel address retrieved from the JOIN
+                chambre.setAddress(rs.getString("hotel_adresse"));
                 chambres.add(chambre);
             }
         }
