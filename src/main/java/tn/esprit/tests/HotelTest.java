@@ -23,7 +23,7 @@ public class HotelTest {
 
         try {
             // Test Create (Insert)
-            Hotels newHotel = new Hotels(0, "Hôtel Tunis", "Tunis Centre", "12345678", 100);
+            Hotels newHotel = new Hotels(0, "Hôtel Tunis", "Tunis Centre", "12345678", 100, null);
             service.add(newHotel);
             System.out.println("Hôtel ajouté avec succès !");
 

@@ -8,6 +8,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -15,6 +19,8 @@ import tn.esprit.entities.SessionManager;
 import tn.esprit.entities.Utilisateur;
 import tn.esprit.services.ServiceHotels;
 import tn.esprit.entities.Hotels;
+
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -33,17 +39,23 @@ public class HotelController {
         loadHotels();
         Utilisateur currentUser = SessionManager.getInstance().getCurrentUtilisateur();
         // Show "Add Hotel" button only for admin users
-        if (currentUser != null && currentUser.getRole()==1) {
+        if (currentUser != null && currentUser.getRole() == 1) {
             addHotelButton.setVisible(true);
             addHotelButton.setOnAction(event -> openAddHotelForm());
         } else {
             addHotelButton.setVisible(false);
         }
     }
+
+    // --- NAVIGATION METHODS ---
+
     @FXML
     public void SwitchToAccueil(ActionEvent actionEvent) {
         try {
-            String AccueilLink = SessionManager.getInstance().getCurrentUtilisateur().getRole() == 1 ? "/AccueilAdmin.fxml" : "/Accueil.fxml";
+            String AccueilLink = (SessionManager.getInstance().getCurrentUtilisateur().getRole() == 1)
+                    ? "/AccueilAdmin.fxml"
+                    : "/Accueil.fxml";
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource(AccueilLink));
             Parent root = loader.load();
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
@@ -53,6 +65,7 @@ public class HotelController {
             e.printStackTrace();
         }
     }
+
     @FXML
     public void SwitchToVoyages(ActionEvent actionEvent) {
         try {
@@ -117,6 +130,15 @@ public class HotelController {
         }
     }
 
+
+    private Image convertBytesToImage(byte[] imageData) {
+        if (imageData == null || imageData.length == 0) {
+            // Use your default image path here
+            return new Image("src/main/resources/images/default-hotel.png");
+        }
+        return new Image(new ByteArrayInputStream(imageData));
+    }
+
     void loadHotels() {
         try {
             List<Hotels> hotels = serviceHotels.ListAll();
@@ -125,36 +147,34 @@ public class HotelController {
             hotelContainer.setStyle("-fx-padding: 20;");
 
             for (Hotels hotel : hotels) {
-                // Create hotel card container
-                VBox card = new VBox();
-                card.setStyle("-fx-background-color: #ffffff; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 15;");
-                card.setSpacing(8);
+                HBox card = new HBox();
+                card.setSpacing(15);
+                card.setStyle("-fx-background-color: #ffffff; -fx-border-color: #e0e0e0; "
+                        + "-fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 15;");
 
-                // Hotel name with stars
+                VBox textContainer = new VBox();
+                textContainer.setSpacing(8);
+
                 Label nameLabel = new Label(hotel.getNom() + " ★★★★");
                 nameLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
 
-                // Address
                 Label addressLabel = new Label("Adresse: " + hotel.getAdress());
                 addressLabel.setStyle("-fx-text-fill: #666666;");
 
-                // Telephone
                 Label phoneLabel = new Label("Téléphone: " + hotel.getTelephone());
                 phoneLabel.setStyle("-fx-text-fill: #666666;");
 
-                // Capacity
                 Label capacityLabel = new Label("Capacité totale: " + hotel.getCapacite_totale() + " personnes");
                 capacityLabel.setStyle("-fx-text-fill: #666666;");
 
-                // Availability button
                 Button availabilityButton = new Button("Voir disponibilité");
                 availabilityButton.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold;");
                 availabilityButton.setOnAction(event -> navigateToChambre(hotel));
 
-                // Create an HBox for buttons (only for admin)
+                // Admin buttons (only if user is admin)
                 HBox adminButtons = new HBox(10);
                 Utilisateur currentUser = SessionManager.getInstance().getCurrentUtilisateur();
-                if (currentUser != null && currentUser.getRole()==1) {
+                if (currentUser != null && currentUser.getRole() == 1) {
                     Button updateButton = new Button("Modifier");
                     updateButton.setStyle("-fx-background-color: #f1c40f; -fx-text-fill: white;");
                     updateButton.setOnAction(event -> updateHotel(hotel));
@@ -166,22 +186,31 @@ public class HotelController {
                     adminButtons.getChildren().addAll(updateButton, deleteButton);
                 }
 
-                // Add components to the card
-                card.getChildren().addAll(
+                textContainer.getChildren().addAll(
                         nameLabel,
                         addressLabel,
                         phoneLabel,
                         capacityLabel,
                         availabilityButton
                 );
-
                 if (!adminButtons.getChildren().isEmpty()) {
-                    card.getChildren().add(adminButtons);
+                    textContainer.getChildren().add(adminButtons);
                 }
+
+                Region spacer = new Region();
+                HBox.setHgrow(spacer, Priority.ALWAYS);
+
+                ImageView imageView = new ImageView();
+                imageView.setFitWidth(200);
+                imageView.setFitHeight(150);
+                imageView.setPreserveRatio(true);
+                imageView.setImage(convertBytesToImage(hotel.getImage_h()));
+
+                card.getChildren().addAll(textContainer, spacer, imageView);
 
                 hotelContainer.getChildren().add(card);
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -220,15 +249,12 @@ public class HotelController {
 
     private void deleteHotel(Hotels hotel) {
         try {
-            // Call the delete method from ServiceHotels
             serviceHotels.delete(hotel.getHotel_id());
             System.out.println("Hotel deleted: " + hotel.getNom());
-
-            // Refresh the hotel list to reflect the deletion
+            // Refresh the hotel list
             loadHotels();
         } catch (SQLException e) {
             e.printStackTrace();
-            // Handle the exception (e.g., show an error message to the user)
             System.err.println("Failed to delete hotel: " + e.getMessage());
         }
     }

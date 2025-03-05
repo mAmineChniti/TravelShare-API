@@ -16,12 +16,13 @@ public class ServiceHotels implements IService<Hotels> {
 
     @Override
     public void add(Hotels hotel) throws SQLException {
-        String req = "INSERT INTO hotels (nom, adress, telephone, capacite_totale) VALUES (?, ?, ?, ?)";
+        String req = "INSERT INTO hotels (nom, adress, telephone, capacite_totale, image_h) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement ps = connection.prepareStatement(req)) {
             ps.setString(1, hotel.getNom());
             ps.setString(2, hotel.getAdress());
             ps.setString(3, hotel.getTelephone());
             ps.setInt(4, hotel.getCapacite_totale());
+            ps.setBytes(5, hotel.getImage_h());
             ps.executeUpdate();
         }
         System.out.println("Hôtel ajouté avec succès");
@@ -29,13 +30,14 @@ public class ServiceHotels implements IService<Hotels> {
 
     @Override
     public void update(Hotels hotel) throws SQLException {
-        String req = "UPDATE hotels SET nom=?, adress=?, telephone=?, capacite_totale=? WHERE hotel_id=?";
+        String req = "UPDATE hotels SET nom=?, adress=?, telephone=?, capacite_totale=?, image_h=? WHERE hotel_id=?";
         try (PreparedStatement ps = connection.prepareStatement(req)) {
             ps.setString(1, hotel.getNom());
             ps.setString(2, hotel.getAdress());
             ps.setString(3, hotel.getTelephone());
             ps.setInt(4, hotel.getCapacite_totale());
-            ps.setInt(5, hotel.getHotel_id());
+            ps.setBytes(5, hotel.getImage_h());
+            ps.setInt(6, hotel.getHotel_id()); // Correction : l'ID est le 6e paramètre
             ps.executeUpdate();
         }
         System.out.println("Hôtel mis à jour avec succès");
@@ -64,6 +66,7 @@ public class ServiceHotels implements IService<Hotels> {
                 hotel.setAdress(rs.getString("adress"));
                 hotel.setTelephone(rs.getString("telephone"));
                 hotel.setCapacite_totale(rs.getInt("capacite_totale"));
+                hotel.setImage_h(rs.getBytes("image_h")); // Correction ici
                 hotels.add(hotel);
             }
         }

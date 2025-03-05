@@ -1,17 +1,12 @@
 package tn.esprit.controllers;
 
 import io.github.cdimascio.dotenv.Dotenv;
-import jakarta.mail.Authenticator;
-import jakarta.mail.Message;
-import jakarta.mail.MessagingException;
-import jakarta.mail.Multipart;
-import jakarta.mail.PasswordAuthentication;
-import jakarta.mail.Session;
-import jakarta.mail.Transport;
+import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -22,10 +17,14 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import tn.esprit.entities.Chambres;
 import tn.esprit.entities.ReservationHotel;
 import tn.esprit.entities.SessionManager;
@@ -44,6 +43,7 @@ public class ReservationChambreController {
 
     private static final OkHttpClient client = new OkHttpClient();
     private static final String QR_API_URL = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=";
+    private static final String GEO_API_KEY = Dotenv.load().get("GEO_API_KEY");
     private final ServiceReservationHotel serviceReservation = new ServiceReservationHotel();
     @FXML
     private Label numeroChambreLabel, typeLabel, prixLabel, statutLabel;
@@ -52,6 +52,8 @@ public class ReservationChambreController {
     @FXML
     private Button confirmButton, cancelButton;
     private Chambres chambre;
+    @FXML
+    private WebView mapWebView;
 
     @FXML
     public void SwitchToAccueil(ActionEvent actionEvent) {
@@ -136,6 +138,60 @@ public class ReservationChambreController {
         typeLabel.setText(chambre.getType_enu());
         prixLabel.setText(String.format("Prix/nuit: TND %.2f", chambre.getPrix_par_nuit()));
         statutLabel.setText(chambre.isDisponible() ? "Disponible" : "Non disponible");
+        String address = chambre.getAddress();
+        fetchAndDisplayMap(address);
+    }
+    private void fetchAndDisplayMap(String address) {
+        System.out.println("Fetching map for address: " + address);
+        try {
+            Response response = geoLocation(address);
+            if (response.isSuccessful() && response.body() != null) {
+                String jsonResponse = response.body().string();
+                System.out.println("API Response: " + jsonResponse);
+
+                JSONArray results = new JSONArray(jsonResponse); // Response is an array, not an object
+                if (!results.isEmpty()) {
+                    JSONObject firstResult = results.getJSONObject(0);
+                    // Extract lat/lon directly from the result
+                    double lat = firstResult.getDouble("lat");
+                    double lon = firstResult.getDouble("lon");
+                    System.out.println("Lat/Lon: " + lat + ", " + lon);
+
+                    Platform.runLater(() -> {
+                        loadMapInWebView(lat, lon);
+                    });
+                } else {
+                    System.out.println("No results found for address: " + address);
+                }
+            } else {
+                System.out.println("API Error: " + response.code() + " - " + response.message());
+            }
+        } catch (IOException | JSONException e) {
+            System.err.println("Exception in fetchAndDisplayMap: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    private void loadMapInWebView(double lat, double lng) {
+        String htmlContent = "<!DOCTYPE html>"
+                + "<html>"
+                + "<head>"
+                + "    <link rel=\"stylesheet\" href=\"https://unpkg.com/leaflet@1.7.1/dist/leaflet.css\" />"
+                + "    <script src=\"https://unpkg.com/leaflet@1.7.1/dist/leaflet.js\"></script>"
+                + "    <style>#map { height: 300px; width: 600px; }</style>"
+                + "</head>"
+                + "<body>"
+                + "    <div id=\"map\"></div>"
+                + "    <script>"
+                + "        var map = L.map('map').setView([" + lat + ", " + lng + "], 15);"
+                + "        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {"
+                + "            attribution: '© OpenStreetMap contributors'"
+                + "        }).addTo(map);"
+                + "        L.marker([" + lat + ", " + lng + "]).addTo(map);"
+                + "    </script>"
+                + "</body>"
+                + "</html>";
+
+        mapWebView.getEngine().loadContent(htmlContent);
     }
 
     @FXML
@@ -230,6 +286,69 @@ public class ReservationChambreController {
         }
     }
 
+    public String fetchQRCode(ReservationHotel reservation) {
+        try {
+            String qrText = "Réservation confirmée:\n" +
+                    "Chambre: " + chambre.getNumero_chambre() + "\n" +
+                    "Date d'arrivée: " + reservation.getDate_debut() + "\n" +
+                    "Date de départ: " + reservation.getDate_fin() + "\n" +
+                    "Prix total: " + reservation.getPrix_totale() + " TND";
+            String encodedQrText = URLEncoder.encode(qrText, StandardCharsets.UTF_8);
+            String apiUrl = QR_API_URL + encodedQrText;
+            Request request = new Request.Builder().url(apiUrl).build();
+            try (Response response = client.newCall(request).execute()) {
+                if (response.isSuccessful() && response.body() != null) {
+                    File tempFile = File.createTempFile("qrcode", ".png");
+                    try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+                        fos.write(response.body().bytes());
+                    }
+                    return tempFile.getAbsolutePath();
+                } else {
+                    System.err.println("Error: " + response.code() + " - " + response.message());
+                    return null;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private Response geoLocation(String address) throws IOException {
+        String encodedAddress = URLEncoder.encode(address, StandardCharsets.UTF_8);
+        String url = "http://api.openweathermap.org/geo/1.0/direct?q="
+                + encodedAddress
+                + "&limit=1&appid=" + GEO_API_KEY; // Use OpenWeatherMap API key
+
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .build();
+
+        return client.newCall(request).execute();
+    }
+
+    @FXML
+    private void cancelReservation() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Hotel.fxml"));
+            Parent previousPage = loader.load();
+            Scene previousScene = new Scene(previousPage);
+            Stage stage = (Stage) confirmButton.getScene().getWindow();
+            stage.setScene(previousScene);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Unable to load the previous page.");
+        }
+    }
+
+
+    private void showAlert(Alert.AlertType type, String message) {
+        Alert alert = new Alert(type);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
     public static class EmailTest {
         public static void main(String[] args) {
             final String username = Dotenv.load().get("EMAIL_ADDRESS");
@@ -260,49 +379,5 @@ public class ReservationChambreController {
                 e.printStackTrace();
             }
         }
-    }
-
-    public String fetchQRCode(ReservationHotel reservation) {
-        try {
-            String qrText = "Réservation confirmée:\n" +
-                    "Chambre: " + chambre.getNumero_chambre() + "\n" +
-                    "Date d'arrivée: " + reservation.getDate_debut() + "\n" +
-                    "Date de départ: " + reservation.getDate_fin() + "\n" +
-                    "Prix total: " + reservation.getPrix_totale() + " TND";
-            String encodedQrText = URLEncoder.encode(qrText, StandardCharsets.UTF_8);
-            String apiUrl = QR_API_URL + encodedQrText;
-            Request request = new Request.Builder().url(apiUrl).build();
-            try (Response response = client.newCall(request).execute()) {
-                if (response.isSuccessful() && response.body() != null) {
-                    File tempFile = File.createTempFile("qrcode", ".png");
-                    try (FileOutputStream fos = new FileOutputStream(tempFile)) {
-                        fos.write(response.body().bytes());
-                    }
-                    return tempFile.getAbsolutePath();
-                } else {
-                    System.err.println("Error: " + response.code() + " - " + response.message());
-                    return null;
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @FXML
-    private void cancelReservation() {
-        closeWindow();
-    }
-
-    private void closeWindow() {
-        Stage stage = (Stage) confirmButton.getScene().getWindow();
-        stage.close();
-    }
-
-    private void showAlert(Alert.AlertType type, String message) {
-        Alert alert = new Alert(type);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 }

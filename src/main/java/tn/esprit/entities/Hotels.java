@@ -6,17 +6,19 @@ public class Hotels {
     private String adress;
     private String telephone;
     private int capacite_totale;
+    private byte[] image_h;
 
     // Constructeur par défaut
     public Hotels() {}
 
     // Constructeur paramétré
-    public Hotels(int hotel_id, String nom, String adress, String telephone, int capacite_totale) {
+    public Hotels(int hotel_id, String nom, String adress, String telephone, int capacite_totale ,byte[] image_h) {
         this.hotel_id = hotel_id;
         this.nom = nom;
         this.adress = adress;
         this.telephone = telephone;
         this.capacite_totale = capacite_totale;
+        this.image_h = image_h;
     }
 
     // Getters et Setters
@@ -55,6 +57,13 @@ public class Hotels {
     public int getCapacite_totale() {
         return capacite_totale;
     }
+    public byte[] getImage_h() {
+        return image_h;
+    }
+
+    public void setImage_h(byte[] image_h) {
+        this.image_h = image_h;
+    }
 
     public void setCapacite_totale(int capacite_totale) {
         this.capacite_totale = capacite_totale;
@@ -69,4 +78,5 @@ public class Hotels {
                 ", capacite_totale=" + capacite_totale +
                 '}';
     }
+
 }

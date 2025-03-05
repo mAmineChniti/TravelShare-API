@@ -7,9 +7,18 @@ public class Chambres {
     private String type_enu;
     private double prix_par_nuit;
     private boolean disponible;
+    private String address;
 
     // Constructeur par défaut
     public Chambres() {}
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
     // Constructeur paramétré
     public Chambres(int chambre_id, int hotel_id, String numero_chambre, String type_enu, double prix_par_nuit, boolean disponible) {

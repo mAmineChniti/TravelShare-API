@@ -8,6 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.image.ImageView?>
 <AnchorPane prefHeight="550.0" prefWidth="850.0" styleClass="root" stylesheets="@css/Style.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.UpdateHotelController">
     <children>
         <!-- Barre de navigation -->
@@ -56,6 +57,12 @@
                 <Label text="Capacité totale" />
                 <TextField fx:id="capaciteField" />
             </VBox>
+            <VBox spacing="5">
+                <Label text="Photo de l'hôtel" />
+                <ImageView fx:id="imageView" fitWidth="200" fitHeight="150" />
+                <Button text="Changer la photo" onAction="#handleChangePhoto" />
+            </VBox>
+
 
             <HBox spacing="10" alignment="CENTER">
                 <Button text="Annuler" onAction="#handleCancel" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" />
