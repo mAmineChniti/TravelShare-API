@@ -32,7 +32,6 @@ public class AddChambreController {
     private Hotels selectedHotel;
     private final ServiceChambre serviceChambre = new ServiceChambre();
 
-    // Initialize the ComboBox with type options
     @FXML
     public void initialize() {
         typeComboBox.getItems().addAll("simple", "double", "suite");
@@ -44,10 +43,8 @@ public class AddChambreController {
         this.selectedHotel = hotel;
     }
 
-    // Handle the "Ajouter" button click
     @FXML
     private void handleAdd() {
-        // Retrieve values from the form
         String numero = numeroField.getText();
         String type = typeComboBox.getValue(); // Get selected type from ComboBox
         String prix = prixField.getText();
@@ -73,26 +70,21 @@ public class AddChambreController {
             return;
         }
 
-        // Set disponibilité to true by default
         boolean disponibleValue = true;
 
         // Create a new Chambres object
         Chambres newChambre = new Chambres(0, selectedHotel.getHotel_id(), numero, type, prixValue, disponibleValue);
 
         try {
-            // Add the new chambre to the database
             serviceChambre.add(newChambre);
             showAlert("Succès", "Chambre ajoutée avec succès.", Alert.AlertType.INFORMATION);
 
-            // Navigate back to the Chambre.fxml page
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Chambre.fxml"));
             Parent root = loader.load();
 
-            // Pass the selected hotel to the ChambreController
             ChambreController controller = loader.getController();
             controller.setSelectedHotel(selectedHotel);
 
-            // Switch to the Chambre.fxml scene
             Stage stage = (Stage) numeroField.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
@@ -103,18 +95,15 @@ public class AddChambreController {
         }
     }
 
-    // Handle the "Annuler" button click
     @FXML
     private void handleCancel() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Chambre.fxml"));
             Parent root = loader.load();
 
-            // Pass the selected hotel back to the ChambreController
             ChambreController controller = loader.getController();
             controller.setSelectedHotel(selectedHotel);
 
-            // Switch to the Chambre.fxml scene
             Stage stage = (Stage) numeroField.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
@@ -123,7 +112,6 @@ public class AddChambreController {
         }
     }
 
-    // Show an alert dialog
     private void showAlert(String title, String message, Alert.AlertType type) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
@@ -132,7 +120,6 @@ public class AddChambreController {
         alert.showAndWait();
     }
 
-    // Navigation methods (unchanged)
     @FXML
     private void SwitchToAccueil(ActionEvent event) {
         switchScene(event, SessionManager.getInstance().getCurrentUtilisateur().getRole() == 1 ? "/AccueilAdmin.fxml" : "/Accueil.fxml");
@@ -163,7 +150,6 @@ public class AddChambreController {
         switchScene(event, "/Connecter.fxml");
     }
 
-    // Generic method to switch scenes
     private void switchScene(ActionEvent event, String fxmlFile) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));

@@ -10,6 +10,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -128,12 +130,7 @@ public class HotelController {
         }
     }
 
-    // --- MAIN LOGIC ---
 
-    /**
-     * Convert the image bytes (from DB) to a JavaFX Image.
-     * Fallback to a default local image if no data is available.
-     */
     private Image convertBytesToImage(byte[] imageData) {
         if (imageData == null || imageData.length == 0) {
             // Use your default image path here
@@ -150,13 +147,11 @@ public class HotelController {
             hotelContainer.setStyle("-fx-padding: 20;");
 
             for (Hotels hotel : hotels) {
-                // Outer HBox for each "card"
                 HBox card = new HBox();
                 card.setSpacing(15);
                 card.setStyle("-fx-background-color: #ffffff; -fx-border-color: #e0e0e0; "
                         + "-fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 15;");
 
-                // Left side: text details in a VBox
                 VBox textContainer = new VBox();
                 textContainer.setSpacing(8);
 
@@ -191,7 +186,6 @@ public class HotelController {
                     adminButtons.getChildren().addAll(updateButton, deleteButton);
                 }
 
-                // Add labels/buttons to text container
                 textContainer.getChildren().addAll(
                         nameLabel,
                         addressLabel,
@@ -203,20 +197,20 @@ public class HotelController {
                     textContainer.getChildren().add(adminButtons);
                 }
 
-                // Right side: image
+                Region spacer = new Region();
+                HBox.setHgrow(spacer, Priority.ALWAYS);
+
                 ImageView imageView = new ImageView();
                 imageView.setFitWidth(200);
                 imageView.setFitHeight(150);
                 imageView.setPreserveRatio(true);
                 imageView.setImage(convertBytesToImage(hotel.getImage_h()));
 
-                // Combine text (left) + image (right)
-                card.getChildren().addAll(textContainer, imageView);
+                card.getChildren().addAll(textContainer, spacer, imageView);
 
-                // Add card to the main container
                 hotelContainer.getChildren().add(card);
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

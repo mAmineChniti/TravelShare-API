@@ -330,13 +330,18 @@ public class ReservationChambreController {
 
     @FXML
     private void cancelReservation() {
-        closeWindow();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Hotel.fxml"));
+            Parent previousPage = loader.load();
+            Scene previousScene = new Scene(previousPage);
+            Stage stage = (Stage) confirmButton.getScene().getWindow();
+            stage.setScene(previousScene);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Unable to load the previous page.");
+        }
     }
 
-    private void closeWindow() {
-        Stage stage = (Stage) confirmButton.getScene().getWindow();
-        stage.close();
-    }
 
     private void showAlert(Alert.AlertType type, String message) {
         Alert alert = new Alert(type);
