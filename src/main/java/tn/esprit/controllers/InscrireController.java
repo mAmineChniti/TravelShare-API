@@ -338,6 +338,7 @@ public class InscrireController {
     }
 
 
+
     @FXML
     void switchToSignIn(ActionEvent event) {
         try {

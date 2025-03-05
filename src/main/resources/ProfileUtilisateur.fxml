@@ -133,7 +133,6 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <TextArea fx:id="descriptionField" layoutX="582.0" layoutY="421.0" prefHeight="82.0" prefWidth="234.0" promptText="Saisissez votre réclamation..." styleClass="reclamation" stylesheets="@css/Style.css" />
       <Hyperlink fx:id="listeRec" layoutX="582.0" layoutY="516.0" onAction="#listeReclamation" text="Liste des Réclamations" />
       <TextArea fx:id="objetField" layoutX="582.0" layoutY="371.0" prefHeight="42.0" prefWidth="234.0" promptText="Objet" styleClass="reclamation" stylesheets="@css/Style.css" />
       <Button layoutX="735.0" layoutY="512.0" mnemonicParsing="false" onAction="#envoyerReclamation" prefHeight="27.0" prefWidth="82.0" stylesheets="@css/Style.css" text="Envoyer" textFill="WHITE">
@@ -168,5 +167,6 @@
             <Image url="@images/default_photo.png" />
          </image>
       </ImageView>
+      <TextArea fx:id="descriptionField" layoutX="582.0" layoutY="421.0" prefHeight="82.0" prefWidth="234.0" promptText="Saisissez votre réclamation..." styleClass="reclamation" stylesheets="@css/Style.css" />
     </children>
 </AnchorPane>

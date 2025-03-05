@@ -77,5 +77,10 @@
       </Button>
       <Hyperlink fx:id="listeRec" layoutX="496.0" layoutY="500.0" onAction="#listeReclamation" text="Liste des Réponses" />
       <ComboBox fx:id="etatrec" layoutX="678.0" layoutY="12.0" prefWidth="150.0" promptText="Etat" styleClass="reclamation" stylesheets="@css/Style.css" />
+      <ImageView fx:id="retourpage" fitHeight="24.0" fitWidth="20.0" layoutX="242.0" layoutY="16.0" onMouseClicked="#retourpage" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="534.4" AnchorPane.leftAnchor="242.0">
+         <image>
+            <Image url="@images/bouton-retour.png" />
+         </image>
+      </ImageView>
     </children>
 </AnchorPane>

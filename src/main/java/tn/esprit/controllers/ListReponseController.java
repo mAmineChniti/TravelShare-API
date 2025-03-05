@@ -3,12 +3,15 @@ package tn.esprit.controllers;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import tn.esprit.entities.Reclamation;
 import tn.esprit.entities.Reponse;
@@ -30,6 +33,9 @@ public class ListReponseController {
 
     @FXML
     private Button delButton;
+
+    @FXML
+    private ImageView retourpage;
 
     @FXML
     private ListView<String> reponseListView; // ListView pour afficher les réponses
@@ -209,5 +215,23 @@ public class ListReponseController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void retour(Event event, String fxmlFile) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource(fxmlFile));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page.");
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void retourpage(MouseEvent event) {
+        retour(event, "/ListReclamation.fxml");
+
     }
 }

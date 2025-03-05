@@ -9,6 +9,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
@@ -24,6 +26,7 @@ import tn.esprit.entities.SessionManager;
 import tn.esprit.entities.Utilisateur;
 import tn.esprit.services.ServiceUtilisateur;
 import tn.esprit.services.ServiceReclamation;
+import tn.esprit.services.SpellChecker;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -82,6 +85,10 @@ public class ProfileUtilisateurController {
 
     @FXML
     private Hyperlink listeRec;
+
+    @FXML
+    private Label errorLabel;
+
 
     @FXML
     private Button changerPhoto;
@@ -300,6 +307,7 @@ public class ProfileUtilisateurController {
     }
 
 
+    // Méthode pour vérifier l'orthographe et souligner les erreurs
     @FXML
     void initialize() {
         try {
@@ -315,23 +323,58 @@ public class ProfileUtilisateurController {
                 phoneField.setText(String.valueOf(utilisateur.getPhone_num()));
                 countryComboBox.setValue(utilisateur.getAddress());
 
-                // Récupérer et afficher la photo de profil
-                byte[] photoData = utilisateur.getPhoto();
-                if (photoData != null && photoData.length > 0) {
-                    // Convertir le tableau d'octets en Image
-                    Image profileImage = new Image(new ByteArrayInputStream(photoData));
-                    profileImageView.setImage(profileImage);
-                } else {
-                    // Charger l’image par défaut depuis les ressources
-                    Image defaultImage = new Image(getClass().getResource("/images/default_photo.png").toExternalForm());
-                    profileImageView.setImage(defaultImage);
-                }
+                // Ajouter des listeners pour vérifier l'orthographe pendant la saisie
+                objetField.textProperty().addListener((observable, oldText, newText) -> {
+                    highlightSpellingErrors(objetField, newText);
+                });
+
+                descriptionField.textProperty().addListener((observable, oldText, newText) -> {
+                    highlightSpellingErrors(descriptionField, newText);
+                });
+
             } else {
                 System.out.println("Utilisateur non trouvé.");
             }
         } catch (Exception e) {
             System.out.println("Erreur lors du chargement de l'utilisateur : " + e.getMessage());
         }
+    }
+
+    // Méthode pour souligner les erreurs d'orthographe dans le TextArea
+    private void highlightSpellingErrors(TextArea textArea, String text) {
+        // Appel à l'API LanguageTool (assurez-vous que la méthode checkSpelling est bien implémentée)
+        List<String> errors = SpellChecker.checkSpelling(text);
+
+        // Remettre le texte original
+        textArea.setStyle("-fx-text-fill: black;"); // Remettre la couleur du texte par défaut
+        textArea.clear();
+
+        // Diviser le texte en mots
+        String[] words = text.split("\\s+");
+
+        for (String word : words) {
+            if (errors.contains(word)) {
+                // Ajouter un mot incorrect avec un style différent (surligné en rouge)
+                Text errorText = new Text(word + " ");
+                errorText.setStyle("-fx-fill: red;");
+
+                // Ajouter un Tooltip pour donner les suggestions de correction
+                Tooltip tooltip = new Tooltip("Suggestions : " + getSuggestions(word));
+                Tooltip.install(errorText, tooltip);
+
+                textArea.appendText(errorText.getText()); // Ajouter à la TextArea
+            } else {
+                // Ajouter un mot correct
+                textArea.appendText(word + " ");
+            }
+        }
+    }
+
+    // Méthode pour récupérer des suggestions de correction pour un mot
+    private String getSuggestions(String word) {
+        // Exemple de suggestion (à adapter selon l'API ou logique que tu utilises)
+        // Ici, on pourrait appeler une méthode pour récupérer les suggestions de LanguageTool
+        return "Correction possible pour : " + word;
     }
 
 
@@ -378,6 +421,7 @@ public class ProfileUtilisateurController {
         }
     }
 
+    
 
     @FXML
     void changerPhoto(ActionEvent event) {
@@ -439,6 +483,7 @@ public class ProfileUtilisateurController {
     }
 
 
+
     // Méthode pour afficher les alertes
     private void showAlert(Alert.AlertType type, String titre, String message) {
         Alert alert = new Alert(type);
@@ -447,7 +492,6 @@ public class ProfileUtilisateurController {
         alert.setContentText(message);
         alert.showAndWait();
     }
-
 
     @FXML
     void deconnexion(ActionEvent event) {

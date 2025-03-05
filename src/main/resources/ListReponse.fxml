@@ -73,5 +73,10 @@
             <Font size="15.0" />
          </font>
       </Button>
+      <ImageView fx:id="retourpage" fitHeight="24.0" fitWidth="20.0" layoutX="252.0" layoutY="26.0" onMouseClicked="#retourpage" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="534.4" AnchorPane.leftAnchor="242.0">
+         <image>
+            <Image url="@images/bouton-retour.png" />
+         </image>
+      </ImageView>
     </children>
 </AnchorPane>

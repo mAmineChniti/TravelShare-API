@@ -3,12 +3,15 @@ package tn.esprit.controllers;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import tn.esprit.entities.SessionManager;
 import tn.esprit.entities.Utilisateur;
@@ -40,6 +43,9 @@ public class ListReclamationController {
     private Button saveButton;
 
     @FXML
+    private ImageView retourpage;
+
+    @FXML
     private ListView<String> reclamationListView;
 
     private final ServiceReclamation serviceReclamation = new ServiceReclamation();
@@ -59,7 +65,7 @@ public class ListReclamationController {
 
             // Écouteur sur le ComboBox pour filtrer dynamiquement les réclamations
             etatrec.setOnAction(event -> mettreAJourListView(etatrec.getValue()));
-            
+
     }
 
     private void mettreAJourListView(String etat) {
@@ -88,7 +94,7 @@ public class ListReclamationController {
             // Convertir la liste filtrée en ObservableList
             ObservableList<String> items = FXCollections.observableArrayList();
             filteredReclamations.forEach(reclamation ->
-                    items.add(reclamation.getTitle() + " - " + reclamation.getDescription() + " - " + reclamation.getEtat()));
+                    items.add(reclamation.getTitle() + " - " + reclamation.getDescription() + " - " + reclamation.getDate_reclamation() + " - " + reclamation.getEtat()));
 
             // Mettre à jour la ListView avec les réclamations filtrées
             reclamationListView.setItems(items);
@@ -262,5 +268,23 @@ public class ListReclamationController {
 
     private void refreshScene(ActionEvent event) throws IOException {
         changeScene(event, "/ListReclamations.fxml");
+    }
+
+    private void retour(Event event, String fxmlFile) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource(fxmlFile));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page.");
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void retourpage(MouseEvent event) {
+        retour(event, "/ProfileUtilisateur.fxml");
+
     }
 }
