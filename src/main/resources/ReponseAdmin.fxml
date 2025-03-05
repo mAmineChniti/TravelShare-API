@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
@@ -75,5 +76,6 @@
          </font>
       </Button>
       <Hyperlink fx:id="listeRec" layoutX="496.0" layoutY="500.0" onAction="#listeReclamation" text="Liste des Réponses" />
+      <ComboBox fx:id="etatrec" layoutX="678.0" layoutY="12.0" prefWidth="150.0" promptText="Etat" styleClass="reclamation" stylesheets="@css/Style.css" />
     </children>
 </AnchorPane>

@@ -105,7 +105,6 @@ public class AccueilAdminController {
     }
 
 
-
     @FXML
     public void SwitchToVoyages(ActionEvent actionEvent) {
         try {

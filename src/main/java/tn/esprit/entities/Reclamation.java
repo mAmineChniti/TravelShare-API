@@ -4,7 +4,7 @@ import java.sql.Date;
 
 public class Reclamation {
     private int reclamation_id, user_id;
-    private String title, description;
+    private String title, description, etat;
     private Date date_reclamation;
 
     // Relation ManyToOne avec Utilisateur
@@ -16,7 +16,10 @@ public class Reclamation {
     private Reponse reponse; // Une réclamation a une seule réponse
 
     // Constructeur par défaut
-    public Reclamation() {}
+    public Reclamation() {
+        this.etat = "en cours"; // L'état est défini par défaut ici
+
+    }
 
     // Constructeur paramétré (y compris l'ID)
     public Reclamation(int reclamation_id, int user_id, String title, String description, Date date_reclamation) {
@@ -25,6 +28,8 @@ public class Reclamation {
         this.title = title;
         this.description = description;
         this.date_reclamation = date_reclamation;
+        this.etat = "en cours"; // L'état est défini par défaut ici
+
     }
 
     // Constructeur paramétré (sans l'ID)
@@ -33,6 +38,8 @@ public class Reclamation {
         this.title = title;
         this.description = description;
         this.date_reclamation = date_reclamation;
+        this.etat = "en cours"; // L'état est défini par défaut ici
+
     }
 
     // Getters et setters
@@ -76,6 +83,14 @@ public class Reclamation {
         this.date_reclamation = date_reclamation;
     }
 
+    public String getEtat() {
+        return etat;
+    }
+
+    public void setEtat(String etat) {
+        this.etat = etat;
+    }
+
     // Getters et setters pour utilisateur et reponse
     public Utilisateur getUtilisateur() { return utilisateur; }
 
@@ -93,7 +108,9 @@ public class Reclamation {
                 ", user_id=" + user_id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", date_reclamation=" + date_reclamation +
+                ", date_reclamation=" + date_reclamation + '\'' +
+                ", etat=" + etat +
+
                 '}';
     }
 }

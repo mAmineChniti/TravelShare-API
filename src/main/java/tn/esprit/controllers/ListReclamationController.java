@@ -31,6 +31,9 @@ public class ListReclamationController {
     private TextArea descriptionField;
 
     @FXML
+    private ComboBox<String> etatrec;
+
+    @FXML
     private Button delButton;
 
     @FXML
@@ -43,38 +46,73 @@ public class ListReclamationController {
 
     @FXML
     private void initialize() {
-        try {
             SessionManager session = SessionManager.getInstance();
             Utilisateur currentUser = session.getCurrentUtilisateur();
             int user_id = currentUser.getUser_id();
 
-            List<Reclamation> userReclamations = serviceReclamation.ListAll().stream()
+            // Ajouter les options de filtrage au ComboBox
+            etatrec.getItems().addAll("Tous", "en cours", "repondu");
+            etatrec.setValue("Tous"); // Par défaut, afficher toutes les réclamations
+
+            // Charger et afficher toutes les réclamations au démarrage
+            mettreAJourListView("Tous");
+
+            // Écouteur sur le ComboBox pour filtrer dynamiquement les réclamations
+            etatrec.setOnAction(event -> mettreAJourListView(etatrec.getValue()));
+            
+    }
+
+    private void mettreAJourListView(String etat) {
+        try {
+            // Récupérer les réclamations filtrées par état depuis le service
+            SessionManager session = SessionManager.getInstance();
+            Utilisateur currentUser = session.getCurrentUtilisateur();
+            int user_id = currentUser.getUser_id();
+
+            List<Reclamation> allReclamations = serviceReclamation.ListAll();
+
+            // Filtrer les réclamations de l'utilisateur par état
+            List<Reclamation> userReclamations = allReclamations.stream()
                     .filter(reclamation -> reclamation.getUser_id() == user_id)
                     .collect(Collectors.toList());
 
-            ObservableList<String> items = FXCollections.observableArrayList();
-            userReclamations.forEach(reclamation ->
-                    items.add(reclamation.getTitle() + " - " + reclamation.getDescription()));
+            List<Reclamation> filteredReclamations;
+            if (etat.equals("Tous")) {
+                filteredReclamations = userReclamations; // Toutes les réclamations
+            } else {
+                filteredReclamations = userReclamations.stream()
+                        .filter(reclamation -> reclamation.getEtat().equalsIgnoreCase(etat))
+                        .collect(Collectors.toList());
+            }
 
+            // Convertir la liste filtrée en ObservableList
+            ObservableList<String> items = FXCollections.observableArrayList();
+            filteredReclamations.forEach(reclamation ->
+                    items.add(reclamation.getTitle() + " - " + reclamation.getDescription() + " - " + reclamation.getEtat()));
+
+            // Mettre à jour la ListView avec les réclamations filtrées
             reclamationListView.setItems(items);
 
+            // 🎯 Corriger la récupération du titre et de la description
             reclamationListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue != null) {
-                    Reclamation selectedReclamation = userReclamations.stream()
-                            .filter(reclamation -> (reclamation.getTitle() + " - " + reclamation.getDescription()).equals(newValue))
-                            .findFirst().orElse(null);
+                    // Extraire uniquement le titre depuis newValue
+                    String[] parts = newValue.split(" - ");
+                    String titre = parts[0]; // Le titre est toujours en premier
+                    String description = parts.length > 1 ? parts[1] : ""; // Si une description existe, on la prend
 
-                    if (selectedReclamation != null) {
-                        objetField.setText(selectedReclamation.getTitle());
-                        descriptionField.setText(selectedReclamation.getDescription());
-                    }
+                    // Mettre à jour les champs
+                    objetField.setText(titre);
+                    descriptionField.setText(description);
                 }
             });
+
         } catch (SQLException e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Une erreur est survenue lors du chargement des réclamations.");
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Une erreur est survenue lors de la mise à jour des réclamations.");
             e.printStackTrace();
         }
     }
+
 
     @FXML
     void deleteReclamation(ActionEvent event) {
